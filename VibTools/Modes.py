@@ -165,8 +165,40 @@ class VibModes (object) :
         self.print_composition(groupnames, comp, labels)
 
     def print_attype_composition(self, labels=None) :
-#        groups, groupnames = self.mol.attype_groups()
-        groups, groupnames = self.mol.attype_groups_2()
+        groups, groupnames = self.mol.attype_groups()
+#        groups, groupnames = self.mol.attype_groups_2()
         comp = self.get_composition(groups)
         self.print_composition(groupnames, comp, labels)
 
+    def transform (self, tmat) :
+        tmodes = VibModes(self.nmodes, self.mol)
+        tmodes.set_modes_mw(numpy.dot(tmat, self.modes_mw))
+
+        cmat = numpy.dot(numpy.dot(tmat, numpy.diag(self.freqs)), tmat.transpose())
+
+        tmodes.set_freqs(cmat.diagonal())
+
+        return tmodes
+    
+    def sortmat_by_residue (self) :
+        types = self.get_composition(self.mol.residue_groups()[0])
+
+        max_res = []
+        for i in range(self.nmodes) :
+            maxval = 0.0
+            maxind = -1
+            for t in range(len(types)):
+                if (types[t][i] > maxval) :
+                    maxval = types[t][i]
+                    maxind = t
+            max_res.append((i,maxind))
+
+        max_res.sort(lambda x,y: cmp(x[1],y[1]))
+
+        sortmat = numpy.zeros((self.nmodes, self.nmodes))
+        for i in range(self.nmodes) :
+            sortmat[i, max_res[i][0]] = 1.0
+            
+        return sortmat
+
+    

@@ -36,18 +36,18 @@ class VibSpectrum (object) :
 
         return x, y
 
-    def get_gaussian_spectrum (self, minfreq, maxfreq, halfwidth=15.0) :
+    def get_gaussian_spectrum (self, minfreq, maxfreq, halfwidth=5.0) :
         indices = numpy.where((self.freqs > minfreq) & (self.freqs < maxfreq))
         freqs = self.freqs[indices]
         ints  = self.ints[indices]
 
         x = numpy.arange(minfreq, maxfreq, 0.1)
         y = numpy.zeros(x.shape)
+
+        gamma = halfwidth / (2.0*math.sqrt(2.0*math.log(2.0)))
         
-        for nu, intens in zip(freqs, ints) :
-            # FIXME: put Gaussian shape funtion here
-            # y += ((intens*halfwidth)/(2*math.pi)) / ((nu-nu0)**2 + (hw/2)**2)
-            pass
+        for nu0, intens in zip(freqs, ints) :
+            y += (intens/(2.0 * math.pi * gamma**2)) * numpy.exp(-((x-nu0)**2/(2.0*gamma**2)))
             
         return x, y
 

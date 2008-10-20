@@ -2,8 +2,30 @@
 
 import VibTools
 
-from pylab import *
+#from pylab import *
 from numpy import *
+
+import pylab as plt
+
+def print_mat (a, fact=1.0, nodes=False) :
+    print
+    for k in a :
+        for l in k :
+            print "%6.1f" % (l*fact),
+
+        if nodes :
+            n = 0
+            for i in range(1,len(k)) :
+                if k[i-1]*k[i] < 0.0 :
+                    n += 1
+            print "nodes: ", n,
+        print
+    print
+ 
+def test_snf() :
+    res = SNFResults()
+    res.read()
+    res.test_consistency()
 
 def test1 () :
     res = VibTools.SNFResults()
@@ -175,12 +197,65 @@ def test5() :
 
     print_decomposition_analysis(res, modes)
 
+def test6() :
+    res = VibTools.SNFResults()
+    res.read()
 
-        
+    modes = res.modes.get_subset(range(481,501))
+    modes.write_g98out()
+
+    modes.print_residue_composition()
+    modes.print_attype_composition()
+
+    print "PM localization "
+    
+    lv = VibTools.LocVib(modes, 'PM')
+    lv.localize(modes)
+    lv.sort_by_residue()
+    lv.adjust_signs()
+
+    print
+    print "coupling matrix: "
+    print_mat(lv.get_couplingmat())
+    print "transformation matrix to localized modes: "
+    print_mat(lv.transmat.transpose(), 100.0, nodes=True)
+
+    lv.locmodes.write_g98out()
+
+    lv.locmodes.print_residue_composition()
+    lv.locmodes.print_attype_composition()
+
+def test7() :
+    res = VibTools.SNFResults()
+    res.read()
+
+    ha = VibTools.HugAnalysis(res, 'ROA', scale=1e4)
+
+    groups, groupnames = res.mol.residue_groups()
+    groups2, polyala_keys = res.mol.attype_groups()
+
+    ha.print_group_coupling_matrix(groups, groupnames, res.modes, 491)
+
+    gcm = ha.get_group_coupling_matrix(groups, res.modes, 491)
+    fig1 = VibTools.HugAnalysisPlot()
+    fig1.plot_gcm(gcm, groupnames)
+
+    fig1.save_plot('test1.pdf')
+
+    ha.print_group_coupling_matrix(groups2, polyala_keys, res.modes, 491)
+
+    gcm = ha.get_group_coupling_matrix(groups2, res.modes, 491)
+    fig2 = VibTools.HugAnalysisPlot()
+    fig2.plot_gcm(gcm, polyala_keys)
+
+    fig2.save_plot('test2.pdf')
+
+    plt.show()
+
 #import profile
 #profile.run('test5()')
 #profile.run('test5()', 'stats.prof')
 
-test2()
-test5()
+#test2()
+test7()
 

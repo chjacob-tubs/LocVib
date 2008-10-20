@@ -2,6 +2,7 @@
 import numpy
 
 import Constants
+import Modes
 
 class HugAnalysis (object) :
 
@@ -138,7 +139,6 @@ class HugAnalysis (object) :
         return inv_decomposed_nm
     
     def sum_groups (self, inv_decomposed_nm, groups) :
-
         ngroups = len(groups)
         inv_groups = numpy.zeros((ngroups,ngroups))
 
@@ -152,7 +152,7 @@ class HugAnalysis (object) :
 
         for i in range(ngroups) :
             inv_groups[i,i] = inv_groups[i,i] / 2
-            inv_groups[i,i+1:] = 0.0
+            inv_groups[i,:i] = 0.0
 
         return inv_groups
 
@@ -166,7 +166,8 @@ class HugAnalysis (object) :
             print ("%6s " % n),
         print
         for i in range(inv_groups.shape[0]) :
-            for j in range(i+1) :
+            print " "*8*i,
+            for j in range(i,inv_groups.shape[0]) :
                 print "%6.1f " % inv_groups[i,j],
             print
 
@@ -176,6 +177,7 @@ class HugAnalysis (object) :
         print "Total intensity: ", inv_groups.sum()
         print
         self.print_gcm(inv_groups, groupnames)
+
             
 ##############################################################################################
         
