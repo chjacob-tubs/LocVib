@@ -57,9 +57,6 @@ class HugAnalysisPlot (object) :
             line = Line2D((i-0.5, i-0.5), (-0.5, i+0.5), color='k')
             self.ax.add_line(line)
                 
-        self.ax.set_xlim(-0.6, ngroups-0.4)
-        self.ax.set_ylim(ngroups-0.4, -0.6)
-
         self.ax.xaxis.tick_top()
         self.ax.yaxis.tick_right()
 
@@ -77,6 +74,8 @@ class HugAnalysisPlot (object) :
         for label in self.ax.xaxis.get_ticklabels():
             label.set_rotation('vertical')
 
+        self.ax.set_xlim(-0.6, ngroups-0.4)
+        self.ax.set_ylim(ngroups-0.4, -0.6)
 
     def save_plot(self, filename, format='pdf') :
         self.fig.savefig(filename, format=format)

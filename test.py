@@ -107,7 +107,7 @@ def test2() :
     res.read()
 
     modes = res.modes.get_range(800.0, 1800.0)
-    modes = res.modes.get_subset(range(481,501))
+    modes = res.modes.get_subset(range(481,500))
 
     irint = res.get_ir_intensity(modes)
     ri    = res.get_raman_int(modes)
@@ -164,7 +164,7 @@ def test4() :
     res = VibTools.SNFResults()
     res.read()
 
-    modes = res.modes.get_subset(range(481,501))
+    modes = res.modes.get_subset(range(481,500))
     modes.write_g98out()
 
     modes.print_residue_composition()
@@ -172,7 +172,7 @@ def test4() :
 
 
 def print_decomposition_analysis(res, modes) :
-    ha = VibTools.HugAnalysis(res, 'Raman')
+    ha = VibTools.HugAnalysis(res, 'IR')
 
     groups, groupnames = res.mol.residue_groups()
     groups2, polyala_keys = res.mol.attype_groups()
@@ -193,7 +193,7 @@ def test5() :
     res = VibTools.SNFResults()
     res.read()
 
-    modes = res.modes.get_subset(range(481,501))
+    modes = res.modes.get_subset(range(481,500))
 
     print_decomposition_analysis(res, modes)
 

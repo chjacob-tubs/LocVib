@@ -236,7 +236,6 @@ class SNFResults (object) :
 
         # FIXME: convert to absorption (in km/mol); scale factor stolen from SNF
         irint = irint * 863.865928384
-
         return irint
 
     def get_a2_invariant (self, gauge='len', modes=None) :
@@ -245,7 +244,6 @@ class SNFResults (object) :
 
         a2 = (1.0/3.0) * (pol[:,0] + pol[:,3] + pol[:,5])
         a2 = (a2**2)*(Constants.Bohr_in_Angstrom**4)
-
         return a2
 
     def get_g2_invariant (self, modes=None) :
@@ -260,7 +258,6 @@ class SNFResults (object) :
                            + 6.0 * pol[:,4]**2  
                          )
         g2 = g2 * (Constants.Bohr_in_Angstrom**4)
-
         return g2
 
     def get_raman_int (self, modes=None) :

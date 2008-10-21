@@ -21,8 +21,16 @@ class HugAnalysis (object) :
         self.tensor_decomposed_c = scale * self.tensor_decomposed_c
 
     def get_irint_decomposed_c (self, res) :
-        # FIXME: implement IR intensity decomposition
-        pass
+        dip  = res.get_tensor_deriv_c('dipole')
+        dip  = dip.reshape((self.natoms*3, 3))
+
+        mu = (numpy.outer(dip[:,0],dip[:,0])  + 
+              numpy.outer(dip[:,1],dip[:,1])  +
+              numpy.outer(dip[:,2],dip[:,2]))
+
+        # FIXME: convert to absorption (in km/mol); scale factor stolen from SNF
+        mu = mu * 863.865928384
+        return mu
         
     def get_a2_decomposed_c (self, res, gauge='len') :
         pol  = res.get_tensor_deriv_c('pol'+gauge, 6)
@@ -51,7 +59,7 @@ class HugAnalysis (object) :
                   + numpy.outer(pol[:,5], pol[:,5]))
         g2 = g2 - numpy.outer(pol[:,0]+pol[:,3]+pol[:,5], pol[:,0]+pol[:,3]+pol[:,5])
 
-        g2 = g2*(Constants.Bohr_in_Angstrom**4) 
+        g2 = 0.5*g2*(Constants.Bohr_in_Angstrom**4) 
 
         return g2
 
