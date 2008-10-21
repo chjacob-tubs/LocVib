@@ -2,6 +2,8 @@
 import math
 import numpy
 
+import Plotting
+
 class VibSpectrum (object) :
 
     def __init__ (self, modes, ints) :
@@ -67,3 +69,47 @@ class VibSpectrum (object) :
 
     def get_band_minima (self, x, y) :
         return self.get_band_maxima(x, -y)
+
+
+    def get_plot (self, xmin, xmax, ymin=None, ymax=None, lineshape='Lorentz', hw=None,
+                  include_linespec=True, scale_linespec=0.2, spectype='General',
+                  label_maxima=True) :
+
+        xmi = min(xmin, xmax)
+        xma = max(xmin, xmax)
+
+        if lineshape=='Lorentz' :
+            if hw is None :
+                spec = [self.get_lorentz_spectrum(xmi, xma)]
+            else:
+                spec = [self.get_lorentz_spectrum(xmi, xma, hw=hw)]
+        elif lineshape=='Gaussian' :
+            if hw is None :
+                spec = [self.get_gaussian_spectrum(xmi, xma)]
+            else:
+                spec = [self.get_gaussian_spectrum(xmi, xma, hw=hw)]
+
+        style = ['k-']
+        lw = [2.0]
+
+        if include_linespec :
+            spec.append(self.get_line_spectrum(xmi, xma, scale=scale_linespec))
+            style.append('g-')
+            lw.append(0.5)
+
+        xlims = [xmin, xmax]
+        ylims = [ymin, ymax]
+        if ymin is None:
+            ylims[0] = (spec[0][1]).min() * 1.1
+        if ymax is None:
+            ylims[1] = (spec[0][1]).max() * 1.1
+
+        pl = Plotting.SpectrumPlot()
+        pl.plot(spec, style=style, lw=lw, spectype=spectype, xlims=xlims, ylims=ylims)
+
+        if label_maxima :
+            maxima = self.get_band_maxima(spec[0][0], spec[0][1]) 
+            pl.add_peaklabels(maxima)
+
+        return pl
+

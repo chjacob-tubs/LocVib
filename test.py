@@ -2,7 +2,6 @@
 
 import VibTools
 
-#from pylab import *
 from numpy import *
 
 import pylab as plt
@@ -27,80 +26,38 @@ def test_snf() :
     res.read()
     res.test_consistency()
 
-def test1 () :
+def test1_new () :
     res = VibTools.SNFResults()
     res.read()
 
-    freqs = res.freqs
-    irint = res.get_ir_intensity()
-    ri    = res.get_raman_int()
-    bi    = res.get_backscattering_int()
+    # plot IR spectrum
 
-    ir_spectrum    = VibTools.VibSpectrum(res.modes, irint)
-    raman_spectrum = VibTools.VibSpectrum(res.modes, ri)
-    roa_spectrum   = VibTools.VibSpectrum(res.modes, bi)
+    ir_spectrum = VibTools.VibSpectrum(res.modes, res.get_ir_intensity())
 
-    # line spectra
+    IRPlot = ir_spectrum.get_plot(1800.0, 1100.0, 0.0, 230.0, spectype='IR')
 
-    ir_line_x, ir_line_y       = ir_spectrum.get_line_spectrum(1100.0, 1800.0, scale=0.2)
-    raman_line_x, raman_line_y = raman_spectrum.get_line_spectrum(1100.0, 1800.0, scale=0.2)
-    roa_line_x, roa_line_y     = roa_spectrum.get_line_spectrum(1100.0, 1800.0, scale=0.04)
-
-    # Lorentz spectra
-
-    ir_x, ir_y       = ir_spectrum.get_lorentz_spectrum(1100.0, 1800.0)
-    raman_x, raman_y = raman_spectrum.get_lorentz_spectrum(1100.0, 1800.0)
-    roa_x, roa_y     = roa_spectrum.get_lorentz_spectrum(1100.0, 1800.0)
-
-    ir_spectrum.scale_range(ir_line_x, ir_line_y, 1100.0, 1400.0, 5.0)
-    ir_spectrum.scale_range(ir_x, ir_y, 1100.0, 1400.0, 5.0)
+    IRPlot.scale_range(1100.0, 1400.0, 5.0, boxy=(0.0, 120.0), boxlabel='x 5')
+    IRPlot.delete_peaklabels([0,2,9,12])
     
-    print " *** IR maxima *** "
-    for x, y in ir_spectrum.get_band_maxima(ir_x, ir_y) :
-        print " %8.2f %8.2f " % (x, y)        
+    IRPlot.draw()
 
-    print " *** Raman maxima *** "
-    for x, y in raman_spectrum.get_band_maxima(raman_x, raman_y) :
-        print " %8.2f %8.2f " % (x, y)        
-        
-    figure(1)
-    
-    subplot(311)
-    line1, line2 = plot(ir_line_x, ir_line_y, 'g-', ir_x, ir_y, 'k-')
-    line1.set_linewidth(0.5)
-    line2.set_linewidth(2.0)
+    # plot Raman spectrum
 
-    fill([1400, 1400, 1110, 1110], [100,0,0,100], fill=False)
-    text(1400, 105, 'x 5', va='bottom', ha='left')
+    raman_spectrum = VibTools.VibSpectrum(res.modes, res.get_raman_int())
 
-    axis([1800,1100,0.0,200.0])
-    yticks(yticks()[0][1:])
-    
-    text(1450, 190, 'IR spectrum', va='top', ha='center')
-    #xlabel('wavenumber [cm$^{-1}$]')
-    ylabel(r'absorption [km/mol]')
+    RamanPlot = raman_spectrum.get_plot(1800.0, 1100.0, 0.0, 18.0, spectype='Raman')
 
-    subplot(312)
-    line1, line2 = plot(raman_line_x, raman_line_y, 'g-', raman_x, raman_y, 'k-')
-    axis([1800,1100,0.0,15.0])
-    yticks(yticks()[0][1:])
+    RamanPlot.delete_peaklabels([0,2,5,11])
 
-    line1.set_linewidth(0.5)
-    line2.set_linewidth(2.0)
+    RamanPlot.draw()
 
-    text(1450, 14, 'Raman spectrum', va='top', ha='center')
+    # combine the two
 
-    xlabel('wavenumber [cm$^{-1}$]')
-    ylabel(r'scattering factor [${\AA}^4$/a.m.u.]')
+    pl = VibTools.CombinedPlot()
+    pl.plot(2,1,[IRPlot, RamanPlot])
+    pl.save_plot('spec.pdf')
 
-    subplot(313)
-    line1, line2 = plot(roa_line_x, roa_line_y, 'g-', roa_x, roa_y, 'k-')
-    axis([1800,1100,-0.015,0.015])
-    line1.set_linewidth(0.5)
-    line2.set_linewidth(2.0)
-
-    savefig('spec.pdf', type='pdf')
-    show()
+    plt.show()
 
 def test2() :
     res = VibTools.SNFResults()
@@ -146,7 +103,7 @@ def test3() :
 
     if alpha :
         # alpha-helix
-        modelist = [[500], range(481,500), [480], range(462,480), [461], range(421,460), range(401,421),
+        modelist = [[500], range(481,500), [480], range(462,480), [461], range(421,461), range(401,421),
                     [380,381]+range(383,401), [382], [359]+range(361,380), range(340,359)+[360],
                     [319]+range(321,340), [320]]
         names    = ['COOH', 'amide I', 'NH2 bend', 'amide II', 'mixed', 'CH3 asymm', 'CH3 symm',
@@ -238,7 +195,8 @@ def test7() :
 
     gcm = ha.get_group_coupling_matrix(groups, res.modes, 491)
     fig1 = VibTools.HugAnalysisPlot()
-    fig1.plot_gcm(gcm, groupnames)
+    fig1.plot(gcm, groupnames)
+    fig1.draw()
 
     fig1.save_plot('test1.pdf')
 
@@ -246,9 +204,37 @@ def test7() :
 
     gcm = ha.get_group_coupling_matrix(groups2, res.modes, 491)
     fig2 = VibTools.HugAnalysisPlot()
-    fig2.plot_gcm(gcm, polyala_keys)
+    fig2.plot(gcm, polyala_keys)
+    fig2.draw()
 
     fig2.save_plot('test2.pdf')
+
+    plt.show()
+
+def test8() :
+    res = VibTools.SNFResults()
+    res.read()
+
+    ha = VibTools.HugAnalysis(res, 'ROA', scale=1e4)
+
+    groups, groupnames = res.mol.residue_groups()
+    groups2, polyala_keys = res.mol.attype_groups()
+
+    figs = []
+
+    for imode in range(481,500) :
+        print " Mode %i " % imode
+        ha.print_group_coupling_matrix(groups, groupnames, res.modes, imode)
+
+        gcm = ha.get_group_coupling_matrix(groups, res.modes, imode)
+        fig = VibTools.HugAnalysisPlot()
+        fig.plot(gcm, groupnames)
+
+        figs.append(fig)
+
+    fig = VibTools.CombinedPlot()
+    fig.plot(5,4,figs)
+    fig.save_plot('comb.pdf', 'pdf')
 
     plt.show()
 
@@ -257,5 +243,7 @@ def test7() :
 #profile.run('test5()', 'stats.prof')
 
 #test2()
-test7()
+#test7()
 
+#test1()
+test1_new()
