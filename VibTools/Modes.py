@@ -53,7 +53,7 @@ class VibModes (object) :
         modelist = numpy.where((self.freqs > minfreq) & (self.freqs < maxfreq))[0]
         return self.get_subset(modelist)
             
-    def write_g98out (self, massweighted=False) :
+    def write_g98out (self, massweighted=False, filename='g98.out') :
 
         if massweighted :
             modes = self.modes_mw
@@ -69,7 +69,7 @@ class VibModes (object) :
         temp_freqs = numpy.zeros((temp_modes.shape[0],))
         temp_freqs[:self.nmodes] = self.freqs
         
-        f = file('g98.out', 'w')
+        f = file(filename, 'w')
         f.write(' Entering Gaussian System \n')
         f.write(' *********************************************\n')
         f.write(' Gaussian 98:\n')
