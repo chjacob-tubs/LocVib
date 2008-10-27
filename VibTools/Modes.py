@@ -165,8 +165,8 @@ class VibModes (object) :
         self.print_composition(groupnames, comp, labels)
 
     def print_attype_composition(self, labels=None) :
-        groups, groupnames = self.mol.attype_groups()
-#        groups, groupnames = self.mol.attype_groups_2()
+#        groups, groupnames = self.mol.attype_groups()
+        groups, groupnames = self.mol.attype_groups_2()
         comp = self.get_composition(groups)
         self.print_composition(groupnames, comp, labels)
 
@@ -202,4 +202,18 @@ class VibModes (object) :
             
         return sortmat
 
-    
+    def get_fragment_modes (self, atomlist) :
+        frag = self.mol.get_fragment(atomlist)
+        
+        indices = [0]*3*len(atomlist)
+        for i, a in enumerate(atomlist) :
+            indices[3*i]   = 3*a
+            indices[3*i+1] = 3*a+1
+            indices[3*i+2] = 3*a+2
+
+        modes = VibModes(self.nmodes, frag)
+        modes.set_freqs(self.freqs)
+        modes.set_modes_mw(self.modes_mw[:,indices])
+        
+        return modes
+        

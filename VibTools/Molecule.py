@@ -2,7 +2,25 @@
 import openbabel
 import numpy
 
-class VibToolsMolecule (object) :
+class AbstractMolecule (object) :
+
+    def __init__ (self) :
+        self.natoms      = None
+        self.atmasses    = None
+        self.atnums      = None
+        self.coordinates = None
+    
+    def get_fragment (self, atomlist) :
+        frag = AbstractMolecule()
+
+        frag.natoms      = len(atomlist)
+        frag.atmasses    = self.atmasses[atomlist]
+        frag.atnums      = self.atnums[atomlist]
+        frag.coordinates = self.coordinates[atomlist,:]
+
+        return frag
+
+class VibToolsMolecule (AbstractMolecule) :
     
     def __init__ (self) :
         self.obmol = openbabel.OBMol()
@@ -151,34 +169,5 @@ class VibToolsMolecule (object) :
             groups[ind].append(at.GetIdx()-1)
 
         return groups, groupnames
-
-    
-############################################################################################################
-    
-    def sort_modes_by_residue (self, modes) :
-        types = self.get_mode_composition(modes, self.residue_groups()[0])
-
-        nmodes = modes.shape[0]
-        
-        max_res = []
-        for i in range(modes.shape[0]) :
-            maxval = 0.0
-            maxind = -1
-            for t in range(len(types)):
-                if (types[t][i] > maxval) :
-                    maxval = types[t][i]
-                    maxind = t
-            max_res.append((i,maxind))
-
-        max_res.sort(lambda x,y: cmp(x[1],y[1]))
-
-        sortmat = zeros((nmodes,nmodes))
-        
-        sorted_modes = zeros(modes.shape)
-        for i in range(nmodes) :
-            sorted_modes[i,:] = modes[max_res[i][0],:]
-            sortmat[i, max_res[i][0]] = 1.0
-            
-        return sorted_modes, sortmat
 
 
