@@ -193,6 +193,7 @@ class VibModes (object) :
                     maxind = t
             max_res.append((i,maxind))
 
+        max_res.sort(lambda x,y: cmp(self.freqs[x[0]], self.freqs[y[0]]))
         max_res.sort(lambda x,y: cmp(x[1],y[1]))
 
         sortmat = numpy.zeros((self.nmodes, self.nmodes))
