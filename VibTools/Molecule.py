@@ -25,11 +25,11 @@ class VibToolsMolecule (AbstractMolecule) :
     def __init__ (self) :
         self.obmol = openbabel.OBMol()
 
-    def read_from_coord (self) :
+    def read_from_coord (self, filename='coord') :
         obconv = openbabel.OBConversion()
         obconv.SetInAndOutFormats("tmol", "tmol")
         
-        if not obconv.ReadFile(self.obmol, 'coord') :
+        if not obconv.ReadFile(self.obmol, filename) :
             raise Exception('Error reading file')
 
     def get_natoms (self) :
@@ -130,7 +130,7 @@ class VibToolsMolecule (AbstractMolecule) :
 
         return groups, groupnames
 
-    def get_amide1_groups (self, res) :
+    def amide1_groups (self, res) :
         groupnames = ['CO', 'NH', 'NH2', 'NH3', 'CAH', 'CA0', 'CA2', 'COo', 'CBa', 'R']
         groups     = []
 
@@ -169,5 +169,47 @@ class VibToolsMolecule (AbstractMolecule) :
             groups[ind].append(at.GetIdx()-1)
 
         return groups, groupnames
+
+    def amide2_groups (self, res) :
+
+        groupnames = [ 'CO-1', 'NH', 'CHAB', 'CO', 'NH+1', 'R']
+        groups     = []
+
+        for k in groupnames :
+            groups.append([])
+        for at in openbabel.OBMolAtomIter(self.obmol) :
+            attype = at.GetResidue().GetAtomID(at)
+            attype = attype.strip()
+
+            rnum = at.GetResidue().GetNum()
+
+            if attype in ['1HB', '2HB', '3HB', 'HB1', 'HB2', 'HB3'] :
+                attype = 'HB'
+
+            if rnum == res :
+                if attype in ['N', 'H'] :
+                    attype = 'NH'
+                elif attype in ['C', 'O'] :
+                    attype = 'CO'
+                elif attype in ['CA', 'HA', 'CB', 'HB'] :
+                    attype = 'CHAB'
+            elif rnum == res + 1 :
+                if attype in ['N', 'H'] :
+                    attype = 'NH+1'
+                else :
+                    attype = 'R'
+            elif rnum == res -1 :
+                if attype in ['C', 'O'] :
+                    attype = 'CO-1'
+                else :
+                    attype = 'R'
+            else :
+                attype = 'R'
+
+            ind = groupnames.index(attype)
+            groups[ind].append(at.GetIdx()-1)
+
+        return groups, groupnames
+
 
 

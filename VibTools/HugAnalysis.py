@@ -15,9 +15,11 @@ class HugAnalysis (object) :
             self.tensor_decomposed_c = self.get_ramanint_decomposed_c(res)
         elif tensor == 'IR' :
             self.tensor_decomposed_c = self.get_irint_decomposed_c(res)
-        elif tensor in ['a2', 'aG', 'bG', 'bA'] :
+        elif tensor in ['a2', 'g2', 'aG', 'bG', 'bA'] :
             self.tensor_decomposed_c = eval('self.get_'+tensor+'_decomposed_c(res)' )
-
+        elif tensor == 'id' :
+            self.tensor_decomposed_c = numpy.ones((self.natoms*3, self.natoms*3))
+            
         self.tensor_decomposed_c = scale * self.tensor_decomposed_c
 
     def get_irint_decomposed_c (self, res) :

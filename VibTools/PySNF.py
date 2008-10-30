@@ -140,19 +140,22 @@ class SNFOutputFile (object) :
         
 class SNFResults (object) :
 
-    def __init__ (self) :
+    def __init__ (self, outname='snf.out', restartname='restart', coordfile='coord') :
         self.mol          = VibToolsMolecule()
-        self.snfoutput    = SNFOutputFile('snf.out') 
+        self.snfoutput    = SNFOutputFile(filename=outname) 
         self.restartfile  = SNFRestartFile()
 
+        self.restartname  = restartname
+        self.coordfile    = coordfile
+        
     freqs = property(lambda self: self.snfoutput.modes.freqs)
     modes = property(lambda self: self.snfoutput.modes)
     lwl   = property(lambda self: self.snfoutput.lwl)
         
     def read (self) :
-        self.mol.read_from_coord()
+        self.mol.read_from_coord(filename=self.coordfile)
         self.snfoutput.read(self.mol)
-        self.restartfile.read()
+        self.restartfile.read(filename=self.restartname)
 
     def get_mw_normalmodes (self) :
         return self.modes.modes_mw

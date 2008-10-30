@@ -53,12 +53,15 @@ class VibModes (object) :
         modelist = numpy.where((self.freqs > minfreq) & (self.freqs < maxfreq))[0]
         return self.get_subset(modelist)
             
-    def write_g98out (self, massweighted=False, filename='g98.out') :
+    def write_g98out (self, massweighted=False, normalize=True, filename='g98.out') :
 
         if massweighted :
             modes = self.modes_mw
         else:
-            modes = self.modes_c_norm
+            if normalize :
+                modes = self.modes_c_norm
+            else:
+                modes = self.modes_c
 
         if self.nmodes % 3 == 0 :
             temp_modes = modes
@@ -165,8 +168,8 @@ class VibModes (object) :
         self.print_composition(groupnames, comp, labels)
 
     def print_attype_composition(self, labels=None) :
-#        groups, groupnames = self.mol.attype_groups()
-        groups, groupnames = self.mol.attype_groups_2()
+        groups, groupnames = self.mol.attype_groups()
+#        groups, groupnames = self.mol.attype_groups_2()
         comp = self.get_composition(groups)
         self.print_composition(groupnames, comp, labels)
 
@@ -213,6 +216,7 @@ class VibModes (object) :
 
         modes = VibModes(self.nmodes, frag)
         modes.set_freqs(self.freqs)
+
         modes.set_modes_mw(self.modes_mw[:,indices])
         
         return modes

@@ -81,7 +81,7 @@ class HugAnalysisPlot (Plot) :
         ax.set_aspect('equal')
 
         ax.set_frame_on(False)
-        rect = Rectangle((-0.5,-0.5), ngroups-0.5, ngroups-0.5, ec='w', fc='w', fill=True)
+        rect = Rectangle((-0.5,-0.5), ngroups+0.5, ngroups+0.5, ec='w', fc='w', fill=True)
         ax.add_patch(rect)
 
         # make the area of the circles proportional to the matrix elements
@@ -113,7 +113,9 @@ class HugAnalysisPlot (Plot) :
             # vertical lines
             line = Line2D((i-0.5, i-0.5), (-0.5, i+0.5), color='k')
             ax.add_line(line)
-                
+
+        ax.text(0.5, ngroups-1.5, 'total: %5.2f' % self.matrix.sum(), size=28)
+            
         ax.xaxis.tick_top()
         ax.yaxis.tick_right()
 
@@ -130,6 +132,10 @@ class HugAnalysisPlot (Plot) :
 
         for label in ax.xaxis.get_ticklabels():
             label.set_rotation('vertical')
+            label.set_size(20)
+
+        for label in ax.yaxis.get_ticklabels():
+            label.set_size(20)
 
         ax.set_xlim(-0.6, ngroups-0.4)
         ax.set_ylim(ngroups-0.4, -0.6)
