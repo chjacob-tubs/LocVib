@@ -154,6 +154,9 @@ class LocVib (object) :
         self.locmodes = self.startmodes.transform(tmat)
 
     def get_couplingmat (self) :
+        # coupling matrix is defined as in the paper:
+        #   eigenvectors are U^t = transmat
+        #   eigenvectors give normal mode in basis of localized modes
         return numpy.dot(numpy.dot(self.transmat, numpy.diag(self.startmodes.freqs)), self.transmat.transpose())
 
     def sort_by_residue (self) :
