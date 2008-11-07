@@ -188,26 +188,38 @@ class HugAnalysis (object) :
         print
         self.print_gcm(inv_groups, groupnames)
 
-            
-##############################################################################################
+
+class LocModeAnalysis (HugAnalysis) :
+
+    def __init__ (self, res, tensor, locmodes, scale=1.0) :
+        HugAnalysis.__init__(self, res, tensor, scale)
+        self.locmodes = locmodes
+        self.nmodes   = locmodes.nmodes
         
-    def artmode_analysis (self, inv, cmodes) :
-        nmodes = cmodes.shape[0]
+        self.tensor_decomposed_lm = self.get_tensor_decomposed_lm()
 
-        inv_decomposed_am = numpy.zeros((nmodes, nmodes))
+    def get_tensor_decomposed_lm (self) :
+        tens_decomposed_lm = numpy.zeros((self.nmodes, self.nmodes))
 
-        for imode in range(nmodes) :
-            for jmode in range(nmodes) :
-                temp = inv * numpy.outer(cmodes[imode],cmodes[jmode])
+        for imode in range(self.nmodes) :
+            for jmode in range(self.nmodes) :
+                temp = self.tensor_decomposed_c * \
+                       numpy.outer(self.locmodes.modes_c[imode],self.locmodes.modes_c[jmode])
 
-                inv_decomposed_am[imode, jmode] = temp.sum()
+                tens_decomposed_lm[imode, jmode] = temp.sum()
 
-        inv_decomposed_am = inv_decomposed_am + inv_decomposed_am.transpose()
+        tens_decomposed_lm = tens_decomposed_lm + tens_decomposed_lm.transpose()
 
-        for i in range(nmodes) :
-            inv_decomposed_am[i,i] = inv_decomposed_am[i,i] / 2
-            inv_decomposed_am[i,i+1:] = 0.0
+        for i in range(self.nmodes) :
+            tens_decomposed_lm[i,i] = tens_decomposed_lm[i,i] / 2
+            tens_decomposed_lm[i,:i] = 0.0
 
-        return inv_decomposed_am
+        return tens_decomposed_lm
 
+    def get_intensity_coupling_matrix (self, mode=None) :
+        if mode is None :
+            return self.tensor_decomposed_lm
+        else:
+            return self.tensor_decomposed_lm * numpy.outer(mode, mode)
+            
 

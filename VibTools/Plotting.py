@@ -4,6 +4,7 @@ import numpy
 import pylab as plt
 from matplotlib.patches import Circle
 from matplotlib.patches import Rectangle
+from matplotlib.patches import Arrow
 from matplotlib.lines import Line2D
 
 
@@ -12,6 +13,10 @@ class Plot (object) :
     def __init__ (self) :
         self.fig = plt.figure()
         self.ax  = None
+
+    def set_figsize(self, figsize) :
+        plt.close(self.fig)
+        self.fig = plt.figure(figsize=figsize)
 
     def plot (self) :
         """ Creates the figure, but does not draw it """
@@ -60,13 +65,14 @@ class CombinedPlot (Plot) :
     def draw (self) :
         pass
 
+    
 class HugAnalysisPlot (Plot) :
 
     def __init__ (self) :
         self.fig = plt.figure(figsize=(8.0,8.0))
         self.ax  = None
 
-    def plot (self, matrix, groupnames, maxval=None) :
+    def plot (self, matrix, groupnames, maxval=None, showsum=True) :
         self.matrix = matrix
         self.groupnames = groupnames
 
@@ -75,6 +81,8 @@ class HugAnalysisPlot (Plot) :
         else:
             self.maxarea = maxval
 
+        self.show_sum = showsum
+            
     def redraw (self, ax) :
         ngroups = self.matrix.shape[0]
 
@@ -114,7 +122,8 @@ class HugAnalysisPlot (Plot) :
             line = Line2D((i-0.5, i-0.5), (-0.5, i+0.5), color='k')
             ax.add_line(line)
 
-        ax.text(0.5, ngroups-1.5, 'total: %5.2f' % self.matrix.sum(), size=28)
+        if self.show_sum :
+            ax.text(0.5, ngroups-1.5, 'total: %5.2f' % self.matrix.sum(), size=28)
             
         ax.xaxis.tick_top()
         ax.yaxis.tick_right()
@@ -170,9 +179,25 @@ class SpectrumPlot (Plot) :
         else:
             self.type = spectype
 
+        if self.type == 'General' :
+            self.title  = 'Spectrum'
+            self.xlabel = 'wavenumber [cm$^{-1}$]'
+            self.ylabel = 'intensity [unknown units]'
+        elif self.type == 'IR' :
+            self.title  = 'IR Spectrum'
+            self.xlabel = 'wavenumber [cm$^{-1}$]'
+            self.ylabel = r'absorption [km/mol]'
+        elif self.type == 'Raman' :
+            self.title  = 'Raman Spectrum'
+            self.xlabel = 'wavenumber [cm$^{-1}$]'
+            self.ylabel = r'scattering factor [${\AA}^4$/a.m.u.]'
+        elif self.type == 'ROA' :
+            self.title  = 'ROA Spectrum'
+            self.xlabel = 'wavenumber [cm$^{-1}$]'
+            self.ylabel = r'intensity difference [${\AA}^4$/a.m.u.]'
+
         if self.type == 'ROA' :
-            plt.close(self.fig)
-            self.fig = plt.figure(figsize=(8.0,6.0))
+            self.set_figsize((8.0,6.0))
 
         if xlims is None :
             self.xlims = (max([ sp[0].max() for sp in spectra]), min([ sp[0].min() for sp in spectra]) ) 
@@ -202,7 +227,6 @@ class SpectrumPlot (Plot) :
                 self.boxlabel = 'x %f4.1' % scale
             else :
                 self.boxlabel = boxlabel
-
 
     def add_peaklabels (self, peaks) :
         self.has_peaklabels=True
@@ -240,22 +264,9 @@ class SpectrumPlot (Plot) :
         xtit = 0.5*(self.xlims[0]+self.xlims[1])
         ytit = self.ylims[0] + 0.95*(self.ylims[1]-self.ylims[0])
 
-        if self.type == 'General' :
-            ax.text(xtit, ytit, 'Spectrum', va='top', ha='center')
-            ax.set_xlabel('wavenumber [cm$^{-1}$]')
-            ax.set_ylabel('intensity [unknown units]')
-        elif self.type == 'IR' :
-            ax.text(xtit, ytit, 'IR Spectrum', va='top', ha='center')
-            ax.set_xlabel('wavenumber [cm$^{-1}$]')
-            ax.set_ylabel(r'absorption [km/mol]')
-        elif self.type == 'Raman' :
-            ax.text(xtit, ytit, 'Raman Spectrum', va='top', ha='center')
-            ax.set_xlabel('wavenumber [cm$^{-1}$]')
-            ax.set_ylabel(r'scattering factor [${\AA}^4$/a.m.u.]')
-        elif self.type == 'ROA' :
-            ax.text(xtit, ytit, 'ROA Spectrum', va='top', ha='center')
-            ax.set_xlabel('wavenumber [cm$^{-1}$]')
-            ax.set_ylabel(r'intensity difference [${\AA}^4$/a.m.u.]')
+        ax.text(xtit, ytit, self.title, va='top', ha='center')
+        ax.set_xlabel(self.xlabel)
+        ax.set_ylabel(self.ylabel)
 
         ax.set_autoscale_on(False)
             
@@ -281,3 +292,83 @@ class SpectrumPlot (Plot) :
         
         ax.text(xlab, ylab*1.05, 'x 5', va='bottom', ha='left')
 
+
+class ModesPlot (Plot) :
+
+    def __init__ (self) :
+        self.fig = plt.figure(figsize=(6.0,10.0))
+        self.ax  = None
+
+    def plot (self, modes, freqs, ints, locfreqs, modelabels=None, range=None) :
+        self.modes = modes
+        self.freqs = freqs
+        self.ints = ints
+        self.locfreqs = locfreqs
+
+        if range is None :
+            self.range = (freqs.max(), freqs.min())
+        else:
+            self.range = range
+
+        if modelabels is None :
+            self.modelabels = range(len(freqs))
+        else :
+            self.modelabels = modelabels
+
+        self.title  = ''
+        self.xlabel = ''
+        self.ylabel = 'wavenumber [cm$^{-1}$]'
+
+        self.yticks = None
+
+    def redraw (self, ax) :
+        ax.set_frame_on(False)
+        ax.set_autoscale_on(False)
+
+        xmin = self.modelabels[0]
+        xmax = self.modelabels[-1]
+
+        asize = abs(self.range[1]-self.range[0]) / 20.0
+        
+        rect = Rectangle((xmin-3.5, self.range[1]), xmax-xmin+7.5, abs(self.range[1]-self.range[0]),
+                         ec='w', fc='w', fill=True)
+        ax.add_patch(rect)
+
+        line = Line2D((xmin-3.5, xmax+4), (self.range[0], self.range[0]), color='k')
+        ax.add_line(line)
+        line = Line2D((xmin-3.5, xmin-3.5), (self.range[0], self.range[1]), color='k')
+        ax.add_line(line)
+
+        for f in self.locfreqs :
+            line = Line2D((xmin-3, xmin-1), (f, f), color='k')
+            ax.add_line(line)
+        
+        for i in range(len(self.freqs)) :
+            line = Line2D((xmin-0.5, xmax+0.5), (self.freqs[i], self.freqs[i]), color='k')
+            ax.add_line(line)
+
+            ax.text(xmax+1, self.freqs[i], 'int:', va='bottom', ha='left')
+            ax.text(xmax+3.6, self.freqs[i], '%7.1f' % self.ints[i], va='bottom', ha='right')
+            
+            for j in range(len(self.freqs)) :
+                arrow = Arrow(self.modelabels[j], self.freqs[i], 0, self.modes[i,j]*asize,
+                              width=0.5, fc='k', ec='k')
+                ax.add_patch(arrow)
+                
+        ax.set_xlim((xmin-3.6, xmax+4.1))
+        ax.set_ylim((self.range[0]+0.1,self.range[1]-0.1))
+        
+        ax.xaxis.tick_bottom()
+        ax.yaxis.tick_left()
+        
+        ax.set_xticks([xmin-2]+self.modelabels)
+        ax.set_xticklabels(['localized\n modes']+self.modelabels)
+
+        if self.yticks is not None:
+            ax.set_yticks(self.yticks)
+        
+        ax.set_xlabel(self.xlabel)
+        ax.set_ylabel(self.ylabel)
+        
+        ax.text(0.5*(xmax+xmin), self.range[1]+0.5*asize, self.title,
+                va='center', ha='center', size=24)

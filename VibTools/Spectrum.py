@@ -82,12 +82,12 @@ class VibSpectrum (object) :
             if hw is None :
                 spec = [self.get_lorentz_spectrum(xmi, xma)]
             else:
-                spec = [self.get_lorentz_spectrum(xmi, xma, hw=hw)]
+                spec = [self.get_lorentz_spectrum(xmi, xma, halfwidth=hw)]
         elif lineshape=='Gaussian' :
             if hw is None :
                 spec = [self.get_gaussian_spectrum(xmi, xma)]
             else:
-                spec = [self.get_gaussian_spectrum(xmi, xma, hw=hw)]
+                spec = [self.get_gaussian_spectrum(xmi, xma, halfwidth=hw)]
 
         style = ['k-']
         lw = [2.0]

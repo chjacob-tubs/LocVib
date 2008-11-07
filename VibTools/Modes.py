@@ -221,3 +221,12 @@ class VibModes (object) :
         
         return modes
         
+    def overlap (self, other) :
+        ov = numpy.zeros((self.nmodes,))
+
+        for i in range(self.nmodes) :
+            ov[i] = numpy.dot(self.modes_mw[i], other.modes_mw[i])
+
+        ov = ov**2
+
+        return ov
