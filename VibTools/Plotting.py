@@ -238,6 +238,7 @@ class SpectrumPlot (Plot) :
         self.peaks = [self.peaks[i] for i in range(len(self.peaks)) if i not in peaknums]
 
     def redraw (self, ax) :
+        ax.set_autoscale_on(False)
         ax.get_figure().subplots_adjust(hspace=0.3)
 
         self.draw_spectra(ax)
@@ -258,18 +259,19 @@ class SpectrumPlot (Plot) :
 
         ax.set_xlim(self.xlims)
         ax.set_ylim(self.ylims)
+        yticks = ax.get_yticks()[1:]
+        if yticks[-1] > self.ylims[1] :
+            yticks = yticks[:-1]
 
-        ax.set_yticks(ax.get_yticks()[1:])
-
+        ax.set_yticks(yticks)
+        
         xtit = 0.5*(self.xlims[0]+self.xlims[1])
         ytit = self.ylims[0] + 0.95*(self.ylims[1]-self.ylims[0])
 
         ax.text(xtit, ytit, self.title, va='top', ha='center')
         ax.set_xlabel(self.xlabel)
         ax.set_ylabel(self.ylabel)
-
-        ax.set_autoscale_on(False)
-            
+                
     def draw_peaklabels (self, ax) :
         shift = 0.02 * abs(self.ylims[0]-self.ylims[1])
         for p in self.peaks :
@@ -290,7 +292,7 @@ class SpectrumPlot (Plot) :
             xlab = max(x1,x2)
         ylab = max(y1,y2)
         
-        ax.text(xlab, ylab*1.05, 'x 5', va='bottom', ha='left')
+        ax.text(xlab, ylab*1.05, self.boxlabel, va='bottom', ha='left')
 
 
 class ModesPlot (Plot) :
