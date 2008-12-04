@@ -26,6 +26,7 @@ class SNFRestartFile (object) :
         f.readline()  # first line: some path
 
         format = f.readline()  # second line: format
+        format = format.replace('d', 'D')
         self.n_per_line = int(format[1:format.find('D')])
         
         line = f.readline() # third line
@@ -106,6 +107,10 @@ class SNFOutputFile (object) :
                 first = i
             if 'Generate fake outputs for' in l :
                 last = i
+                break
+            if 'W A R N I N G' in l :
+                last = i-1
+                break
             if 'Raman Optical Activity properties for freq.' in l :
                 self.lwl = float(l[46:57])
 
