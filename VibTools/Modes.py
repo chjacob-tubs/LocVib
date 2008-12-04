@@ -2,6 +2,8 @@
 import math
 import numpy
 
+import Constants
+
 class VibModes (object) :
 
     def __init__ (self, nmodes, mol) :
@@ -230,3 +232,62 @@ class VibModes (object) :
         ov = ov**2
 
         return ov
+
+    def center (self, imode) :
+        sq_mode = self.modes_mw[imode,:]**2
+
+        c = numpy.zeros((self.natoms,))
+        for iatom in range(self.natoms) :
+            c[iatom] = sq_mode[3*iatom] + sq_mode[3*iatom+1] + sq_mode[3*iatom+2]
+
+        cen = numpy.zeros((3,))
+        coords = self.mol.coordinates
+        
+        for iatom in range(self.natoms) :
+            cen[0] += coords[iatom,0] * c[iatom]
+            cen[1] += coords[iatom,1] * c[iatom]
+            cen[2] += coords[iatom,2] * c[iatom]
+
+        return cen
+
+    def distance (self, imode, jmode) :
+        dist = self.center(imode) - self.center(jmode)
+        return math.sqrt(numpy.dot(dist,dist))
+    
+    def get_tdc_couplingmat (self, dipole) :
+        tdcmat = numpy.diag(self.freqs)
+
+        for i in range(self.nmodes) :
+            dipi_mag = math.sqrt(numpy.dot(dipole[i], dipole[i]))
+            dipi_vec = dipole[i] / dipi_mag
+
+            #dipole is in  a.u./(amu^-0.5 * A)
+            print i, dipi_mag * (Constants.au_in_Debye/Constants.Bohr_in_Angstrom)
+        
+            for j in range(i+1, self.nmodes) :
+                dipj_mag = math.sqrt(numpy.dot(dipole[j], dipole[j]))
+                dipj_vec = dipole[j] / dipj_mag
+
+                dist_vec = self.center(i) - self.center(j)
+                dist_mag = math.sqrt(numpy.dot(dist_vec,dist_vec))
+                dist_vec = dist_vec / dist_mag
+                dist_mag = dist_mag / Constants.Bohr_in_Angstrom
+                #dist_mag is now in bohr
+
+                x = numpy.dot(dipi_vec,dipj_vec) - \
+                    3.0*numpy.dot(dipi_vec,dist_vec)*numpy.dot(dipj_vec,dist_vec)
+
+                tdcmat[i,j] = (dipi_mag*dipj_mag / dist_mag**3) * x 
+
+        # convert to Omega matrix in cm-1
+        fact = (Constants.Hartree_in_Joule/(Constants.amu_in_kg*Constants.Bohr_in_Meter**2))
+        fact = fact / (Constants.cvel_ms*1e2)**2
+        for i in range(self.nmodes) :
+            for j in range(i+1, self.nmodes) :
+                tdcmat[i,j] = tdcmat[i,j] * fact
+                tdcmat[i,j] = tdcmat[i,j] / (4*math.pi**2 * (tdcmat[i,i]+tdcmat[j,j]))
+                tdcmat[j,i] = tdcmat[i,j]
+ 
+        return tdcmat
+    
+        

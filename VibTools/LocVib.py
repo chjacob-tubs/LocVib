@@ -3,6 +3,7 @@ import math
 import numpy
 
 from Modes import VibModes
+import Constants
 
 class LocVib (object) :
 
@@ -153,12 +154,24 @@ class LocVib (object) :
         self.transmat = tmat
         self.locmodes = self.startmodes.transform(tmat)
 
-    def get_couplingmat (self) :
+    def get_couplingmat (self, hessian=False) :
         # coupling matrix is defined as in the paper:
         #   eigenvectors are U^t = transmat
         #   eigenvectors give normal mode in basis of localized modes
-        return numpy.dot(numpy.dot(self.transmat, numpy.diag(self.startmodes.freqs)), self.transmat.transpose())
-
+        if not hessian :
+            diag = numpy.diag(self.startmodes.freqs)
+        else :
+            freqs = self.startmodes.freqs.copy() * 1e2 * Constants.cvel_ms
+            # now freq is nu[1/s] 
+            omega = 2.0 * math.pi * freqs
+            # now omega is omega[1/s]
+            omega = omega**2
+            omega = omega/(Constants.Hartree_in_Joule/(Constants.amu_in_kg*Constants.Bohr_in_Meter**2))
+            diag =  numpy.diag(omega)
+            
+        cmat = numpy.dot(numpy.dot(self.transmat, diag), self.transmat.transpose())
+        return cmat
+        
     def sort_by_residue (self) :
         sortmat = self.locmodes.sortmat_by_residue()
         tmat = numpy.dot(sortmat, self.transmat)
