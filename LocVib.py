@@ -156,7 +156,7 @@ class LocVib (object) :
 
     def get_couplingmat (self, hessian=False) :
         # coupling matrix is defined as in the paper:
-        #   eigenvectors are U^t = transmat
+        #   eigenvectors are rows of U / columns of U^t = transmat
         #   eigenvectors give normal mode in basis of localized modes
         if not hessian :
             diag = numpy.diag(self.startmodes.freqs)

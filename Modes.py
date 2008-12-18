@@ -171,7 +171,11 @@ class VibModes (object) :
 
     def print_attype_composition(self, labels=None) :
         groups, groupnames = self.mol.attype_groups()
-#        groups, groupnames = self.mol.attype_groups_2()
+        comp = self.get_composition(groups)
+        self.print_composition(groupnames, comp, labels)
+
+    def print_attype2_composition(self, labels=None) :
+        groups, groupnames = self.mol.attype_groups_2()
         comp = self.get_composition(groups)
         self.print_composition(groupnames, comp, labels)
 
@@ -190,15 +194,13 @@ class VibModes (object) :
 
         max_res = []
         for i in range(self.nmodes) :
-            maxval = 0.0
             maxind = -1
             for t in range(len(types)):
-                if (types[t][i] > maxval) :
-                    maxval = types[t][i]
+                if (types[t][i] > 0.4) :
                     maxind = t
             max_res.append((i,maxind))
 
-        max_res.sort(lambda x,y: cmp(self.freqs[x[0]], self.freqs[y[0]]))
+        max_res.sort(lambda x,y: -cmp(self.freqs[x[0]], self.freqs[y[0]]))
         max_res.sort(lambda x,y: cmp(x[1],y[1]))
 
         sortmat = numpy.zeros((self.nmodes, self.nmodes))
