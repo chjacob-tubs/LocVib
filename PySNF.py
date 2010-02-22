@@ -10,6 +10,9 @@ import Constants
 from Molecule import VibToolsMolecule
 from Modes    import VibModes
 
+class Result (object):
+    pass
+
 class SNFRestartFile (object) :
 
     def __init__ (self) :
