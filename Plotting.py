@@ -72,7 +72,7 @@ class HugAnalysisPlot (Plot) :
         self.fig = plt.figure(figsize=(8.0,8.0))
         self.ax  = None
 
-    def plot (self, matrix, groupnames, maxval=None, showsum=True) :
+    def plot (self, matrix, groupnames, maxval=None, showsum=True, label_textsize=22) :
         self.matrix = matrix
         self.groupnames = groupnames
 
@@ -82,6 +82,8 @@ class HugAnalysisPlot (Plot) :
             self.maxarea = maxval
 
         self.show_sum = showsum
+
+        self.label_textsize = label_textsize
             
     def redraw (self, ax) :
         ngroups = self.matrix.shape[0]
@@ -105,7 +107,7 @@ class HugAnalysisPlot (Plot) :
                 else :
                     fc = 'k'
                 
-                cir = Circle( (j,i), radius=rad, ec='k', fc=fc)
+                cir = Circle( (j,i), radius=rad, ec='k', fc=fc, lw=2.0)
                 ax.add_patch(cir)
 
         line = Line2D((-0.5, ngroups-0.5), (-0.5, -0.5), color='k')
@@ -141,10 +143,10 @@ class HugAnalysisPlot (Plot) :
 
         for label in ax.xaxis.get_ticklabels():
             label.set_rotation('vertical')
-            label.set_size(20)
+            label.set_size(self.label_textsize)
 
         for label in ax.yaxis.get_ticklabels():
-            label.set_size(20)
+            label.set_size(self.label_textsize)
 
         ax.set_xlim(-0.6, ngroups-0.4)
         ax.set_ylim(ngroups-0.4, -0.6)
@@ -159,9 +161,15 @@ class SpectrumPlot (Plot) :
         self.spectra = []
 
         self.has_peaklabels = False
+        self.peaks = []
         self.has_scalebox   = False
 
-    def plot (self, spectra, style=None, lw=None, spectype=None, xlims=None, ylims=None) :
+        self.center_title = True
+
+        self.labels = []
+        self.boxes  = []
+
+    def plot (self, spectra, style=None, lw=None, spectype=None, xlims=None, ylims=None, yticks=None) :
         self.spectra = spectra
 
         if style is None :
@@ -193,11 +201,14 @@ class SpectrumPlot (Plot) :
             self.ylabel = r'scattering factor [${\AA}^4$/a.m.u.]'
         elif self.type == 'ROA' :
             self.title  = 'ROA Spectrum'
-            self.xlabel = 'wavenumber [cm$^{-1}$]'
-            self.ylabel = r'intensity difference [${\AA}^4$/a.m.u.]'
+#            self.xlabel = 'wavenumber [cm$^{-1}$]'
+            self.xlabel = 'wavenumber / cm$^{-1}$'
+#            self.ylabel = r'intensity difference [${\AA}^4$/a.m.u.]'
+            self.ylabel = r'I$_{\rm R}$ $-$ I$_{\rm L}$ / (${\AA}^4$ a.m.u.$^{-1}$)'
 
         if self.type == 'ROA' :
-            self.set_figsize((8.0,6.0))
+            self.set_figsize((15.0,7.0))
+            self.center_title = False
 
         if xlims is None :
             self.xlims = (max([ sp[0].max() for sp in spectra]), min([ sp[0].min() for sp in spectra]) ) 
@@ -209,6 +220,8 @@ class SpectrumPlot (Plot) :
         else:
             self.ylims = ylims
 
+        self.yticks = yticks
+
     def scale_range (self, min, max, scale, boxy=None, boxlabel=None) :
 
         for sp in self.spectra :
@@ -216,7 +229,8 @@ class SpectrumPlot (Plot) :
             sp[1][indices] = sp[1][indices] * scale
 
         if self.has_peaklabels :
-            for p in self.peaks :
+            for peak in self.peaks :
+                p = peak[0]
                 if (p[0] > min) and (p[0] < max) :
                     p[1] = p[1] * scale
 
@@ -229,10 +243,12 @@ class SpectrumPlot (Plot) :
                 self.boxlabel = boxlabel
 
     def add_peaklabels (self, peaks) :
-        self.has_peaklabels=True
-        self.peaks = []
+        self.has_peaklabels = True
         for p in peaks :
-            self.peaks.append(list(p))
+            self.peaks.append([list(p[0]), p[1]])
+
+    def add_box (self, x1, x2, y1, y2, name) :
+        self.boxes.append( ((x1,x2,y1,y2), name) )
 
     def delete_peaklabels (self, peaknums) :
         self.peaks = [self.peaks[i] for i in range(len(self.peaks)) if i not in peaknums]
@@ -246,6 +262,8 @@ class SpectrumPlot (Plot) :
             self.draw_peaklabels(ax)
         if self.has_scalebox :
             self.draw_scalebox(ax)
+        self.draw_boxes(ax)
+        self.draw_labels(ax)
 
     def draw_spectra (self, ax) :
         args = []
@@ -259,28 +277,61 @@ class SpectrumPlot (Plot) :
 
         ax.set_xlim(self.xlims)
         ax.set_ylim(self.ylims)
-        yticks = ax.get_yticks()[1:]
-        if yticks[-1] > self.ylims[1] :
-            yticks = yticks[:-1]
+        if self.yticks is None :
+            yticks = ax.get_yticks()[1:]
+            if yticks[-1] > self.ylims[1] :
+                yticks = yticks[:-1]
+        else:
+            yticks = self.yticks
 
         ax.set_yticks(yticks)
+
+        for label in ax.xaxis.get_ticklabels():
+            label.set_size(24) # 20
+        for label in ax.yaxis.get_ticklabels():
+            label.set_size(24)
         
-        xtit = 0.5*(self.xlims[0]+self.xlims[1])
         ytit = self.ylims[0] + 0.95*(self.ylims[1]-self.ylims[0])
 
-        ax.text(xtit, ytit, self.title, va='top', ha='center')
-        ax.set_xlabel(self.xlabel)
-        ax.set_ylabel(self.ylabel)
+        if self.center_title :
+            xtit = 0.5*(self.xlims[0]+self.xlims[1])
+            ax.text(xtit, ytit, self.title, va='top', ha='center', size=30)
+        else:
+            xtit = self.xlims[0] + 0.02*(self.xlims[1]-self.xlims[0])
+            ax.text(xtit, ytit, self.title, va='top', ha='left', size=30)
+
+        ax.set_xlabel(self.xlabel, size=28) # 24
+        ax.set_ylabel(self.ylabel, size=28)
+
                 
     def draw_peaklabels (self, ax) :
         shift = 0.02 * abs(self.ylims[0]-self.ylims[1])
-        for p in self.peaks :
-            if p[1] > 0.0 :
-                ax.text(p[0],  p[1]+shift, '%4.0f' % p[0], withdash=True,
-                        va='center', ha='left', rotation=70,
+        for peak in self.peaks :
+            p = peak[0]
+            if peak[1] > 0 :
+                ax.text(p[0], p[1]+shift, '%4.0f' % p[0], withdash=True,
+                        va='center', ha='left', size=20, rotation=70,
                         dashlength=10.0, dashdirection=1)
             else:
-                raise Exception('Peaklabels for minima not implemented')
+                ax.text(p[0], p[1]-shift, '%4.0f' % p[0], withdash=True,
+                        va='center', ha='right', size=20, rotation=70,
+                        dashlength=10.0, dashdirection=0)
+
+    def draw_boxes (self, ax) :
+        shift = 0.1 * abs(self.ylims[0]-self.ylims[1])
+        for b in self.boxes :
+            x1,x2,y1,y2 = b[0]
+            y1 = y1 - shift
+            y2 = y2 + shift
+            ax.fill([x2, x2, x1, x1], [y2, y1, y1, y2], fill=False)
+
+    def draw_labels (self, ax) :
+        shift = 0.02 * abs(self.ylims[0]-self.ylims[1])
+        for l in self.labels :
+            if l[1] > 0 :
+                ax.text(l[0], l[1]+shift, l[2], va='bottom', ha='left', size=18)
+            else :
+                ax.text(l[0], l[1]-shift, l[2], va='top', ha='left', size=18)
 
     def draw_scalebox (self, ax) :
         x1,x2,y1,y2 = self.scalebox
@@ -292,13 +343,13 @@ class SpectrumPlot (Plot) :
             xlab = max(x1,x2)
         ylab = max(y1,y2)
         
-        ax.text(xlab, ylab*1.05, self.boxlabel, va='bottom', ha='left')
+        ax.text(xlab, ylab*1.05, self.boxlabel, va='bottom', ha='left', size=18)
 
 
 class ModesPlot (Plot) :
 
     def __init__ (self) :
-        self.fig = plt.figure(figsize=(6.0,10.0))
+        self.fig = plt.figure(figsize=(7.0,10.0))
         self.ax  = None
 
     def plot (self, modes, freqs, ints, locfreqs, modelabels=None, range=None) :
@@ -327,50 +378,61 @@ class ModesPlot (Plot) :
         ax.set_frame_on(False)
         ax.set_autoscale_on(False)
 
-        xmin = self.modelabels[0]
-        xmax = self.modelabels[-1]
+        numfreqs = len(self.freqs)
+
+        xmin = -numfreqs
+        xmax = +numfreqs
 
         asize = abs(self.range[1]-self.range[0]) / 20.0
         
-        rect = Rectangle((xmin-3.5, self.range[1]), xmax-xmin+7.5, abs(self.range[1]-self.range[0]),
+        rect = Rectangle((xmin-1.0, self.range[1]), 2*xmax+6.0, abs(self.range[1]-self.range[0]),
                          ec='w', fc='w', fill=True)
         ax.add_patch(rect)
 
-        line = Line2D((xmin-3.5, xmax+4), (self.range[0], self.range[0]), color='k')
+        line = Line2D((xmin-1.0, xmax+5.0), (self.range[0], self.range[0]), color='k')
         ax.add_line(line)
-        line = Line2D((xmin-3.5, xmin-3.5), (self.range[0], self.range[1]), color='k')
+        line = Line2D((xmin-1.0, xmin-1.0), (self.range[0], self.range[1]), color='k')
         ax.add_line(line)
 
-        for f in self.locfreqs :
-            line = Line2D((xmin-3, xmin-1), (f, f), color='k')
+        for i in range(len(self.locfreqs)) :
+            line = Line2D((xmin-0.5, -0.5), (self.locfreqs[i], self.locfreqs[i]), color='k')
             ax.add_line(line)
+
+            arrow = Arrow(xmin+i, self.locfreqs[i], 0, -asize, width=0.5, fc='k', ec='k')
+            ax.add_patch(arrow)
         
         for i in range(len(self.freqs)) :
-            line = Line2D((xmin-0.5, xmax+0.5), (self.freqs[i], self.freqs[i]), color='k')
+            line = Line2D((0.5, xmax+0.5), (self.freqs[i], self.freqs[i]), color='k')
             ax.add_line(line)
 
-            ax.text(xmax+1, self.freqs[i], 'int:', va='bottom', ha='left')
-            ax.text(xmax+3.6, self.freqs[i], '%7.1f' % self.ints[i], va='bottom', ha='right')
+            ax.text(xmax+1.0, self.freqs[i], 'int:', va='bottom', ha='left')
+            ax.text(xmax+4.1, self.freqs[i], '%7.1f' % self.ints[i], va='bottom', ha='right')
             
             for j in range(len(self.freqs)) :
-                arrow = Arrow(self.modelabels[j], self.freqs[i], 0, self.modes[i,j]*asize,
+                arrow = Arrow(j+1, self.freqs[i], 0, self.modes[i,j]*asize,
                               width=0.5, fc='k', ec='k')
                 ax.add_patch(arrow)
                 
-        ax.set_xlim((xmin-3.6, xmax+4.1))
+        ax.set_xlim((xmin-1.0, xmax+5.1))
         ax.set_ylim((self.range[0]+0.1,self.range[1]-0.1))
         
         ax.xaxis.tick_bottom()
         ax.yaxis.tick_left()
         
-        ax.set_xticks([xmin-2]+self.modelabels)
-        ax.set_xticklabels(['localized\n modes']+self.modelabels)
+        ax.set_xticks(range(xmin,0)+range(1,xmax+1))
+        ax.set_xticklabels(self.modelabels + self.modelabels)
 
         if self.yticks is not None:
             ax.set_yticks(self.yticks)
         
         ax.set_xlabel(self.xlabel)
         ax.set_ylabel(self.ylabel)
+
+        ax.text(0.5*(xmin-1), self.range[0]-0.5*asize, 'localized modes',
+                va='center', ha='center')
         
-        ax.text(0.5*(xmax+xmin), self.range[1]+0.5*asize, self.title,
+        ax.text(0.5*(xmax+1), self.range[0]-0.5*asize, 'coupled modes',
+                va='center', ha='center')
+
+        ax.text(0.0, self.range[1]+0.5*asize, self.title,
                 va='center', ha='center', size=24)

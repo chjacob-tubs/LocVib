@@ -181,12 +181,12 @@ class HugAnalysis (object) :
                 print "%6.1f " % inv_groups[i,j],
             print
 
-    def print_group_coupling_matrix(self, groups, groupnames, modes, num_mode=None) :
+    def print_group_coupling_matrix(self, groups, groupnames, modes, num_mode=None, scale=1.0) :
         inv_groups = self.get_group_coupling_matrix(groups, modes, num_mode)
         print
         print "Total intensity: ", inv_groups.sum()
         print
-        self.print_gcm(inv_groups, groupnames)
+        self.print_gcm(inv_groups*scale, groupnames)
 
 
 class LocModeAnalysis (HugAnalysis) :

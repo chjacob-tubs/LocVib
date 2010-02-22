@@ -82,7 +82,7 @@ class VibToolsMolecule (AbstractMolecule) :
         return groups, groupnames
 
     def attype_groups (self) :
-        groupnames = ['N', 'H', 'C', 'O',  'CA', 'HA', 'CB', 'HB', 'OXT', 'HXT']
+        groupnames = ['N', 'H', 'C', 'O',  'CA', 'HA', 'CB', 'HB', 'OXT', 'HXT', 'H2O']
         groups     = []
 
         for k in groupnames :
@@ -93,8 +93,11 @@ class VibToolsMolecule (AbstractMolecule) :
 
             if attype in ['1HB', '2HB', '3HB', 'HB1', 'HB2', 'HB3'] :
                 attype = 'HB'
-            if attype in ['1H', '2H', 'H 1', 'H 2'] :
+            if attype in ['1H', '2H', 'H 1', 'H 2', 'H1', 'H2'] :
                 attype = 'HXT'
+
+            if at.GetResidue().GetName() == 'HOH' :
+	        attype = 'H2O'
 
             ind = groupnames.index(attype)
             groups[ind].append(at.GetIdx()-1)
@@ -172,7 +175,7 @@ class VibToolsMolecule (AbstractMolecule) :
 
     def amide2_groups (self, res) :
 
-        groupnames = [ 'CO-1', 'NH', 'CHAB', 'CO', 'NH+1', 'R']
+        groupnames = [ 'CO-1', 'NH', 'CO', 'NH+1', 'CO+1', 'NH+2', 'CH01', 'R']
         groups     = []
 
         for k in groupnames :
@@ -192,10 +195,19 @@ class VibToolsMolecule (AbstractMolecule) :
                 elif attype in ['C', 'O'] :
                     attype = 'CO'
                 elif attype in ['CA', 'HA', 'CB', 'HB'] :
-                    attype = 'CHAB'
+                    attype = 'CH01'
             elif rnum == res + 1 :
                 if attype in ['N', 'H'] :
                     attype = 'NH+1'
+                elif attype in ['C', 'O'] :
+                    attype = 'CO+1'
+                elif attype in ['CA', 'HA', 'CB', 'HB'] :
+                    attype = 'CH01'
+                else :
+                    attype = 'R'
+            elif rnum == res + 2 :
+                if attype in ['N', 'H'] :
+                    attype = 'NH+2'
                 else :
                     attype = 'R'
             elif rnum == res -1 :
@@ -210,6 +222,174 @@ class VibToolsMolecule (AbstractMolecule) :
             groups[ind].append(at.GetIdx()-1)
 
         return groups, groupnames
+
+
+    def amide3_groups (self, res) :
+
+        groupnames = [ 'Am-1/0', 'CA0', 'Am0/1', 'CA+1', 'Am1/2', 'CA+2', 'CB', 'R']
+        groups     = []
+
+        for k in groupnames :
+            groups.append([])
+        for at in openbabel.OBMolAtomIter(self.obmol) :
+            attype = at.GetResidue().GetAtomID(at)
+            attype = attype.strip()
+
+            rnum = at.GetResidue().GetNum()
+
+            if attype in ['1HB', '2HB', '3HB', 'HB1', 'HB2', 'HB3'] :
+                attype = 'HB'
+
+            if rnum == res :
+                if attype in ['N', 'H'] :
+                    attype = 'Am-1/0'
+                elif attype in ['C', 'O'] :
+                    attype = 'Am0/1'
+                elif attype in ['CA', 'HA'] :
+                    attype = 'CA0'
+                elif attype in ['CB', 'HB'] :
+                    attype = 'CB'
+            elif rnum == res + 1 :
+                if attype in ['N', 'H'] :
+                    attype = 'Am0/1'
+                elif attype in ['C', 'O'] :
+                    attype = 'Am1/2'
+                elif attype in ['CA', 'HA'] :
+                    attype = 'CA+1'
+                elif attype in ['CB', 'HB'] :
+                    attype = 'CB'
+            elif rnum == res + 2 :
+                if attype in ['N', 'H'] :
+                    attype = 'Am1/2'
+                elif attype in ['CA', 'HA'] :
+                    attype = 'CA+2'
+                elif attype in ['CB', 'HB'] :
+                    attype = 'CB'
+                else :
+                    attype = 'R'
+            elif rnum == res - 1 :
+                if attype in ['C', 'O'] :
+                    attype = 'Am-1/0'
+                else :
+                    attype = 'R'
+            else :
+                attype = 'R'
+
+            try:
+                ind = groupnames.index(attype)
+            except ValueError :
+                print attype
+                raise
+            groups[ind].append(at.GetIdx()-1)
+
+        return groups, groupnames
+
+    def skelCN_groups (self, res) :
+
+        groupnames = ['NCA0', 'HA0', 'CO0',
+                      'H+1', 'NCA+1', 'HA+1', 'CHB+1', 'CO+1', 
+                      'H+2', 'NCA+2',
+                      'R']
+        groups     = []
+
+        for k in groupnames :
+            groups.append([])
+        for at in openbabel.OBMolAtomIter(self.obmol) :
+            attype = at.GetResidue().GetAtomID(at)
+            attype = attype.strip()
+
+            rnum = at.GetResidue().GetNum()
+
+            if attype in ['1HB', '2HB', '3HB', 'HB1', 'HB2', 'HB3'] :
+                attype = 'HB'
+
+            if rnum == res :
+                if attype in ['C', 'O'] :
+                    attype = 'CO0'
+                elif attype in ['N','CA'] :
+                    attype = 'NCA0'
+                elif attype in ['HA'] :
+                    attype = 'HA0'
+                else:
+                    attype = 'R'
+            elif rnum == res + 1 :
+                if attype in ['H'] :
+                    attype = 'H+1'
+                elif attype in ['C', 'O'] :
+                    attype = 'CO+1'
+                elif attype in ['N', 'CA'] :
+                    attype = 'NCA+1'
+                elif attype in ['HA'] :
+                    attype = 'HA+1'
+                elif attype in ['CB', 'HB'] :
+                    attype = 'CHB+1'
+            elif rnum == res + 2 :
+                if attype in ['H'] :
+                    attype = 'H+2'
+                elif attype in ['N','CA'] :
+                    attype = 'NCA+2'
+                else:
+                    attype = 'R'
+            else :
+                attype = 'R'
+
+            try:
+                ind = groupnames.index(attype)
+            except ValueError :
+                print attype
+                raise
+            groups[ind].append(at.GetIdx()-1)
+
+        return groups, groupnames
+
+
+    def ch3_groups (self, res) :
+
+        groupnames = ['CO0', 'NH+1', 'CA+1', 'CB+1', 'CO+1', 'NH+2', 'R']
+        groups     = []
+
+        for k in groupnames :
+            groups.append([])
+        for at in openbabel.OBMolAtomIter(self.obmol) :
+            attype = at.GetResidue().GetAtomID(at)
+            attype = attype.strip()
+
+            rnum = at.GetResidue().GetNum()
+
+            if attype in ['1HB', '2HB', '3HB', 'HB1', 'HB2', 'HB3'] :
+                attype = 'HB'
+
+            if rnum == res :
+                if attype in ['C', 'O'] :
+                    attype = 'CO0'
+                else :
+                    attype = 'R'
+            elif rnum == res + 1 :
+                if attype in ['N', 'H'] :
+                    attype = 'NH+1'
+                elif attype in ['C', 'O'] :
+                    attype = 'CO+1'
+                elif attype in ['CA', 'HA'] :
+                    attype = 'CA+1'
+                elif attype in ['CB', 'HB'] :
+                    attype = 'CB+1'
+            elif rnum == res + 2 :
+                if attype in ['N', 'H'] :
+                    attype = 'NH+2'
+                else :
+                    attype = 'R'
+            else :
+                attype = 'R'
+
+            try:
+                ind = groupnames.index(attype)
+            except ValueError :
+                print attype
+                raise
+            groups[ind].append(at.GetIdx()-1)
+
+        return groups, groupnames
+
 
 
 

@@ -185,3 +185,9 @@ class LocVib (object) :
                 tmat[imode,:] = -tmat[imode,:]
                 self.set_transmat(tmat)
 
+    def invert_signs (self, nums) :
+        tmat = self.transmat
+        tmat[nums,:] = -tmat[nums,:]
+        self.set_transmat(tmat)
+
+
