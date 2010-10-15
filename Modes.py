@@ -179,6 +179,11 @@ class VibModes (object) :
         comp = self.get_composition(groups)
         self.print_composition(groupnames, comp, labels)
 
+    def print_atom_composition(self, labels=None) :
+        groups, groupnames = self.mol.atom_groups()
+        comp = self.get_composition(groups)
+        self.print_composition(groupnames, comp, labels)
+
     def transform (self, tmat) :
         tmodes = VibModes(self.nmodes, self.mol)
         tmodes.set_modes_mw(numpy.dot(tmat, self.modes_mw))

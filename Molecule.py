@@ -119,9 +119,9 @@ class VibToolsMolecule (AbstractMolecule) :
             if attype in ['1H', '2H', 'H 1', 'H 2'] :
                 attype = 'HXT'
 
-            if attype in ['N', 'H'] :
+            if attype in ['N', 'H', 'HXT'] :
                 attype = 'NH'
-            elif attype in ['C', 'O', 'OXT', 'HXT'] :
+            elif attype in ['C', 'O', 'OXT'] :
                 attype = 'CO'
             elif attype in ['CA', 'HA'] :
                 attype = 'CHA'
@@ -130,6 +130,27 @@ class VibToolsMolecule (AbstractMolecule) :
 
             ind = groupnames.index(attype)
             groups[ind].append(at.GetIdx()-1)
+
+        return groups, groupnames
+
+    def atom_groups (self) :
+        group_dict = {}
+
+        pse = openbabel.OBElementTable()
+        
+        for at in openbabel.OBMolAtomIter(self.obmol) :
+            atname = pse.GetSymbol(at.GetAtomicNum())
+            if atname in group_dict :
+                group_dict[atname].append(at.GetIdx()-1)
+            else :
+                group_dict[atname] = [at.GetIdx()-1]
+
+        groupnames = []
+        groups = []
+
+        for g in group_dict :
+            groupnames.append(g)
+            groups.append(group_dict[g])
 
         return groups, groupnames
 
