@@ -113,7 +113,7 @@ class SNFOutputFile (object) :
                 break
             if 'Raman Optical Activity properties for freq.' in l :
                 self.lwl = float(l[46:57])
-
+                
         lines = lines[first:last]
         lines = [l for l in lines if not len(l.strip()) == 0]
         lines = [l for l in lines if not l.startswith('1')]
@@ -242,8 +242,16 @@ class SNFResults (object) :
 
         irint = mu[:,0]*mu[:,0] + mu[:,1]*mu[:,1] + mu[:,2]*mu[:,2]
 
-        # FIXME: convert to absorption (in km/mol); scale factor stolen from SNF
-        irint = irint * 863.865928384
+        # convert (d\mu/dR)^2 from  (au^2/amu) to (C^2 m^2 / kg)
+        irint = irint * ( (au_in_Debye/Bohr_in_Meter)**2 * (Debye_in_Cm)**2 * (1.0/amu_in_kg) )
+
+        # multiply by [ 1.0/(4\pi\epsilon0) * (N_A * \pi)/cvel ] (Eq 13 in SNF paper)
+        irint = irint * (1.0/12.0) * (1.0/epsilon0) * Avogadro/cvel 
+
+        # divide by cvel (Eq 14 in SNF paper)
+        irint = irint / (cvel * 1000.0)
+
+        # result is IR absoption in km/mol
         return irint
 
     def get_a2_invariant (self, gauge='len', modes=None) :

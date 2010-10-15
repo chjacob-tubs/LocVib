@@ -15,4 +15,6 @@ amu_in_kg = 1.0e-3/Avogadro
 Hartree_in_Joule = 4.35974381e-18
 
 au_in_Debye =  2.54177
+Debye_in_Cm = 3.33564e-30
 
+epsilon0 = 8.854187817e-12  # in SI units
