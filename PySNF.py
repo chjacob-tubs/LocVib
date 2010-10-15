@@ -242,14 +242,16 @@ class SNFResults (object) :
 
         irint = mu[:,0]*mu[:,0] + mu[:,1]*mu[:,1] + mu[:,2]*mu[:,2]
 
+        from Constants import *
+
         # convert (d\mu/dR)^2 from  (au^2/amu) to (C^2 m^2 / kg)
         irint = irint * ( (au_in_Debye/Bohr_in_Meter)**2 * (Debye_in_Cm)**2 * (1.0/amu_in_kg) )
 
         # multiply by [ 1.0/(4\pi\epsilon0) * (N_A * \pi)/cvel ] (Eq 13 in SNF paper)
-        irint = irint * (1.0/12.0) * (1.0/epsilon0) * Avogadro/cvel 
+        irint = irint * (1.0/12.0) * (1.0/epsilon0) * Avogadro/cvel_ms 
 
         # divide by cvel (Eq 14 in SNF paper)
-        irint = irint / (cvel * 1000.0)
+        irint = irint / (cvel_ms * 1000.0)
 
         # result is IR absoption in km/mol
         return irint
