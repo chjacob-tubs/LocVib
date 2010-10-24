@@ -255,7 +255,7 @@ class SpectrumPlot (Plot) :
 
     def redraw (self, ax) :
         ax.set_autoscale_on(False)
-        ax.get_figure().subplots_adjust(hspace=0.3)
+        ax.get_figure().subplots_adjust(hspace=0.3,bottom=0.15,top=0.95)
 
         self.draw_spectra(ax)
         if self.has_peaklabels :
@@ -287,9 +287,9 @@ class SpectrumPlot (Plot) :
         ax.set_yticks(yticks)
 
         for label in ax.xaxis.get_ticklabels():
-            label.set_size(24) # 20
+            label.set_size(16) # 20
         for label in ax.yaxis.get_ticklabels():
-            label.set_size(24)
+            label.set_size(16)
         
         ytit = self.ylims[0] + 0.95*(self.ylims[1]-self.ylims[0])
 
@@ -300,8 +300,8 @@ class SpectrumPlot (Plot) :
             xtit = self.xlims[0] + 0.02*(self.xlims[1]-self.xlims[0])
             ax.text(xtit, ytit, self.title, va='top', ha='left', size=30)
 
-        ax.set_xlabel(self.xlabel, size=28) # 24
-        ax.set_ylabel(self.ylabel, size=28)
+        ax.set_xlabel(self.xlabel, size=14) # 24
+        ax.set_ylabel(self.ylabel, size=14)
 
                 
     def draw_peaklabels (self, ax) :
@@ -310,11 +310,11 @@ class SpectrumPlot (Plot) :
             p = peak[0]
             if peak[1] > 0 :
                 ax.text(p[0], p[1]+shift, '%4.0f' % p[0], withdash=True,
-                        va='center', ha='left', size=20, rotation=70,
+                        va='center', ha='left', size=16, rotation=70,
                         dashlength=10.0, dashdirection=1)
             else:
                 ax.text(p[0], p[1]-shift, '%4.0f' % p[0], withdash=True,
-                        va='center', ha='right', size=20, rotation=70,
+                        va='center', ha='right', size=16, rotation=70,
                         dashlength=10.0, dashdirection=0)
 
     def draw_boxes (self, ax) :
@@ -329,9 +329,9 @@ class SpectrumPlot (Plot) :
         shift = 0.02 * abs(self.ylims[0]-self.ylims[1])
         for l in self.labels :
             if l[1] > 0 :
-                ax.text(l[0], l[1]+shift, l[2], va='bottom', ha='left', size=18)
+                ax.text(l[0], l[1]+shift, l[2], va='bottom', ha='left', size=14)
             else :
-                ax.text(l[0], l[1]-shift, l[2], va='top', ha='left', size=18)
+                ax.text(l[0], l[1]-shift, l[2], va='top', ha='left', size=14)
 
     def draw_scalebox (self, ax) :
         x1,x2,y1,y2 = self.scalebox
