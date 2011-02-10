@@ -24,6 +24,7 @@ class VibModes (object) :
     def set_modes_c (self, modes_c)  :
         self.modes_c[:,:] = modes_c
         self.update_modes_mw()
+        self.normalize_modes()
 
     def set_freqs (self, freqs) :
         self.freqs = freqs
@@ -34,6 +35,13 @@ class VibModes (object) :
             nc = math.sqrt((self.modes_c[imode,:]**2).sum())
             norm_modes[imode,:] = (1.0/nc) * norm_modes[imode,:]
         return norm_modes
+
+    def normalize_modes (self) :
+        for imode in range(self.nmodes) :
+            nc = math.sqrt((self.modes_mw[imode,:]**2).sum())
+            if abs(nc) > 0.0 :
+                self.modes_mw[imode,:] = (1.0/nc) * self.modes_mw[imode,:]
+        self.update_modes_c()
 
     modes_c_norm = property(get_modes_c_norm)
     
