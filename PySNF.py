@@ -385,7 +385,7 @@ class SNFResults (Results) :
                 deriv_nm[i,:] = deriv_nm[i,:] * math.sqrt(sum(modes[i,:]**2))
 
         else :
-            Results.get_tensor_deriv_nm(self, tens, ncomp, modes)
+            deriv_nm = Results.get_tensor_deriv_nm(self, tens, ncomp, modes)
 
         if modes==None :
             setattr(self, tens+'_deriv_nm', deriv_nm)
