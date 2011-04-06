@@ -1,8 +1,9 @@
 
 from Molecule import VibToolsMolecule
 from Modes    import VibModes
+from Results  import Results
 
-class AKIRAResults (object) :
+class AKIRAResults (Results) :
 
     def __init__ (self, iterationsfile='akira_iterations.out', coordfile='coord') :
         self.mol          = VibToolsMolecule()
@@ -12,8 +13,6 @@ class AKIRAResults (object) :
 
         self.modes  = None
         self.irints = None
-
-    freqs = property(lambda self: self.modes.freqs)
 
     def read (self) :
         import numpy, re

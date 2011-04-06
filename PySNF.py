@@ -9,6 +9,7 @@ from Constants import *
 
 from Molecule import VibToolsMolecule
 from Modes    import VibModes
+from Results  import Results
 
 class SNFRestartFile (object) :
 
@@ -272,7 +273,7 @@ class SNFControlFile (object) :
         self.modes.set_modes_c(normalmodes)
         self.modes.set_freqs(freqs)
         
-class SNFResults (object) :
+class SNFResults (Results) :
 
     def __init__ (self, outname='snf.out', restartname='restart', coordfile='coord') :
         self.mol          = VibToolsMolecule()
@@ -291,7 +292,6 @@ class SNFResults (object) :
             return self.snfoutput.modes
     
     modes = property(_get_modes)
-    freqs = property(lambda self: self.modes.freqs)
     lwl   = property(lambda self: self.snfoutput.lwl)
         
     def read (self) :
@@ -314,12 +314,6 @@ class SNFResults (object) :
             self.gtenlen_deriv_c = self.snfoutput.gtenlen
             self.gtenvel_deriv_c = self.snfoutput.gtenvel
             self.aten_deriv_c    = self.snfoutput.aten
-
-    def get_mw_normalmodes (self) :
-        return self.modes.modes_mw
-
-    def get_c_normalmodes (self) :
-        return self.modes.modes_c
 
     def get_tensor_mean (self, tens, ncomp=None) :
         tensor = eval('self.restartfile' + '.' + tens)
@@ -391,117 +385,12 @@ class SNFResults (object) :
                 deriv_nm[i,:] = deriv_nm[i,:] * math.sqrt(sum(modes[i,:]**2))
 
         else :
-            deriv_c  = self.get_tensor_deriv_c (tens, ncomp)
-
-            ncomp = deriv_c.shape[2]
-
-            if modes==None :
-                modes_c = self.get_c_normalmodes()
-            else:
-                modes_c = modes.modes_c
-
-            nmodes  = modes_c.shape[0]
-            natoms  = modes_c.shape[1] / 3
-
-            deriv_nm = numpy.zeros((nmodes, ncomp))
-
-            for icomp in range(ncomp) :
-                deriv_nm[:, icomp] = numpy.dot(modes_c,deriv_c[:,:,icomp].reshape((3*natoms)))
+            Results.get_tensor_deriv_nm(self, tens, ncomp, modes)
 
         if modes==None :
             setattr(self, tens+'_deriv_nm', deriv_nm)
 
         return deriv_nm
-
-    def get_ir_intensity (self, modes=None) :
-        mu = self.get_tensor_deriv_nm('dipole', modes=modes)
-
-        irint = mu[:,0]*mu[:,0] + mu[:,1]*mu[:,1] + mu[:,2]*mu[:,2]
-
-        # convert (d\mu/dR)^2 from  (au^2/amu) to (C^2 m^2 / kg)
-        irint = irint * ( (au_in_Debye/Bohr_in_Meter)**2 * (Debye_in_Cm)**2 * (1.0/amu_in_kg) )
-
-        # multiply by [ 1.0/(4\pi\epsilon0) * (N_A * \pi)/cvel ] (Eq 13 in SNF paper)
-        irint = irint * (1.0/12.0) * (1.0/epsilon0) * Avogadro/cvel_ms 
-
-        # divide by cvel (Eq 14 in SNF paper)
-        irint = irint / (cvel_ms * 1000.0)
-
-        # result is IR absoption in km/mol
-        return irint
-
-    def get_a2_invariant (self, gauge='len', modes=None) :
-        pol    = self.get_tensor_deriv_nm('pol'+gauge, ncomp=6, modes=modes)
-        nmodes = pol.shape[0]
-
-        a2 = (1.0/3.0) * (pol[:,0] + pol[:,3] + pol[:,5])
-        a2 = (a2**2)*(Bohr_in_Angstrom**4)
-        return a2
-
-    def get_g2_invariant (self, modes=None) :
-        pol    = self.get_tensor_deriv_nm('pollen', ncomp=6, modes=modes)
-        nmodes = pol.shape[0]
-
-        g2 = (1.0/2.0) * (   (pol[:,0] - pol[:,3])**2
-                           + (pol[:,3] - pol[:,5])**2
-                           + (pol[:,5] - pol[:,0])**2
-                           + 6.0 * pol[:,1]**2  
-                           + 6.0 * pol[:,2]**2  
-                           + 6.0 * pol[:,4]**2  
-                         )
-        g2 = g2 * (Bohr_in_Angstrom**4)
-        return g2
-
-    def get_raman_int (self, modes=None) :
-        return 45.0*self.get_a2_invariant(modes=modes) + 7.0*self.get_g2_invariant(modes=modes)
-
-    def get_aG_invariant (self, gauge='len', modes=None) :
-        # for consistency with SNF alpha is always in length repr
-        pol     = self.get_tensor_deriv_nm('pollen', ncomp=6, modes=modes)
-        gten    = self.get_tensor_deriv_nm('gten'+gauge, modes=modes)
-
-        aG = (1.0/9.0) * (pol[:,0] + pol[:,3] + pol[:,5])   \
-                       * (gten[:,0] + gten[:,4] + gten[:,8])
-        aG = aG*(Bohr_in_Angstrom**4) * (1 / cvel) * 1e6
-
-        return aG
-
-    def get_bG_invariant (self, gauge='len', modes=None) :
-        pol     = self.get_tensor_deriv_nm('pol'+gauge, ncomp=6, modes=modes)
-        gten    = self.get_tensor_deriv_nm('gten'+gauge, modes=modes)
-
-        bG = 0.5 * (3*pol[:,0]*gten[:,0] - pol[:,0]*gten[:,0] +
-                    3*pol[:,1]*gten[:,1] - pol[:,0]*gten[:,4] +
-                    3*pol[:,2]*gten[:,2] - pol[:,0]*gten[:,8] +
-                    3*pol[:,1]*gten[:,3] - pol[:,3]*gten[:,0] +
-                    3*pol[:,3]*gten[:,4] - pol[:,3]*gten[:,4] +
-                    3*pol[:,4]*gten[:,5] - pol[:,3]*gten[:,8] +
-                    3*pol[:,2]*gten[:,6] - pol[:,5]*gten[:,0] +
-                    3*pol[:,4]*gten[:,7] - pol[:,5]*gten[:,4] +
-                    3*pol[:,5]*gten[:,8] - pol[:,5]*gten[:,8])
-        bG = bG*(Bohr_in_Angstrom**4) * (1 / cvel) * 1e6
-
-        return bG
-
-    def get_bA_invariant (self, modes=None) :
-        # always using length repr
-        pol     = self.get_tensor_deriv_nm('pollen', ncomp=6, modes=modes)
-        aten    = self.get_tensor_deriv_nm('aten', modes=modes)
-
-        bA = 0.5 * self.lwl * (  (pol[:,3]-pol[:,0])*aten[:,11]
-                               + (pol[:,0]-pol[:,5])*aten[:,6]
-                               + (pol[:,5]-pol[:,3])*aten[:,15]
-                               + pol[:,1]*(aten[:,19]-aten[:,20]+aten[:,8]-aten[:,14]) 
-                               + pol[:,2]*(aten[:,25]-aten[:,21]+aten[:,3]-aten[:,4]) 
-                               + pol[:,4]*(aten[:,10]-aten[:,24]+aten[:,12]-aten[:,5])
-                              )
-        bA = bA*(Bohr_in_Angstrom**4) * (1 / cvel) * 1e6
-
-        return bA
-
-    def get_backscattering_int (self, modes=None) :
-         return 1e-6*96.0*(self.get_bG_invariant(gauge='vel', modes=modes) + \
-                           (1.0/3.0)*self.get_bA_invariant(modes=modes))
 
     def check_consistency (self) :
         print
