@@ -439,8 +439,21 @@ class SNFResults (object) :
                        mean_pol[:,icomp].argmin(), mean_pol[:,icomp].argmax() )
             print
 
+            wrong = {} 
+
+            for i in range(ncalcsets) :
+                if (max(abs(mean_pol[3*i:3*i+3,0] - mean_pol[0,0])) >0.001) :
+                    wrong[i+1] = [ abs(mean_pol[3*i,0] - mean_pol[0,0]) > 0.001, 
+                                   abs(mean_pol[3*i+1,0] - mean_pol[0,0]) > 0.001, 
+                                   abs(mean_pol[3*i+2,0] - mean_pol[0,0]) > 0.001]
+                    print i+1, mean_pol[3*i:3*i+3,0] - mean_pol[0,0]
+
+            return wrong
+
         print " Dipole moment "
-        check('dipole')
+        return check('dipole')
+
+        return
 
         print " Polarizability (length) "
         check('pollen')
