@@ -144,7 +144,7 @@ class SNFOutputFile (object) :
 
             normalmodes = numpy.zeros((3*natoms-6, 3*natoms))
             freqs = numpy.zeros((3*natoms-6))
-        
+
             ncol = len(lines[2][10:].split())
 
             icol = -ncol
@@ -165,6 +165,81 @@ class SNFOutputFile (object) :
                 
             self.modes.set_modes_mw(normalmodes)
             self.modes.set_freqs(freqs)
+
+    def read_mat(self, id_string):
+        """Read in a matrix from the snf.out file, starting with the id_string.
+        
+        The matrix in the snf.out file should have the following form (only for the dipole gradients):
+        
+                    1            2               3
+        1: dmu_x / dx   dmu_x / dy      dmu_x / dz
+        2: dmu_y / dx   dmu_y / dy      dmu_y / dz     # Atom 1
+        3: dmu_z / dx   dmu_z / dy      dmu_z / dz
+        
+                    4            5               6
+        1: dmu_x / dx   dmu_x / dy      dmu_x / dz
+        2: dmu_y / dx   dmu_y / dy      dmu_y / dz     # Atom 2
+        3: dmu_z / dx   dmu_z / dy      dmu_z / dz
+
+        etc.
+        
+        put one piece from the button to the right of the previous on and you get a 3 x 3*nr_atoms matrix
+        but I want to work with a 3*nr_atoms x 3
+        """
+
+        f = file(self.filename, 'r')
+        
+        # Little hack to assure that you find the right polarizabilities (length vs. velocity representation)
+        vel = False
+        if "velocity" in id_string:
+            vel = True
+        while (True) :
+            line = f.readline()
+            if line == "" :
+                raise Exception("Could not find " + id_string + "!!!")
+            if id_string in line :
+                # Make sure that you don't get the velocity representation instead of the length rep.
+                if (not vel) and ("velocity" in line):
+                    continue
+                break
+
+        # Get the header
+        line = f.readline()
+        columns = int(line.split()[5])
+        num_rows = int(line.split()[9])
+        i = 0
+        matrix = numpy.zeros((num_rows, columns))
+
+        # How is the matrix diplayed? Usually disp_col = 3
+        line = f.readline()
+        disp_col = len(line.split())
+
+        row = 1
+        while (i < num_rows):
+            line = f.readline()
+            beginning = str(row) + ":"
+            if beginning in line:
+                matrix[i : (i + disp_col), row -1] = [float(fl) for fl in line.split()[1:4]]
+                if row == columns:
+                    row = 1
+                    i += disp_col
+                else:
+                    row += 1
+
+        f.close()
+
+        return matrix
+
+    def read_derivatives (self, mol) :
+        self.dipole = self.read_mat("gradient of dipole moments").reshape(mol.natoms, 3, 3)
+        self.pollen = self.read_mat("gradient of polarizability tensor").reshape(mol.natoms, 3, 8)
+        self.polvel = self.read_mat("gradient of polarizability tensor (velocity representation)").reshape(mol.natoms, 3, 8)
+
+        self.gtenlen  = self.read_mat("gradient of G/LAO tensor").reshape(mol.natoms, 3, 9)
+        self.gtenvel = self.read_mat("gradient of G/AO tensor").reshape(mol.natoms, 3, 9)
+
+        self.aten = self.read_mat("gradient of A tensor").reshape(mol.natoms, 3, 27)
+
 
 class SNFControlFile (object) :
 
@@ -224,10 +299,21 @@ class SNFResults (object) :
 
         self.snfoutput.read(self.mol)
         self.intonly = self.snfoutput.intonly
+
         if self.snfoutput.intonly :
             self.snfcontrol.read(self.mol)
 
-        self.restartfile.read(filename=self.restartname)
+	if self.restartname :
+            self.restartfile.read(filename=self.restartname)
+        else:
+            self.snfoutput.read_derivatives(self.mol)
+
+            self.dipole_deriv_c  = self.snfoutput.dipole
+            self.pollen_deriv_c  = self.snfoutput.pollen[:,:,:6] / Bohr_in_Angstrom**2
+            self.polvel_deriv_c  = self.snfoutput.polvel[:,:,:6] / Bohr_in_Angstrom**2
+            self.gtenlen_deriv_c = self.snfoutput.gtenlen
+            self.gtenvel_deriv_c = self.snfoutput.gtenvel
+            self.aten_deriv_c    = self.snfoutput.aten
 
     def get_mw_normalmodes (self) :
         return self.modes.modes_mw
@@ -285,7 +371,7 @@ class SNFResults (object) :
         if modes==None :
             if hasattr(self, tens+'_deriv_nm') :
                 return eval('self.'+tens+'_deriv_nm')
-        else :
+        elif self.intonly:
             raise Exception('Argument modes of get_tensor_deriv_nm must be None in intensities-only mode')
 
         if self.intonly :

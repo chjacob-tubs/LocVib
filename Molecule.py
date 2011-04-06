@@ -116,7 +116,7 @@ class VibToolsMolecule (AbstractMolecule) :
 
             if attype in ['1HB', '2HB', '3HB', 'HB1', 'HB2', 'HB3'] :
                 attype = 'HB'
-            if attype in ['1H', '2H', 'H 1', 'H 2'] :
+            if attype in ['1H', '2H', 'H 1', 'H 2', 'H1', 'H2'] :
                 attype = 'HXT'
 
             if attype in ['N', 'H', 'HXT'] :
