@@ -19,13 +19,30 @@ class VibModes (object) :
 
     def set_modes_mw (self, modes_mw)  :
         self.modes_mw[:,:] = modes_mw
+        self.normalize_modes()
         self.update_modes_c()
 
     def set_modes_c (self, modes_c)  :
         self.modes_c[:,:] = modes_c
         self.update_modes_mw()
         self.normalize_modes()
+        self.update_modes_c()
 
+    def set_mode_mw (self, i, mode, freq=None) :
+        self.modes_mw[i,:] = mode
+        if freq:
+            self.freqs[i] = freq
+        self.normalize_modes()
+        self.update_modes_c()            
+
+    def set_mode_c (self, i, mode, freq=None) :
+        self.modes_c[i,:] = mode
+        if freq:
+            self.freqs[i] = freq
+        self.update_modes_mw()
+        self.normalize_modes()
+        self.update_modes_c()
+      
     def set_freqs (self, freqs) :
         self.freqs = freqs
         
@@ -55,8 +72,8 @@ class VibModes (object) :
 
     def get_subset (self, modelist) :
         subset = VibModes(len(modelist), self.mol)
-        subset.set_modes_mw(self.modes_mw[modelist])
-        subset.set_freqs(self.freqs[modelist])
+        subset.set_modes_mw(self.modes_mw[modelist].copy())
+        subset.set_freqs(self.freqs[modelist].copy())
         return subset
 
     def get_range (self, minfreq, maxfreq) :
@@ -151,24 +168,24 @@ class VibModes (object) :
         
         print (" "*len(lab[0])),
         for t in groupnames :
-            print "%4s  " % t,
+            print "%5s  " % t,
         print
 
         for i in range(comp.shape[1]) :
             print lab[i],
             for t in range(comp.shape[0]) :
-                print "%4.1f  " % (comp[t,i]*100.0),
+                print "%5.1f  " % (comp[t,i]*100.0),
             print
 
         print
         print "min: " + " "*(len(lab[0])-5),
         for t in range(comp.shape[0]) :
-            print "%4.1f  " % (comp[t,:].min()*100.0),
+            print "%5.1f  " % (comp[t,:].min()*100.0),
         print
 
         print "max: " + " "*(len(lab[0])-5),
         for t in range(comp.shape[0]) :
-            print "%4.1f  " % (comp[t,:].max()*100.0),
+            print "%5.1f  " % (comp[t,:].max()*100.0),
         print
         print
 
@@ -201,9 +218,9 @@ class VibModes (object) :
         tmodes.set_freqs(cmat.diagonal())
 
         return tmodes
-    
-    def sortmat_by_residue (self) :
-        types = self.get_composition(self.mol.residue_groups()[0])
+
+    def sortmat_by_groups (self, groups) :
+        types = self.get_composition(groups)
 
         max_res = []
         for i in range(self.nmodes) :
@@ -221,6 +238,9 @@ class VibModes (object) :
             sortmat[i, max_res[i][0]] = 1.0
             
         return sortmat
+        
+    def sortmat_by_residue (self) :
+        return self.sortmat_by_groups(self.mol.residue_groups()[0])
 
     def get_fragment_modes (self, atomlist) :
         frag = self.mol.get_fragment(atomlist)

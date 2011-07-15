@@ -177,6 +177,11 @@ class LocVib (object) :
         tmat = numpy.dot(sortmat, self.transmat)
         self.set_transmat(tmat)
 
+    def sort_by_groups (self, groups) :
+        sortmat = self.locmodes.sortmat_by_groups(groups)
+        tmat = numpy.dot(sortmat, self.transmat)
+        self.set_transmat(tmat)
+
     def adjust_signs (self) :
         for imode in range(1,self.nmodes) :
             cmat = self.get_couplingmat()
