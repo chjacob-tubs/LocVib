@@ -204,6 +204,16 @@ class VibModes (object) :
         comp = self.get_composition(groups)
         self.print_composition(groupnames, comp, labels)
 
+    def print_attype3_composition(self, labels=None) :
+        groups, groupnames = self.mol.attype_groups_3()
+        comp = self.get_composition(groups)
+        self.print_composition(groupnames, comp, labels)
+
+    def print_attype7B_composition(self, labels=None) :
+        groups, groupnames = self.mol.attype_groups_7B()
+        comp = self.get_composition(groups)
+        self.print_composition(groupnames, comp, labels)
+
     def print_atom_composition(self, labels=None) :
         groups, groupnames = self.mol.atom_groups()
         comp = self.get_composition(groups)

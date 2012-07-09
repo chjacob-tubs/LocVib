@@ -79,6 +79,11 @@ class VibToolsMolecule (AbstractMolecule) :
             groupnames.append(str(r.GetNum()))
             groups.append(resgroup)
 
+        z = zip(groupnames, groups)
+        z.sort(lambda x,y: cmp(int(x[0]), int(y[0])))
+        groupnames = [x[0] for x in z]
+        groups     = [x[1] for x in z]
+
         return groups, groupnames
 
     def attype_groups (self) :
@@ -105,7 +110,7 @@ class VibToolsMolecule (AbstractMolecule) :
         return groups, groupnames
 
     def attype_groups_2 (self) :
-        groupnames = ['NH', 'CO', 'CHA', 'CHB']
+        groupnames = ['NH', 'CO', 'CA', 'HA', 'CHB']
         groups     = []
 
         for k in groupnames :
@@ -123,8 +128,6 @@ class VibToolsMolecule (AbstractMolecule) :
                 attype = 'NH'
             elif attype in ['C', 'O', 'OXT'] :
                 attype = 'CO'
-            elif attype in ['CA', 'HA'] :
-                attype = 'CHA'
             elif attype in ['CB', 'HB'] :
                 attype = 'CHB'
 
@@ -132,6 +135,96 @@ class VibToolsMolecule (AbstractMolecule) :
             groups[ind].append(at.GetIdx()-1)
 
         return groups, groupnames
+
+    def attype_groups_3 (self) :
+        groupnames = ['NH', 'CO', 'CA', 'CHB1', 'CHB2', 'CHG1', 'CHD1']
+        groups     = []
+
+        for k in groupnames :
+            groups.append([])
+        for at in openbabel.OBMolAtomIter(self.obmol) :
+            attype = at.GetResidue().GetAtomID(at)
+            attype = attype.strip()
+
+            if attype.startswith('HB1') : 
+                attype = 'HB1'
+            elif attype.startswith('HB2') : 
+                attype = 'HB2'
+            elif attype.startswith('HG1') : 
+                attype = 'HG1'
+            elif attype.startswith('HD1') : 
+                attype = 'HD1'
+            if attype in ['1H', '2H', 'H 1', 'H 2', 'H1', 'H2'] :
+                attype = 'HXT'
+
+            if attype in ['N', 'H', 'HXT'] :
+                attype = 'NH'
+            elif attype in ['C', 'O', 'OXT'] :
+                attype = 'CO'
+            elif attype in ['CB1', 'HB1'] :
+                attype = 'CHB1'
+            elif attype in ['CB2', 'HB2'] :
+                attype = 'CHB2'
+            elif attype in ['CG1', 'HG1'] :
+                attype = 'CHG1'
+            elif attype in ['CD1', 'HD1'] :
+                attype = 'CHD1'
+
+            ind = groupnames.index(attype)
+            groups[ind].append(at.GetIdx()-1)
+
+        return groups, groupnames
+
+    def attype_groups_7B (self) :
+        groupnames = ['NH', 'CO', 'CHA', 'CHB1', 'CHB2', 'CHG1', 'CHD1', 'Ring', 'Term']
+        groups     = []
+
+        for k in groupnames :
+            groups.append([])
+        for at in openbabel.OBMolAtomIter(self.obmol) :
+            attype = at.GetResidue().GetAtomID(at)
+            attype = attype.strip()
+            resname = at.GetResidue().GetName()
+
+            if attype.startswith('HA') : 
+                attype = 'CHA'
+            elif attype.startswith('HB1') : 
+                attype = 'HB1'
+            elif attype.startswith('HB2') : 
+                attype = 'HB2'
+            elif attype.startswith('HG1') : 
+                attype = 'HG1'
+            elif attype.startswith('HD1') : 
+                attype = 'HD1'
+            if attype in ['1H', '2H', 'H 1', 'H 2', 'H1', 'H2'] :
+                attype = 'HXT'
+
+            if attype in ['N', 'H', 'HXT'] :
+                attype = 'NH'
+            elif attype in ['C', 'O', 'OXT'] :
+                attype = 'CO'
+            elif attype in ['CA'] :
+                attype = 'CHA'
+            elif attype in ['CB', 'CB1', 'HB1'] :
+                attype = 'CHB1'
+            elif attype in ['CB2', 'HB2'] :
+                attype = 'CHB2'
+            elif attype in ['CG1', 'HG1'] :
+                attype = 'CHG1'
+            elif attype in ['CD1', 'HD1'] :
+                attype = 'CHD1'
+
+            if resname == 'BLA' :
+                if not attype in ['CHA', 'CHB1', 'CHB2', 'NH', 'CO'] :
+                   attype = 'Ring'
+            if resname == 'UNK' :
+                attype = 'Term'
+
+            ind = groupnames.index(attype)
+            groups[ind].append(at.GetIdx()-1)
+
+        return groups, groupnames
+
 
     def atom_groups (self) :
         group_dict = {}

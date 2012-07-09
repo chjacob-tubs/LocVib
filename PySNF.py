@@ -103,6 +103,14 @@ class SNFRestartFile (object) :
         result.shape = (self.ncalcsets, nread / ncomp, ncomp)
         return result
 
+    def del_int_for_atoms(self, atoms) :
+        self.dipole[atoms,:,:]  = 0.0
+        self.pollen[atoms,:,:]  = 0.0 
+        self.polvel[atoms,:,:]  = 0.0
+        self.gtenlen[atoms,:,:] = 0.0
+        self.gtenvel[atoms,:,:] = 0.0
+        self.aten[atoms,:,:]    = 0.0
+
     
 class SNFOutputFile (object) :
 

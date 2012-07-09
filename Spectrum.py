@@ -3,11 +3,15 @@ import math
 import numpy
 
 import Plotting
+import Modes
 
 class VibSpectrum (object) :
 
-    def __init__ (self, modes, ints) :
-        self.freqs = modes.freqs
+    def __init__ (self, freqs, ints) :
+        if isinstance(freqs, Modes.VibModes) :
+            self.freqs = freqs.freqs
+        else :
+            self.freqs = freqs
         self.ints  = ints
 
     def get_line_spectrum (self, minfreq, maxfreq, scale=1.0) :

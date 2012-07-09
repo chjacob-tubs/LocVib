@@ -84,7 +84,9 @@ class HugAnalysisPlot (Plot) :
         self.show_sum = showsum
 
         self.label_textsize = label_textsize
-            
+
+        self.title = None        
+    
     def redraw (self, ax) :
         ngroups = self.matrix.shape[0]
 
@@ -127,6 +129,9 @@ class HugAnalysisPlot (Plot) :
         if self.show_sum :
             ax.text(0.5, ngroups-1.5, 'total: %5.2f' % self.matrix.sum(), size=28)
             
+        if self.title :
+            ax.text(-1.3, ngroups-0.5, self.title, size=28)
+            
         ax.xaxis.tick_top()
         ax.yaxis.tick_right()
 
@@ -165,6 +170,7 @@ class SpectrumPlot (Plot) :
         self.has_scalebox   = False
 
         self.center_title = True
+        self.title_ypos = 0.95
         self.legend = None
 
         self.labels = []
@@ -295,7 +301,7 @@ class SpectrumPlot (Plot) :
         for label in ax.yaxis.get_ticklabels():
             label.set_size(16)
         
-        ytit = self.ylims[0] + 0.95*(self.ylims[1]-self.ylims[0])
+        ytit = self.ylims[0] + self.title_ypos*(self.ylims[1]-self.ylims[0])
 
         if self.center_title :
             xtit = 0.5*(self.xlims[0]+self.xlims[1])
@@ -306,18 +312,17 @@ class SpectrumPlot (Plot) :
 
         ax.set_xlabel(self.xlabel, size=18) # 24
         ax.set_ylabel(self.ylabel, size=18)
-
                 
     def draw_peaklabels (self, ax) :
         shift = 0.02 * abs(self.ylims[0]-self.ylims[1])
         for peak in self.peaks :
             p = peak[0]
             if peak[1] > 0 :
-                ax.text(p[0], p[1]+shift, '%4.0f' % p[0], withdash=True,
+                ax.text(p[0], min(p[1]+shift,self.ylims[1]), '%4.0f' % p[0], withdash=True,
                         va='center', ha='left', size=16, rotation=70,
                         dashlength=10.0, dashdirection=1)
             else:
-                ax.text(p[0], p[1]-shift, '%4.0f' % p[0], withdash=True,
+                ax.text(p[0], max(p[1]-shift,self.ylims[0]), '%4.0f' % p[0], withdash=True,
                         va='center', ha='right', size=16, rotation=70,
                         dashlength=10.0, dashdirection=0)
 
