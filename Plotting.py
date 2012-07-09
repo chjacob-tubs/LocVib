@@ -35,7 +35,7 @@ class Plot (object) :
         """ Saves the figure to a file. """
         if self.ax is None :
             self.draw()
-        self.fig.savefig(filename, format=format)
+        self.fig.savefig(filename, format=format, transparent=True)
 
     def close (self) :
         """ Destroys the figure. """
@@ -165,6 +165,7 @@ class SpectrumPlot (Plot) :
         self.has_scalebox   = False
 
         self.center_title = True
+        self.legend = None
 
         self.labels = []
         self.boxes  = []
@@ -190,7 +191,7 @@ class SpectrumPlot (Plot) :
         if self.type == 'General' :
             self.title  = 'Spectrum'
             self.xlabel = 'wavenumber [cm$^{-1}$]'
-            self.ylabel = 'intensity [unknown units]'
+            self.ylabel = 'intensity [arb. units]'
         elif self.type == 'IR' :
             self.title  = 'IR Spectrum'
             self.xlabel = 'wavenumber [cm$^{-1}$]'
@@ -265,6 +266,9 @@ class SpectrumPlot (Plot) :
         self.draw_boxes(ax)
         self.draw_labels(ax)
 
+        if self.legend:
+            ax.legend(self.legend)
+
     def draw_spectra (self, ax) :
         args = []
         for sp, t in zip(self.spectra, self.spectra_style) :
@@ -300,8 +304,8 @@ class SpectrumPlot (Plot) :
             xtit = self.xlims[0] + 0.02*(self.xlims[1]-self.xlims[0])
             ax.text(xtit, ytit, self.title, va='top', ha='left', size=30)
 
-        ax.set_xlabel(self.xlabel, size=14) # 24
-        ax.set_ylabel(self.ylabel, size=14)
+        ax.set_xlabel(self.xlabel, size=18) # 24
+        ax.set_ylabel(self.ylabel, size=18)
 
                 
     def draw_peaklabels (self, ax) :
@@ -436,3 +440,4 @@ class ModesPlot (Plot) :
 
         ax.text(0.0, self.range[1]+0.5*asize, self.title,
                 va='center', ha='center', size=24)
+
