@@ -25,6 +25,7 @@
 
 import math
 import numpy
+import pylab
 
 import Constants
 
@@ -359,4 +360,57 @@ class VibModes (object) :
  
         return tdcmat
     
+    def get_modes_asgn(self, groups,thresh=0.70, moddiff=10.0, freqthresh=800.0,graph=False) :
+        """
+        Automatic assignment of normal modes to groups basing on cotributions of chosen groups/types of atoms to the normal modes.
+
+        """
+
+        nmodes = self.nmodes
+        freqs = self.freqs
+
+        M = numpy.zeros((nmodes,nmodes))
+        tmp = []
+        groupmodes = []
+
+        compos = self.get_composition(groups)
+        compos = compos.transpose()
+
+        for i in range(nmodes):
+            compos[i,:] /= math.sqrt(numpy.dot(compos[i,:],compos[i,:]))
+
+
+        for i in range(nmodes):
+            for j in range(nmodes):
+                M[i,j] = numpy.dot(compos[i,:],compos[j,:])
+                diff = abs(freqs[i]-freqs[j])
+                if diff > moddiff: M[i,j] /= diff / moddiff
+
+        i = numpy.flatnonzero(freqs > freqthresh)[0]
+        i = numpy.flatnonzero(M[i,:] > thresh)[0]
+        tmp.append(i)
+        while i < nmodes - 1:
+            if M[i,i+1] < thresh:
+                groupmodes.append(tmp)
+                tmp = []
+            i += 1
+            tmp.append(i)
+        if tmp <> [] : groupmodes.append(tmp)
+        tmp = []
+
+        for g in groupmodes :
+            if len(g) > 1 : tmp.append(g)
+        groupmodes = tmp
+
+        if graph == True :
+            pylab.matshow(M)
+            pylab.colorbar()
+            pylab.grid()
+            for i in groupmodes :
+                p = pylab.Rectangle((i[0]-0.5,i[0]-0.5),i[-1]-i[0]+1,i[-1]-i[0]+1,facecolor='none',edgecolor='white',lw='2.0')
+                pylab.gca()
+                pylab.gca().add_patch(p)
+            pylab.show()
+
+        return groupmodes
         
