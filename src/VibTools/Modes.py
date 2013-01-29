@@ -372,6 +372,8 @@ class VibModes (object) :
         @type moddiff: float
         @param freqthresh: lower frequency limit of considered normal modes
         @type freqthresh: float
+        @param graph: plotting modes similarity matrix
+        @type graph: bool
         @rtype: list
         @return: list of normal modes assigned to groups containing the most similar normal modes  
         """
