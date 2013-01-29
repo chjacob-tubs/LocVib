@@ -364,6 +364,16 @@ class VibModes (object) :
         """
         Automatic assignment of normal modes to groups basing on cotributions of chosen groups/types of atoms to the normal modes.
 
+        @param groups: assignment of atoms to the groups, see VibToolsMolecule.attype_groups() in Molecule module
+        @type groups: list
+        @param thresh: threshold for modes similarity (0.0,1.0)
+        @type thresh: float
+        @param moddiff: maximal distance between two neighboring normal modes in the same group
+        @type moddiff: float
+        @param freqthresh: lower frequency limit of considered normal modes
+        @type freqthresh: float
+        @rtype: list
+        @return: list of normal modes assigned to groups containing the most similar normal modes  
         """
 
         nmodes = self.nmodes
