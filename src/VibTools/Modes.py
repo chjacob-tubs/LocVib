@@ -360,7 +360,7 @@ class VibModes (object) :
  
         return tdcmat
     
-    def get_modes_asgn(self, groups,thresh=0.70, moddiff=10.0, freqthresh=800.0,graph=False) :
+    def get_modes_asgn(self, groups,thresh=0.70, moddiff=10.0, freqthresh=1200.0,graph=False) :
         """
         Automatic assignment of normal modes to groups basing on cotributions of chosen groups/types of atoms to the normal modes.
 
