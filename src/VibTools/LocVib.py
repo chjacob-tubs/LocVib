@@ -191,6 +191,13 @@ class LocVib (object) :
             # now omega is omega[1/s]
             omega = omega**2
             omega = omega/(Constants.Hartree_in_Joule/(Constants.amu_in_kg*Constants.Bohr_in_Meter**2))
+
+            # Conversion cm-1 -> au to use for constructing harmonic potentials
+            freqs = self.startmodes.freqs.copy()
+            freqs = freqs * Constants.atu_in_s * (2.0*math.pi*1e2*Constants.cvel_ms)
+            omega = freqs**2
+            # 
+
             diag =  numpy.diag(omega)
             
         cmat = numpy.dot(numpy.dot(self.transmat, diag), self.transmat.transpose())

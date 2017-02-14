@@ -41,3 +41,4 @@ au_in_Debye =  2.54177
 Debye_in_Cm = 3.33564e-30
 
 epsilon0 = 8.854187817e-12  # in SI units
+atu_in_s = 2.41888432650516e-17  # atomic time unit in seconds
