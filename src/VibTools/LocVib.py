@@ -22,7 +22,9 @@
 # 
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/locvib.php
-
+"""
+ Localizing normal modes
+"""
 import math
 import numpy
 
@@ -186,16 +188,34 @@ class LocVib (object) :
             diag = numpy.diag(self.startmodes.freqs)
         else :
             freqs = self.startmodes.freqs.copy() * 1e2 * Constants.cvel_ms
-            # now freq is nu[1/s] 
+           # now freq is nu[1/s] 
             omega = 2.0 * math.pi * freqs
-            # now omega is omega[1/s]
-            omega = omega**2
-            omega = omega/(Constants.Hartree_in_Joule/(Constants.amu_in_kg*Constants.Bohr_in_Meter**2))
+            ## now omega is omega[1/s]
+            omega = omega**2 # matrix will be in [1/s2]
+            omega = omega/(Constants.Hartree_in_Joule/(Constants.amu_in_kg*Constants.Bohr_in_Meter**2))  # 
+            ### 
+
+            # TEST PAWEL - correct conversion cm-1 -> au
+            freqs = self.startmodes.freqs.copy()
+            freqs = freqs * Constants.atu_in_s * (2.0*math.pi*1e2*Constants.cvel_ms)
+            omega = freqs**2
+            # END TEST PAWEL
+
             diag =  numpy.diag(omega)
-            
+        print 'Obtaining coupling matrix in [a.u.]'
+        # first normal modes    
         cmat = numpy.dot(numpy.dot(self.transmat, diag), self.transmat.transpose())
-        return cmat
+
+        # For consistency: shouldn't this function return values always in the same units?
+        # now if hessian=False, returns [cm-1] otherwise returns [hartree]
         
+
+        return cmat
+
+        
+        
+        #return diag        
+
     def sort_by_residue (self) :
         sortmat = self.locmodes.sortmat_by_residue()
         tmat = numpy.dot(sortmat, self.transmat)
