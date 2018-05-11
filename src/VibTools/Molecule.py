@@ -49,12 +49,22 @@ class VibToolsMolecule (AbstractMolecule) :
     def __init__ (self) :
         self.obmol = openbabel.OBMol()
 
-    def read_from_coord (self, filename='coord') :
+    def read (self, filename, filetype="xyz") :
         obconv = openbabel.OBConversion()
-        obconv.SetInAndOutFormats("tmol", "tmol")
+        obconv.SetInAndOutFormats(filetype, filetype)
         
         if not obconv.ReadFile(self.obmol, filename) :
             raise Exception('Error reading file')
+
+    def read_from_coord (self, filename='coord') :
+        self.read(filename, "tmol")
+
+    def write (self, filename, filetype="xyz") :
+        obconv = openbabel.OBConversion()
+        obconv.SetInAndOutFormats(filetype, filetype)
+        
+        if not obconv.WriteFile(self.obmol, filename) :
+            raise Exception('Error writing file')
 
     def get_natoms (self) :
         return self.obmol.NumAtoms()
@@ -86,6 +96,15 @@ class VibToolsMolecule (AbstractMolecule) :
         return coords
 
     coordinates = property(get_coordinates)
+
+    def add_atoms (self, atnums, coords) :
+        self.obmol.BeginModify()
+
+        for i in range(len(atnums)):
+            a = self.obmol.NewAtom()
+            a.SetAtomicNum(int(atnums[i]))
+            a.SetVector(coords[i][0], coords[i][1], coords[i][2])
+        self.obmol.EndModify()
 
     ## the following methods rely on Openbabel
     
