@@ -49,71 +49,41 @@ class LocVib (object) :
     def calc_p (self, modes) :
         squared_modes = modes**2
 
-        p = 0.0
-        for imode in range(self.nmodes) :
-            
-            c = numpy.zeros((self.natoms,))
-            for iatom in range(self.natoms) :
-                c[iatom] = (squared_modes[imode, 3*iatom]   +
-                            squared_modes[imode, 3*iatom+1] +
-                            squared_modes[imode, 3*iatom+2])
+        c = squared_modes[:,0::3] + squared_modes[:,1::3] + squared_modes[:,2::3]
                 
-            if self.loctype == 'PM' :
-                for iatom in range(self.natoms) :
-                    p += c[iatom]**2
+        if self.loctype == 'PM' :
+            p = numpy.linalg.norm(c)**2
+        elif self.loctype.startswith('B') :
+            p_mode = numpy.zeros((3,self.nmodes))
+            for idir in range(3):
+                p_mode[idir] = (self.coords[:,idir] * c).sum(axis=1)
+            p = (p_mode**2).sum()
 
-            elif self.loctype.startswith('B') :
-                p_mode = numpy.zeros((3,))
-                for iatom in range(self.natoms) :
-                    p_mode[0] += self.coords[iatom,0] * c[iatom]
-                    p_mode[1] += self.coords[iatom,1] * c[iatom]
-                    p_mode[2] += self.coords[iatom,2] * c[iatom]
-                p += (p_mode[0]**2 + p_mode[1]**2 + p_mode[2]**2)
         return p
 
     def calc_ab (self, modes, i, j) :
         squared_modes = modes**2
-        
-        ci  = numpy.zeros((self.natoms,))
-        cj  = numpy.zeros((self.natoms,))
-        cij = numpy.zeros((self.natoms,))
 
-        for iatom in range(self.natoms) :
-            ci[iatom]  = (squared_modes[i, 3*iatom]   +
-                          squared_modes[i, 3*iatom+1] +
-                          squared_modes[i, 3*iatom+2])
-            cj[iatom]  = (squared_modes[j, 3*iatom]   +
-                          squared_modes[j, 3*iatom+1] +
-                          squared_modes[j, 3*iatom+2])
-            cij[iatom] = (modes[i, 3*iatom]   * modes[j, 3*iatom]   +
-                          modes[i, 3*iatom+1] * modes[j, 3*iatom+1] +
-                          modes[i, 3*iatom+2] * modes[j, 3*iatom+2])
+        ci = squared_modes[i, 0::3] + squared_modes[i, 1::3] + squared_modes[i, 2::3]
+        cj = squared_modes[j, 0::3] + squared_modes[j, 1::3] + squared_modes[j, 2::3]
+        cij = modes[i, 0::3] * modes[j, 0::3] + modes[i, 1::3] * modes[j, 1::3] + modes[i, 2::3] * modes[j, 2::3]
 
         a = 0.0
         b = 0.0
             
         if self.loctype.startswith('PM') :
-            for iatom in range(self.natoms) :
-                a += cij[iatom]**2 - 0.25*(ci[iatom] - cj[iatom])**2
-                b += cij[iatom]*(ci[iatom] - cj[iatom])
+            a = (cij**2 - 0.25*(ci - cj)**2).sum()
+            b = (cij*(ci - cj)).sum()
 
         elif self.loctype.startswith('B') :
             pi  = numpy.zeros((3,))
             pj  = numpy.zeros((3,))
             pij = numpy.zeros((3,))
 
-            for iatom in range(self.natoms) :
-                pi[0]  += self.coords[iatom,0] * ci[iatom]
-                pi[1]  += self.coords[iatom,1] * ci[iatom]
-                pi[2]  += self.coords[iatom,2] * ci[iatom]
-
-                pj[0]  += self.coords[iatom,0] * cj[iatom]
-                pj[1]  += self.coords[iatom,1] * cj[iatom]
-                pj[2]  += self.coords[iatom,2] * cj[iatom]
-
-                pij[0] += self.coords[iatom,0] * cij[iatom]
-                pij[1] += self.coords[iatom,1] * cij[iatom]
-                pij[2] += self.coords[iatom,2] * cij[iatom]
+            for idir in range(3):
+                pi[idir] = (self.coords[:,idir] * ci).sum()
+                pj[idir] = (self.coords[:,idir] * cj).sum()
+                pij[idir] = (self.coords[:,idir] * cij).sum()
 
             a = numpy.dot(pij,pij) - 0.25*numpy.dot(pi-pj, pi-pj)
             b = numpy.dot(pij, pi-pj)

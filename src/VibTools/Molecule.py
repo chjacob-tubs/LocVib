@@ -48,11 +48,19 @@ class VibToolsMolecule (AbstractMolecule) :
     
     def __init__ (self) :
         self.obmol = openbabel.OBMol()
+        self.reset_molcache()
+
+    def reset_molcache (self) :
+        self._atmasses = None
+        self._atnums = None
+        self._coords = None
 
     def read (self, filename, filetype="xyz") :
+        self.reset_molcache()
+
         obconv = openbabel.OBConversion()
         obconv.SetInAndOutFormats(filetype, filetype)
-        
+
         if not obconv.ReadFile(self.obmol, filename) :
             raise Exception('Error reading file')
 
@@ -71,29 +79,32 @@ class VibToolsMolecule (AbstractMolecule) :
     natoms = property(get_natoms)
         
     def get_atmasses (self) :
-        atmasses = numpy.zeros((self.natoms,))
-        for at in openbabel.OBMolAtomIter(self.obmol) :
-            i = at.GetIdx()-1
-            atmasses[i] = at.GetExactMass()
-        return atmasses
+        if self._atmasses is None:
+            self._atmasses = numpy.zeros((self.natoms,))
+            for at in openbabel.OBMolAtomIter(self.obmol) :
+                i = at.GetIdx()-1
+                self._atmasses[i] = at.GetExactMass()
+        return self._atmasses
     atmasses = property(get_atmasses)
 
     def get_atnums (self) :
-        atnums = numpy.zeros((self.natoms,))
-        for at in openbabel.OBMolAtomIter(self.obmol) :
-            i = at.GetIdx()-1
-            atnums[i] = at.GetAtomicNum()
-        return atnums
+        if self._atnums is None :
+            self._atnums = numpy.zeros((self.natoms,))
+            for at in openbabel.OBMolAtomIter(self.obmol) :
+                i = at.GetIdx()-1
+                self._atnums[i] = at.GetAtomicNum()
+        return self._atnums
     atnums = property(get_atnums)
 
     def get_coordinates (self) :
-        coords = numpy.zeros((self.natoms,3))
-        for at in openbabel.OBMolAtomIter(self.obmol) :
-            i = at.GetIdx()-1
-            coords[i,0] = at.GetX()
-            coords[i,1] = at.GetY()
-            coords[i,2] = at.GetZ()
-        return coords
+        if self._coords is None :
+            self._coords = numpy.zeros((self.natoms,3))
+            for at in openbabel.OBMolAtomIter(self.obmol) :
+                i = at.GetIdx()-1
+                self._coords[i,0] = at.GetX()
+                self._coords[i,1] = at.GetY()
+                self._coords[i,2] = at.GetZ()
+        return self._coords
 
     coordinates = property(get_coordinates)
 
@@ -105,6 +116,8 @@ class VibToolsMolecule (AbstractMolecule) :
             a.SetAtomicNum(int(atnums[i]))
             a.SetVector(coords[i][0], coords[i][1], coords[i][2])
         self.obmol.EndModify()
+
+        self.reset_molcache()
 
     ## the following methods rely on Openbabel
     

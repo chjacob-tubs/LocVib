@@ -45,20 +45,17 @@ class VibModes (object) :
     def set_modes_mw (self, modes_mw)  :
         self.modes_mw[:,:] = modes_mw
         self.normalize_modes()
-        self.update_modes_c()
 
     def set_modes_c (self, modes_c)  :
         self.modes_c[:,:] = modes_c
         self.update_modes_mw()
         self.normalize_modes()
-        self.update_modes_c()
 
     def set_mode_mw (self, i, mode, freq=None) :
         self.modes_mw[i,:] = mode
         if freq:
             self.freqs[i] = freq
         self.normalize_modes()
-        self.update_modes_c()            
 
     def set_mode_c (self, i, mode, freq=None) :
         self.modes_c[i,:] = mode
@@ -66,7 +63,6 @@ class VibModes (object) :
             self.freqs[i] = freq
         self.update_modes_mw()
         self.normalize_modes()
-        self.update_modes_c()
       
     def set_freqs (self, freqs) :
         self.freqs = freqs
@@ -88,12 +84,12 @@ class VibModes (object) :
     modes_c_norm = property(get_modes_c_norm)
     
     def update_modes_c (self) :
-        for i, atmass in enumerate(self.mol.atmasses) :
-            self.modes_c[:,3*i:3*i+3] = self.modes_mw[:,3*i:3*i+3] / math.sqrt(atmass)
+        for idir in range(3):
+            self.modes_c[:,idir::3] = self.modes_mw[:,idir::3] / numpy.sqrt(self.mol.atmasses)
 
     def update_modes_mw (self) :
-        for i, atmass in enumerate(self.mol.atmasses) :
-            self.modes_mw[:,3*i:3*i+3] = self.modes_c[:,3*i:3*i+3] * math.sqrt(atmass)
+        for idir in range(3):
+            self.modes_mw[:,idir::3] = self.modes_c[:,idir::3] * numpy.sqrt(self.mol.atmasses)
 
     def get_subset (self, modelist) :
         subset = VibModes(len(modelist), self.mol)
