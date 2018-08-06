@@ -273,6 +273,14 @@ class VibModes (object) :
     def sortmat_by_residue (self) :
         return self.sortmat_by_groups(self.mol.residue_groups()[0])
 
+    def sortmat_by_freqs (self) :
+        inds = numpy.argsort(self.freqs)
+        sortmat = numpy.zeros((self.nmodes, self.nmodes))
+        for i in range(self.nmodes) :
+            sortmat[i, inds[i]] = 1.0
+
+        return sortmat
+
     def get_fragment_modes (self, atomlist) :
         frag = self.mol.get_fragment(atomlist)
         

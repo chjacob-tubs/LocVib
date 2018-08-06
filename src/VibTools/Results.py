@@ -26,6 +26,7 @@
 import numpy
 
 from Constants import *
+from Molecule import VibToolsMolecule
 
 class Results (object) :
 
