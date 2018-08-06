@@ -27,6 +27,7 @@
 """
 import math
 import numpy
+import copy
 
 from Modes import VibModes
 import Constants
@@ -42,8 +43,8 @@ class LocVib (object) :
         if self.loctype.startswith('B') :
             self.coords = self.startmodes.mol.coordinates
 
-        self.locmodes = None
-        self.transmat = None
+        self.locmodes = copy.copy(self.startmodes)
+        self.transmat = numpy.identity(self.nmodes)
         # transmat is the transpose of the matrix U in the paper
 
     def calc_p (self, modes) :
@@ -102,20 +103,26 @@ class LocVib (object) :
         if (alpha >= math.pi) :
             alpha = alpha - 2.0*math.pi
         alpha = alpha / 4.0
-        
+
         rotated_modes = modes.copy()
         rotated_modes[i,:] =   math.cos(alpha)*modes[i,:] + math.sin(alpha)*modes[j,:] 
         rotated_modes[j,:] = - math.sin(alpha)*modes[i,:] + math.cos(alpha)*modes[j,:] 
 
         return rotated_modes, alpha
 
-    def localize (self, thresh=1e-6, thresh2=1e-4) :
-        loc_modes = self.startmodes.modes_mw.copy()
+    def try_localize (self, subset=None, thresh=1e-6, thresh2=1e-4, printing=False) :
+        if subset is None :
+            ss = range(self.nmodes)
+        else:
+            ss = subset
 
-        transmat = numpy.identity(self.nmodes)
+        loc_modes = self.locmodes.modes_mw[ss].copy()
+        start_p = self.calc_p(loc_modes)
+
+        transmat = numpy.identity(len(ss))
 
         def rotmat(i, j, alpha) :
-            rmat = numpy.identity(self.nmodes)
+            rmat = numpy.identity(len(ss))
             rmat[i,i] =  math.cos(alpha)
             rmat[i,j] =  math.sin(alpha)
             rmat[j,i] = -math.sin(alpha)
@@ -129,9 +136,12 @@ class LocVib (object) :
             isweep += 1
 
             err2 = 0.0
-            old_p = self.calc_p(loc_modes)
-            for i in range(self.nmodes) :
-                for j in range(i+1, self.nmodes) :
+            if isweep == 1:
+                old_p = start_p
+            else:
+                old_p = self.calc_p(loc_modes)
+            for i in range(len(ss)) :
+                for j in range(i+1, len(ss)) :
                     loc_modes, alpha = self.rotate(loc_modes, i, j)
 
                     transmat = numpy.dot(rotmat(i,j,alpha), transmat)
@@ -141,10 +151,45 @@ class LocVib (object) :
             p = self.calc_p(loc_modes)
             err = p - old_p
 
-            print " Normal mode localization: Cycle %3i    p: %8.3f   change: %10.7f  %10.5f " % \
-                  (isweep, p, err, err2)
+            if printing :
+                print " Normal mode localization: Cycle %3i    p: %8.3f   change: %10.7f  %10.5f " % \
+                      (isweep, p, err, err2)
 
-        self.set_transmat(transmat)
+        del_p = p - start_p
+        return transmat, del_p
+
+    def localize (self, subset=None, thresh=1e-6, thresh2=1e-4, printing=True) :
+        if subset is None :
+            ss = range(self.nmodes)
+        else:
+            ss = subset
+
+        transmat, del_p = self.try_localize(subset, thresh, thresh2, printing)
+
+        full_transmat = numpy.identity(self.nmodes)
+        full_transmat[numpy.ix_(ss,ss)] = transmat
+        self.set_transmat(numpy.dot(full_transmat, self.transmat))
+
+    def try_localize_vcisdiff(self, subset=None, thresh=1e-6, thresh2=1e-4) :
+        if subset is None :
+            ss = range(self.nmodes)
+        else:
+            ss = subset
+
+        transmat, del_p = self.try_localize(subset, thresh, thresh2, printing=False)
+        tmat = numpy.dot(transmat, self.transmat[numpy.ix_(ss,ss)])
+
+        diag2 = numpy.diag(self.startmodes.freqs[ss]**2)
+        hmat = numpy.dot(numpy.dot(tmat, diag2), tmat.transpose())
+        locfreqs = numpy.sqrt(numpy.diagonal(hmat))
+
+        vcis_mat = hmat[:,:] / (2.0*numpy.sqrt(numpy.outer(locfreqs[:], locfreqs[:])))
+        vcis_mat[numpy.diag_indices_from(vcis_mat)] = locfreqs
+
+        ev, evecs = numpy.linalg.eigh(vcis_mat)
+        vcis_maxdiff = numpy.max(numpy.abs(ev - numpy.sort(self.startmodes.freqs[ss])))
+
+        return vcis_maxdiff, del_p
 
     def set_transmat (self, tmat) :
         self.transmat = tmat
@@ -178,13 +223,19 @@ class LocVib (object) :
 
         # For consistency: shouldn't this function return values always in the same units?
         # now if hessian=False, returns [cm-1] otherwise returns [hartree]
-        
-
         return cmat
 
-        
-        
-        #return diag        
+    def get_vcismat (self) :
+        diag = numpy.diag(self.startmodes.freqs**2)
+        hmat = numpy.dot(numpy.dot(self.transmat, diag), self.transmat.transpose())
+
+        locfreqs = numpy.sqrt(hmat.diagonal())
+
+        vcis_mat = hmat[:,:] / (2.0*numpy.sqrt(numpy.outer(locfreqs[:], locfreqs[:])))
+        vcis_mat[numpy.diag_indices_from(vcis_mat)] = locfreqs
+
+        # VCIS matrix in cm-1
+        return vcis_mat
 
     def sort_by_residue (self) :
         sortmat = self.locmodes.sortmat_by_residue()
@@ -193,6 +244,11 @@ class LocVib (object) :
 
     def sort_by_groups (self, groups) :
         sortmat = self.locmodes.sortmat_by_groups(groups)
+        tmat = numpy.dot(sortmat, self.transmat)
+        self.set_transmat(tmat)
+
+    def sort_by_freqs (self) :
+        sortmat = self.locmodes.sortmat_by_freqs()
         tmat = numpy.dot(sortmat, self.transmat)
         self.set_transmat(tmat)
 
