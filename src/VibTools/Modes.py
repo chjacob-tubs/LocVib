@@ -168,8 +168,9 @@ class VibModes (object) :
                          temp_modes[i+1,3*iatom], temp_modes[i+1,3*iatom+1], temp_modes[i+1,3*iatom+2],
                          temp_modes[i+2,3*iatom], temp_modes[i+2,3*iatom+1], temp_modes[i+2,3*iatom+2],))
 
+        f.write('\n')
+        f.write('--------\n')
         f.close()
-
         
     def get_composition (self, groups) :
         types = numpy.zeros((len(groups), self.nmodes))
