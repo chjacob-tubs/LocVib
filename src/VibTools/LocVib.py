@@ -47,6 +47,8 @@ class LocVib (object) :
         self.transmat = numpy.identity(self.nmodes)
         # transmat is the transpose of the matrix U in the paper
 
+        self.subsets = None
+
     def calc_p (self, modes) :
         squared_modes = modes**2
 
@@ -170,6 +172,18 @@ class LocVib (object) :
         full_transmat[numpy.ix_(ss,ss)] = transmat
         self.set_transmat(numpy.dot(full_transmat, self.transmat))
 
+    def localize_subsets(self, subsets, printing=True):
+        for subset in subsets:
+            self.localize(subset, printing=printing)
+
+        self.sort_by_freqs()
+        self.subsets = subsets
+
+    def localize_automatic_subsets(self, maxerr):
+        auto_assignment = AutomaticAssignment(self)
+        self.subsets = auto_assignment.automatic_subsets(maxerr)
+        self.sort_by_freqs()
+
     def try_localize_vcisdiff(self, subset=None, thresh=1e-6, thresh2=1e-4) :
         if subset is None :
             ss = range(self.nmodes)
@@ -265,4 +279,108 @@ class LocVib (object) :
         tmat[nums,:] = -tmat[nums,:]
         self.set_transmat(tmat)
 
+    def flip_modes (self, m1, m2) :
+         sortmat = numpy.identity(self.nmodes)
+         sortmat[m1,m1] = 0.0
+         sortmat[m2,m2] = 0.0
+         sortmat[m1,m2] = 1.0
+         sortmat[m2,m1] = 1.0
 
+         tmat = numpy.dot(sortmat, self.transmat)
+         self.set_transmat(tmat)
+
+class AutomaticAssignment(object):
+
+    def __init__(self, lv) :
+        self.lv = lv
+        nmodes = self.lv.nmodes
+
+        self.errmat = numpy.zeros((nmodes, nmodes))
+        self.pmat = numpy.zeros((nmodes, nmodes))
+        self.diffmat = numpy.zeros((nmodes, nmodes))
+
+        self.subsets = [[m] for m in range(nmodes)]
+
+        for i in range(len(self.subsets)) :
+            for j in range(i+1, len(self.subsets)) :
+                self.calc_ij(i, j)
+
+    def calc_ij(self, i, j):
+        s1 = self.subsets[i]
+        s2 = self.subsets[j]
+
+        vciserr, p = self.lv.try_localize_vcisdiff(s1+s2)
+
+        self.errmat[numpy.ix_(s1,s1)] = 0.0
+        self.errmat[numpy.ix_(s2,s2)] = 0.0
+        self.errmat[numpy.ix_(s1,s2)] = 0.0
+        self.errmat[numpy.ix_(s2,s1)] = 0.0
+
+        self.errmat[s1[0], s2[0]] = vciserr
+        self.errmat[s2[0], s1[0]] = vciserr
+
+        self.pmat[numpy.ix_(s1,s1)] = 0.0
+        self.pmat[numpy.ix_(s2,s2)] = 0.0
+        self.pmat[numpy.ix_(s1,s2)] = 0.0
+        self.pmat[numpy.ix_(s2,s1)] = 0.0
+
+        self.pmat[s1[0], s2[0]] = p
+        self.pmat[s2[0], s1[0]] = p
+
+        diff1 = abs(numpy.max(self.lv.locmodes.freqs[s1]) - numpy.min(self.lv.locmodes.freqs[s2]))
+        diff2 = abs(numpy.min(self.lv.locmodes.freqs[s1]) - numpy.max(self.lv.locmodes.freqs[s2]))
+
+        self.diffmat[numpy.ix_(s1,s1)] = 0.0
+        self.diffmat[numpy.ix_(s2,s2)] = 0.0
+        self.diffmat[numpy.ix_(s1,s2)] = 0.0
+        self.diffmat[numpy.ix_(s2,s1)] = 0.0
+
+        self.diffmat[s1[0], s2[0]] = max(diff1, diff2)
+        self.diffmat[s2[0], s1[0]] = max(diff1, diff2)
+
+    def find_maxp(self, maxerr, maxdiff):
+        pmat_masked = numpy.where(self.errmat < maxerr, self.pmat, 0.0)
+        pmat_masked = numpy.where(self.diffmat < maxdiff, pmat_masked, 0.0)
+
+        ind_maxp_modes = numpy.unravel_index(numpy.argmax(pmat_masked), self.pmat.shape)
+        maxp = numpy.max(pmat_masked)
+
+        for i, ss in enumerate(self.subsets):
+            if ind_maxp_modes[0] in ss:
+                i_maxp = i
+            if ind_maxp_modes[1] in ss:
+                j_maxp = i
+        ind_maxp = (i_maxp, j_maxp)
+
+        return ind_maxp, maxp
+
+    def update_subset(self, i):
+        self.lv.localize(self.subsets[i], printing=False)
+        for j in range(len(self.subsets)) :
+            if not (i == j) :
+                self.calc_ij(i, j)
+
+    def automatic_subsets(self, maxerr) :
+
+        # find minimal frequency difference
+        mask = numpy.ones(self.diffmat.shape, dtype=bool)
+        numpy.fill_diagonal(mask, 0)
+        m = self.diffmat[mask].min()
+
+        # maxdiff starts from the minimal frequency difference and is doubled until
+        # it is larger than 1e4
+        for maxdiff in [m * 2**n for n in range(int(math.log(1e4/m, 2))+2)]:
+            ind_maxp, maxp = self.find_maxp(maxerr, maxdiff)
+
+            while (maxp > 0.01) :
+
+                i, j = ind_maxp[0], ind_maxp[1]
+
+                self.subsets[i] = sorted(self.subsets[i] + self.subsets[j])
+                del self.subsets[j]
+
+                self.update_subset(i)
+
+                ind_maxp, maxp = self.find_maxp(maxerr, maxdiff)
+
+        return self.subsets
