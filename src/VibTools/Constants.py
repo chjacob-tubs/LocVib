@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of the
-# LocVib 1.0 suite of tools for the analysis for vibrational spectra.
-# Copyright (C) 2009-2012 by Christoph R. Jacob and others.
+# LocVib 1.1 suite of tools for the analysis for vibrational spectra.
+# Copyright (C) 2009-2018 by Christoph R. Jacob and others.
 #
 #    LocVib is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 #   Ch. R. Jacob, J. Chem. Phys 130 (2009), 084106.
 # 
 # The most recent version of LocVib is available at
-#   http://www.christophjacob.eu/locvib.php
+#   http://www.christophjacob.eu/software
 """
  Constants used in program.
 """
