@@ -51,13 +51,6 @@ class OrcaResults (Results) :
             if re.search('atoms', l):
                 end = i
 
-        print(start)        
-        print(end)        
-
-               
-        print(lines[start])
-        print("nmodes: "+str(natoms*3))
-
         nmodes = natoms*3
         modes = VibModes(nmodes-6, self.mol)
         normalmodes = numpy.zeros((nmodes-6, 3*natoms))
@@ -67,7 +60,6 @@ class OrcaResults (Results) :
         startnum = start+3
         j = 0
         while startnum+natoms*3<end:
-            print("startnum: "+str(startnum))
             for column in range(len(lines[startnum].split())-1):
                 if j <6:
                     j += 1
