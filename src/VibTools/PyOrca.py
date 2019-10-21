@@ -35,6 +35,24 @@ class OrcaResults (Results) :
         self.nmodes = None
         self.natoms = None
 
+
+    def get_freqs(self, output):
+        import numpy, re
+        f = open(output)
+        lines = f.readlines()
+        f.close()
+
+
+        for i, l in enumerate(lines):
+            if re.search('vibrational_freq', l):
+                start = i
+            if re.search('normal_modes', l):
+                end = i
+
+        freqs = list(map(lambda l: float(l.split()[1]),lines[start+2+6:end-1]))
+        return freqs
+       
+
     def read(self, coords, output) :
         import numpy, re
 
