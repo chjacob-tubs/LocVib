@@ -85,14 +85,22 @@ class OrcaResults (Results) :
                 mode = []
                 column = column+1
                 for i in range(natoms):
-                    normalmodes[j-6][i*3 + 0] = lines[i+startnum + 0].split()[column]
-                    normalmodes[j-6][i*3 + 1] = lines[i+startnum + 1].split()[column]
-                    normalmodes[j-6][i*3 + 2] = lines[i+startnum + 2].split()[column]
+                    normalmodes[j-6][i*3 + 0] = lines[i*3+startnum + 0].split()[column]
+                    normalmodes[j-6][i*3 + 1] = lines[i*3+startnum + 1].split()[column]
+                    normalmodes[j-6][i*3 + 2] = lines[i*3+startnum + 2].split()[column]
                 j += 1
             startnum = startnum + natoms*3 +1
 
+        print("file: ",normalmodes)
+        print("first mode: ",normalmodes[0])
+        print("last mode: ",normalmodes[-1])
+        print(len(normalmodes[-1]))
         modes.set_modes_mw(normalmodes)
         modes.set_freqs(freqs)
+        print("set mw",modes.modes_mw)
+        modes.set_modes_c(normalmodes)
+        modes.set_freqs(freqs)
+        print("set c",modes.modes_mw)
 
         self.natoms = natoms
         self.nmodes = nmodes
