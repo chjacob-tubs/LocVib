@@ -91,16 +91,11 @@ class OrcaResults (Results) :
                 j += 1
             startnum = startnum + natoms*3 +1
 
-        print("file: ",normalmodes)
-        print("first mode: ",normalmodes[0])
-        print("last mode: ",normalmodes[-1])
-        print(len(normalmodes[-1]))
+        freqs = numpy.asarray(freqs)
+        normalmodes = numpy.asarray(normalmodes)
+ 
         modes.set_modes_mw(normalmodes)
         modes.set_freqs(freqs)
-        print("set mw",modes.modes_mw)
-        modes.set_modes_c(normalmodes)
-        modes.set_freqs(freqs)
-        print("set c",modes.modes_mw)
 
         self.natoms = natoms
         self.nmodes = nmodes
