@@ -236,6 +236,11 @@ class VibModes (object) :
         comp = self.get_composition(groups)
         self.print_composition(groupnames, comp, labels)
 
+    def print_attype_all_composition(self, labels=None):
+        groups, groupnames = self.mol.attype_all_groups()
+        comp = self.get_composition(groups)
+        self.print_composition(groupnames, comp, labels)
+
     def print_atom_composition(self, labels=None) :
         groups, groupnames = self.mol.atom_groups()
         comp = self.get_composition(groups)
@@ -271,8 +276,11 @@ class VibModes (object) :
             
         return sortmat
         
-    def sortmat_by_residue (self) :
-        return self.sortmat_by_groups(self.mol.residue_groups()[0])
+    def sortmat_by_residue (self, external_molecule=None) :
+        if external_molecule:
+            return self.sortmat_by_groups(external_molecule.residue_groups()[0])
+        else:
+            return self.sortmat_by_groups(self.mol.residue_groups()[0])
 
     def sortmat_by_freqs (self) :
         inds = numpy.argsort(self.freqs)

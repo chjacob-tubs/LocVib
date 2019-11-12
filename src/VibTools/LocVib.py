@@ -251,8 +251,12 @@ class LocVib (object) :
         # VCIS matrix in cm-1
         return vcis_mat
 
-    def sort_by_residue (self) :
-        sortmat = self.locmodes.sortmat_by_residue()
+    def sort_by_residue (self, pdb_mol=None) :
+        if pdb_mol:
+            print 'Using external molecule definition'
+            sortmat = self.locmodes.sortmat_by_residue(external_molecule=pdb_mol)
+        else:
+            sortmat = self.locmodes.sortmat_by_residue()
         tmat = numpy.dot(sortmat, self.transmat)
         self.set_transmat(tmat)
 

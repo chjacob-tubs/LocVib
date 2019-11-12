@@ -146,6 +146,8 @@ class VibToolsMolecule (AbstractMolecule) :
         groupnames = ['N', 'H', 'C', 'O',  'CA', 'HA', 'CB', 'HB', 'OXT', 'HXT', 'H2O']
         groups     = []
 
+        print groupnames
+
         for k in groupnames :
             groups.append([])
         for at in openbabel.OBMolAtomIter(self.obmol) :
@@ -158,7 +160,7 @@ class VibToolsMolecule (AbstractMolecule) :
                 attype = 'HXT'
 
             if at.GetResidue().GetName() == 'HOH' :
-	        attype = 'H2O'
+                attype = 'H2O'
 
             ind = groupnames.index(attype)
             groups[ind].append(at.GetIdx()-1)
@@ -281,6 +283,38 @@ class VibToolsMolecule (AbstractMolecule) :
 
         return groups, groupnames
 
+    def attype_all_groups(self):
+        #groupnames = ['N', 'H', 'C', 'O', 'CA', 'HA', 'CB', 'HB', 'OXT', 'HXT', 'H2O', 'CH3', 'HH3']
+        groupnames = []
+        groups = []
+
+        #print groupnames
+
+        #for k in groupnames:
+        #    groups.append([])
+        for at in openbabel.OBMolAtomIter(self.obmol):
+            attype = at.GetResidue().GetAtomID(at)
+
+            attype = attype.strip()
+
+            if attype in ['1HB', '2HB', '3HB', 'HB1', 'HB2', 'HB3']:
+                attype = 'HB'
+            if attype in ['1H', '2H', 'H 1', 'H 2', 'H1', 'H2']:
+                attype = 'HXT'
+            if attype in ['1HH3', '2HH3', '3HH3']:
+                attype = 'HH3'
+
+            if at.GetResidue().GetName() == 'HOH':
+                attype = 'H2O'
+
+            if attype not in groupnames:
+                groupnames.append(attype)
+                groups.append([])
+
+            ind = groupnames.index(attype)
+            groups[ind].append(at.GetIdx() - 1)
+
+        return groups, groupnames
 
     def atom_groups (self) :
         group_dict = {}
