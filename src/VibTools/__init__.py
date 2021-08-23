@@ -26,6 +26,10 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
+
+import matplotlib
+matplotlib.use('Agg')
+
 from .Constants import *
 
 from .Molecule import *
@@ -36,7 +40,10 @@ from .PySNF import *
 from .PyAKIRA import *
 from .PyTurbomole import *
 from .PyVASP import *
-from .PyTape21 import *
+try:
+    from .PyTape21 import *
+except ImportError:
+    pass
 from .HugAnalysis import *
 from .LocVib import *
 from .Plotting import *

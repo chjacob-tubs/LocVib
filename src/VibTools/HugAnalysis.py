@@ -26,6 +26,8 @@
 from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import division
+from builtins import range
+from builtins import object
 import numpy
 
 from . import Constants
@@ -158,7 +160,7 @@ class HugAnalysis (object) :
         inv_decomposed_nm = numpy.zeros((self.natoms, self.natoms))
 
         if nummode is None :
-            modelist = range(modes.nmodes)
+            modelist = list(range(modes.nmodes))
         else:
             modelist = [nummode]
 

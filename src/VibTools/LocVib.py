@@ -28,6 +28,8 @@
 from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import division
+from builtins import range
+from builtins import object
 import math
 import numpy
 import copy
@@ -117,7 +119,7 @@ class LocVib (object) :
 
     def try_localize (self, subset=None, thresh=1e-6, thresh2=1e-4, printing=False) :
         if subset is None :
-            ss = range(self.nmodes)
+            ss = list(range(self.nmodes))
         else:
             ss = subset
 
@@ -165,7 +167,7 @@ class LocVib (object) :
 
     def localize (self, subset=None, thresh=1e-6, thresh2=1e-4, printing=True) :
         if subset is None :
-            ss = range(self.nmodes)
+            ss = list(range(self.nmodes))
         else:
             ss = subset
 
@@ -189,7 +191,7 @@ class LocVib (object) :
 
     def try_localize_vcisdiff(self, subset=None, thresh=1e-6, thresh2=1e-4) :
         if subset is None :
-            ss = range(self.nmodes)
+            ss = list(range(self.nmodes))
         else:
             ss = subset
 

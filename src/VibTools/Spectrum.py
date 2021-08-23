@@ -26,6 +26,9 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
+from builtins import zip
+from builtins import range
+from builtins import object
 import math
 import numpy
 
@@ -174,10 +177,10 @@ class VibSpectrum (object) :
 
         if label_maxima :
             maxima = self.get_band_maxima(spec[1][0], spec[1][1]) 
-            pl.add_peaklabels(zip(maxima, [1]*len(maxima)))
+            pl.add_peaklabels(list(zip(maxima, [1]*len(maxima))))
         if label_min :
             minima = self.get_band_minima(spec[1][0], spec[1][1]) 
-            pl.add_peaklabels(zip(minima, [-1]*len(minima)))
+            pl.add_peaklabels(list(zip(minima, [-1]*len(minima))))
 
         if boxes is not None :
             bands, names = boxes

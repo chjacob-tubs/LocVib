@@ -26,6 +26,9 @@
 from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import division
+from builtins import str
+from builtins import range
+from builtins import object
 import numpy 
 import math
 
@@ -79,7 +82,7 @@ class SNFRestartFile (object) :
         f.readline()  # fourth line: some other path
         f.readline()  # fifth line: and yet another path
 
-        for i in xrange(self.ncalcsets) :
+        for i in range(self.ncalcsets) :
             line = f.readline()
             line = [int(i) for i in line.split()]
             for i in line[1:] :
@@ -115,10 +118,10 @@ class SNFRestartFile (object) :
         if nlines*self.n_per_line < nread:
             nlines = nlines + 1
 
-        for i in xrange(self.ncalcsets) :
+        for i in range(self.ncalcsets) :
             f.readline()
             n = 0
-            for j in xrange(nlines) :
+            for j in range(nlines) :
                 line = f.readline().replace('D', 'E').split()
                 for fl in line :
                     result[i,n] = float(fl)
@@ -335,7 +338,7 @@ class SNFResults (Results) :
         if self.snfoutput.intonly :
             self.snfcontrol.read(self.mol)
 
-	if self.restartname :
+        if self.restartname :
             self.restartfile.read(filename=self.restartname)
         else:
             self.snfoutput.read_derivatives(self.mol)

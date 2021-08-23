@@ -26,6 +26,11 @@
 from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import division
+from past.builtins import cmp
+from builtins import zip
+from builtins import str
+from builtins import range
+from builtins import object
 import openbabel
 import numpy
 
@@ -138,7 +143,7 @@ class VibToolsMolecule (AbstractMolecule) :
             groupnames.append(str(r.GetNum()))
             groups.append(resgroup)
 
-        z = zip(groupnames, groups)
+        z = list(zip(groupnames, groups))
         z.sort(lambda x,y: cmp(int(x[0]), int(y[0])))
         groupnames = [x[0] for x in z]
         groups     = [x[1] for x in z]
