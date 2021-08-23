@@ -52,7 +52,7 @@ class SNFRestartFile (object) :
         self.nmodes  = 0
 
     def read (self, filename='restart') :
-        f = file(filename, 'r')
+        f = open(filename, 'r')
         
         f.readline()  # first line: some path
 
@@ -148,7 +148,7 @@ class SNFOutputFile (object) :
         self.intonly = False
 
     def read (self, mol) :
-        f = file(self.filename, 'r')
+        f = open(self.filename, 'r')
         lines = f.readlines()
         f.close()
 
@@ -223,7 +223,7 @@ class SNFOutputFile (object) :
         but I want to work with a 3*nr_atoms x 3
         """
 
-        f = file(self.filename, 'r')
+        f = open(self.filename, 'r')
         
         # Little hack to assure that you find the right polarizabilities (length vs. velocity representation)
         vel = False
@@ -283,7 +283,7 @@ class SNFControlFile (object) :
         self.modes = None 
 
     def read (self, mol) :
-        f = file('snf_control', 'r')
+        f = open('snf_control', 'r')
         lines = f.readlines()
         f.close()
 

@@ -126,7 +126,7 @@ class VibModes (object) :
         temp_freqs = numpy.zeros((temp_modes.shape[0],))
         temp_freqs[:self.nmodes] = self.freqs
         
-        f = file(filename, 'w')
+        f = open(filename, 'w')
         f.write(' Entering Gaussian System \n')
         f.write(' *********************************************\n')
         f.write(' Gaussian 98:\n')

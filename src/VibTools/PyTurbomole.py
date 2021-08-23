@@ -47,7 +47,7 @@ class AOForceOutputFile(object) :
         natoms = mol.natoms
         self.modes = VibModes(3*natoms, mol)
 
-        f = file(self.filename, 'r')
+        f = open(self.filename, 'r')
         lines = f.readlines()
         f.close()
 
