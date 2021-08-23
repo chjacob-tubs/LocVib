@@ -25,12 +25,15 @@
 """
  Localizing normal modes
 """
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import division
 import math
 import numpy
 import copy
 
-from Modes import VibModes
-import Constants
+from .Modes import VibModes
+from . import Constants
 
 class LocVib (object) :
 
@@ -154,8 +157,8 @@ class LocVib (object) :
             err = p - old_p
 
             if printing :
-                print " Normal mode localization: Cycle %3i    p: %8.3f   change: %10.7f  %10.5f " % \
-                      (isweep, p, err, err2)
+                print(" Normal mode localization: Cycle %3i    p: %8.3f   change: %10.7f  %10.5f " % \
+                      (isweep, p, err, err2))
 
         del_p = p - start_p
         return transmat, del_p
@@ -231,7 +234,7 @@ class LocVib (object) :
             # END TEST PAWEL
 
             diag =  numpy.diag(omega)
-        print 'Obtaining coupling matrix in [a.u.]'
+        print('Obtaining coupling matrix in [a.u.]')
         # first normal modes    
         cmat = numpy.dot(numpy.dot(self.transmat, diag), self.transmat.transpose())
 
@@ -253,7 +256,7 @@ class LocVib (object) :
 
     def sort_by_residue (self, pdb_mol=None) :
         if pdb_mol:
-            print 'Using external molecule definition'
+            print('Using external molecule definition')
             sortmat = self.locmodes.sortmat_by_residue(external_molecule=pdb_mol)
         else:
             sortmat = self.locmodes.sortmat_by_residue()

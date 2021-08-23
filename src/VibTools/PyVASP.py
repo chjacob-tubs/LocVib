@@ -25,14 +25,17 @@
 """
  Importing results of VASP calculations.
 """
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import division
 import numpy 
 import math
 
-from Constants import *
+from .Constants import *
 
-from Molecule import VibToolsMolecule
-from Modes    import VibModes
-from Results  import Results
+from .Molecule import VibToolsMolecule
+from .Modes    import VibModes
+from .Results  import Results
 
 class VASPoutput(object) :
     """
@@ -77,7 +80,7 @@ class VASPoutput(object) :
         bec.append(ion)
         ion = []
         self.dipgrad = numpy.array(bec)
-        print self.dipgrad.shape
+        print(self.dipgrad.shape)
         f.close()        
 
         #dipgrad = ' '.join(lines[start+1:end]).replace('D', 'E').replace('d', 'E').split()

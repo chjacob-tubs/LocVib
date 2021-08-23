@@ -23,6 +23,9 @@
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import division
 import openbabel
 import numpy
 
@@ -146,7 +149,7 @@ class VibToolsMolecule (AbstractMolecule) :
         groupnames = ['N', 'H', 'C', 'O',  'CA', 'HA', 'CB', 'HB', 'OXT', 'HXT', 'H2O']
         groups     = []
 
-        print groupnames
+        print(groupnames)
 
         for k in groupnames :
             groups.append([])
@@ -482,7 +485,7 @@ class VibToolsMolecule (AbstractMolecule) :
             try:
                 ind = groupnames.index(attype)
             except ValueError :
-                print attype
+                print(attype)
                 raise
             groups[ind].append(at.GetIdx()-1)
 
@@ -540,7 +543,7 @@ class VibToolsMolecule (AbstractMolecule) :
             try:
                 ind = groupnames.index(attype)
             except ValueError :
-                print attype
+                print(attype)
                 raise
             groups[ind].append(at.GetIdx()-1)
 
@@ -588,7 +591,7 @@ class VibToolsMolecule (AbstractMolecule) :
             try:
                 ind = groupnames.index(attype)
             except ValueError :
-                print attype
+                print(attype)
                 raise
             groups[ind].append(at.GetIdx()-1)
 

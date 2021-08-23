@@ -23,10 +23,13 @@
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import numpy
 
-from Constants import *
-from Molecule import VibToolsMolecule
+from .Constants import *
+from .Molecule import VibToolsMolecule
 
 class Results (object) :
 
@@ -62,7 +65,7 @@ class Results (object) :
             modes_c = modes.modes_c
 
         nmodes  = modes_c.shape[0]
-        natoms  = modes_c.shape[1] / 3
+        natoms  = modes_c.shape[1] // 3
 
         deriv_nm = numpy.zeros((nmodes, ncomp))
 

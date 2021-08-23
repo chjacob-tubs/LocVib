@@ -23,14 +23,17 @@
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import division
 import numpy 
 import math
 
-from Constants import *
+from .Constants import *
 
-from Molecule import VibToolsMolecule
-from Modes    import VibModes
-from Results  import Results
+from .Molecule import VibToolsMolecule
+from .Modes    import VibModes
+from .Results  import Results
 
 class SNFRestartFile (object) :
 
@@ -58,7 +61,7 @@ class SNFRestartFile (object) :
         line = [int(i) for i in line.split()]
 
         self.nvar   = line[4]
-        self.natoms = self.nvar / 3
+        self.natoms = self.nvar // 3
         self.iaus   = line[5]
         self.nmodes = line[6]
         if self.nmodes > 0 :
@@ -108,7 +111,7 @@ class SNFRestartFile (object) :
 
         result = numpy.zeros((self.ncalcsets, nread))
         
-        nlines = nread / self.n_per_line
+        nlines = nread // self.n_per_line
         if nlines*self.n_per_line < nread:
             nlines = nlines + 1
 
@@ -121,7 +124,7 @@ class SNFRestartFile (object) :
                     result[i,n] = float(fl)
                     n += 1
 
-        result.shape = (self.ncalcsets, nread / ncomp, ncomp)
+        result.shape = (self.ncalcsets, nread // ncomp, ncomp)
         return result
 
     def del_int_for_atoms(self, atoms) :
@@ -348,7 +351,7 @@ class SNFResults (Results) :
         tensor = eval('self.restartfile' + '.' + tens)
 
         ncalcsets = tensor.shape[0]
-        nval = tensor.shape[1] / 2
+        nval = tensor.shape[1] // 2
         if (ncomp == None) :
             ncomp = tensor.shape[2]
 
@@ -422,10 +425,10 @@ class SNFResults (Results) :
         return deriv_nm
 
     def check_consistency (self) :
-        print
-        print "Checking consistency of SNF restart file "
-        print "  Large numbers mean that the change of the polarizabilities deviates from linear behavior."
-        print
+        print()
+        print("Checking consistency of SNF restart file ")
+        print("  Large numbers mean that the change of the polarizabilities deviates from linear behavior.")
+        print()
 
         def check (ten) :
             if ten.startswith('pol') :
@@ -438,10 +441,10 @@ class SNFResults (Results) :
 
             mean_pol = mean_pol.reshape((ncalcsets*nval,ncomp))
             for icomp in range(ncomp) :
-                print " %14.8f  min: %3i  max:  %3i" % \
+                print(" %14.8f  min: %3i  max:  %3i" % \
                       (mean_pol[:,icomp].max()-mean_pol[:,icomp].min(),
-                       mean_pol[:,icomp].argmin(), mean_pol[:,icomp].argmax() )
-            print
+                       mean_pol[:,icomp].argmin(), mean_pol[:,icomp].argmax() ))
+            print()
 
             wrong = {} 
 
@@ -450,26 +453,26 @@ class SNFResults (Results) :
                     wrong[i+1] = [ abs(mean_pol[3*i,0] - mean_pol[0,0]) > 0.001, 
                                    abs(mean_pol[3*i+1,0] - mean_pol[0,0]) > 0.001, 
                                    abs(mean_pol[3*i+2,0] - mean_pol[0,0]) > 0.001]
-                    print i+1, mean_pol[3*i:3*i+3,0] - mean_pol[0,0]
+                    print(i+1, mean_pol[3*i:3*i+3,0] - mean_pol[0,0])
 
             return wrong
 
-        print " Dipole moment "
+        print(" Dipole moment ")
         return check('dipole')
 
         return
 
-        print " Polarizability (length) "
+        print(" Polarizability (length) ")
         check('pollen')
 
-        print " Polarizability (vel) "
+        print(" Polarizability (vel) ")
         check('polvel')
 
-        print " G-tensor (len) "
+        print(" G-tensor (len) ")
         check('gtenlen')
 
-        print " G-tensor (vel) "
+        print(" G-tensor (vel) ")
         check('gtenvel')
 
-        print " A-tensor "
+        print(" A-tensor ")
         check('aten')

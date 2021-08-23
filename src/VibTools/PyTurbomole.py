@@ -23,14 +23,17 @@
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import division
 import numpy 
 import math
 
-from Constants import *
+from .Constants import *
 
-from Molecule import VibToolsMolecule
-from Modes    import VibModes
-from Results  import Results
+from .Molecule import VibToolsMolecule
+from .Modes    import VibModes
+from .Results  import Results
 
 class AOForceOutputFile(object) :
 
@@ -143,7 +146,7 @@ class TMControlFile(object) :
         ncol = len(lines[0].split())-2 
         lines = [l[6:] for l in lines]
         
-        nrow = 3*natoms / ncol
+        nrow = 3*natoms // ncol
         if 3*natoms % ncol: nrow = nrow+1
 
         for i in range(3*natoms) :
@@ -182,7 +185,7 @@ class TurbomoleResults (Results) :
         self.coordfile    = coordfile
 
         if outname :
-            print "WARNING: normal modes are read from aoforce output file"
+            print("WARNING: normal modes are read from aoforce output file")
             
             self.aoforceoutput = AOForceOutputFile(filename=outname)
         else :

@@ -23,11 +23,14 @@
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import division
 import math
 import numpy
 import pylab
 
-import Constants
+from . import Constants
 
 class VibModes (object) :
 
@@ -188,28 +191,28 @@ class VibModes (object) :
         else:
             lab = labels
         
-        print (" "*len(lab[0])),
+        print((" "*len(lab[0])), end=' ')
         for t in groupnames :
-            print "%5s  " % t,
-        print
+            print("%5s  " % t, end=' ')
+        print()
 
         for i in range(comp.shape[1]) :
-            print lab[i],
+            print(lab[i], end=' ')
             for t in range(comp.shape[0]) :
-                print "%5.1f  " % (comp[t,i]*100.0),
-            print
+                print("%5.1f  " % (comp[t,i]*100.0), end=' ')
+            print()
 
-        print
-        print "min: " + " "*(len(lab[0])-5),
+        print()
+        print("min: " + " "*(len(lab[0])-5), end=' ')
         for t in range(comp.shape[0]) :
-            print "%5.1f  " % (comp[t,:].min()*100.0),
-        print
+            print("%5.1f  " % (comp[t,:].min()*100.0), end=' ')
+        print()
 
-        print "max: " + " "*(len(lab[0])-5),
+        print("max: " + " "*(len(lab[0])-5), end=' ')
         for t in range(comp.shape[0]) :
-            print "%5.1f  " % (comp[t,:].max()*100.0),
-        print
-        print
+            print("%5.1f  " % (comp[t,:].max()*100.0), end=' ')
+        print()
+        print()
 
     def print_residue_composition(self, labels=None) :
         groups, groupnames = self.mol.residue_groups()
@@ -345,7 +348,7 @@ class VibModes (object) :
             dipi_vec = dipole[i] / dipi_mag
 
             #dipole is in  a.u./(amu^-0.5 * A)
-            print i, dipi_mag * (Constants.au_in_Debye/Constants.Bohr_in_Angstrom)
+            print(i, dipi_mag * (Constants.au_in_Debye/Constants.Bohr_in_Angstrom))
         
             for j in range(i+1, self.nmodes) :
                 dipj_mag = math.sqrt(numpy.dot(dipole[j], dipole[j]))
@@ -420,7 +423,7 @@ class VibModes (object) :
                 tmp = []
             i += 1
             tmp.append(i)
-        if tmp <> [] : groupmodes.append(tmp)
+        if tmp != [] : groupmodes.append(tmp)
         tmp = []
 
         for g in groupmodes :

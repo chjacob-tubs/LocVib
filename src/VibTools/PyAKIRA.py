@@ -23,9 +23,12 @@
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
-from Molecule import VibToolsMolecule
-from Modes    import VibModes
-from Results  import Results
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from .Molecule import VibToolsMolecule
+from .Modes    import VibModes
+from .Results  import Results
 
 class AKIRAResults (Results) :
 
