@@ -26,7 +26,6 @@
 from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import division
-from past.builtins import cmp
 from builtins import range
 from builtins import object
 import math
@@ -272,10 +271,10 @@ class VibModes (object) :
                 if (types[t][i] > 0.4) :
                     maxind = t
             max_res.append((i,maxind))
-
-        max_res.sort(lambda x,y: -cmp(self.freqs[x[0]], self.freqs[y[0]]))
-        max_res.sort(lambda x,y: cmp(x[1],y[1]))
-
+        
+        max_res.sort(key=(lambda x: self.freqs[x[0]]), reverse=True)
+        max_res.sort(key=(lambda x: x[1])) 
+        
         sortmat = numpy.zeros((self.nmodes, self.nmodes))
         for i in range(self.nmodes) :
             sortmat[i, max_res[i][0]] = 1.0
