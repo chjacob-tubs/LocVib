@@ -23,9 +23,15 @@
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from builtins import zip
+from builtins import range
+from builtins import object
 import math
 import numpy
-import pylab as plt
+from matplotlib import pylab as plt
 from matplotlib.patches import Circle
 from matplotlib.patches import Rectangle
 from matplotlib.patches import Arrow
@@ -159,8 +165,8 @@ class HugAnalysisPlot (Plot) :
         ax.xaxis.tick_top()
         ax.yaxis.tick_right()
 
-        ax.set_xticks(range(ngroups))
-        ax.set_yticks(range(ngroups))
+        ax.set_xticks(list(range(ngroups)))
+        ax.set_yticks(list(range(ngroups)))
 
         ax.set_xticklabels(self.groupnames)
         ax.set_yticklabels(self.groupnames)
@@ -397,7 +403,7 @@ class ModesPlot (Plot) :
             self.range = range
 
         if modelabels is None :
-            self.modelabels = range(len(freqs))
+            self.modelabels = list(range(len(freqs)))
         else :
             self.modelabels = modelabels
 
@@ -452,7 +458,7 @@ class ModesPlot (Plot) :
         ax.xaxis.tick_bottom()
         ax.yaxis.tick_left()
         
-        ax.set_xticks(range(xmin,0)+range(1,xmax+1))
+        ax.set_xticks(list(range(xmin,0))+list(range(1,xmax+1)))
         ax.set_xticklabels(self.modelabels + self.modelabels)
 
         if self.yticks is not None:

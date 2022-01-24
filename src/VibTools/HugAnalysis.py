@@ -23,10 +23,15 @@
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import division
+from builtins import range
+from builtins import object
 import numpy
 
-import Constants
-import Modes
+from . import Constants
+from . import Modes
 
 class HugAnalysis (object) :
 
@@ -155,7 +160,7 @@ class HugAnalysis (object) :
         inv_decomposed_nm = numpy.zeros((self.natoms, self.natoms))
 
         if nummode is None :
-            modelist = range(modes.nmodes)
+            modelist = list(range(modes.nmodes))
         else:
             modelist = [nummode]
 
@@ -197,19 +202,19 @@ class HugAnalysis (object) :
         
     def print_gcm(self, inv_groups, groupnames) :
         for n in groupnames :
-            print ("%6s " % n),
-        print
+            print(("%6s " % n), end=' ')
+        print()
         for i in range(inv_groups.shape[0]) :
-            print " "*8*i,
+            print(" "*8*i, end=' ')
             for j in range(i,inv_groups.shape[0]) :
-                print "%6.1f " % inv_groups[i,j],
-            print
+                print("%6.1f " % inv_groups[i,j], end=' ')
+            print()
 
     def print_group_coupling_matrix(self, groups, groupnames, modes, num_mode=None, scale=1.0) :
         inv_groups = self.get_group_coupling_matrix(groups, modes, num_mode)
-        print
-        print "Total intensity: ", inv_groups.sum()
-        print
+        print()
+        print("Total intensity: ", inv_groups.sum())
+        print()
         self.print_gcm(inv_groups*scale, groupnames)
 
 

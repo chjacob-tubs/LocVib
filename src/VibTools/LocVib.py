@@ -25,12 +25,17 @@
 """
  Localizing normal modes
 """
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import division
+from builtins import range
+from builtins import object
 import math
 import numpy
 import copy
 
-from Modes import VibModes
-import Constants
+from .Modes import VibModes
+from . import Constants
 
 class LocVib (object) :
 
@@ -114,7 +119,7 @@ class LocVib (object) :
 
     def try_localize (self, subset=None, thresh=1e-6, thresh2=1e-4, printing=False) :
         if subset is None :
-            ss = range(self.nmodes)
+            ss = list(range(self.nmodes))
         else:
             ss = subset
 
@@ -154,15 +159,15 @@ class LocVib (object) :
             err = p - old_p
 
             if printing :
-                print " Normal mode localization: Cycle %3i    p: %8.3f   change: %10.7f  %10.5f " % \
-                      (isweep, p, err, err2)
+                print(" Normal mode localization: Cycle %3i    p: %8.3f   change: %10.7f  %10.5f " % \
+                      (isweep, p, err, err2))
 
         del_p = p - start_p
         return transmat, del_p
 
     def localize (self, subset=None, thresh=1e-6, thresh2=1e-4, printing=True) :
         if subset is None :
-            ss = range(self.nmodes)
+            ss = list(range(self.nmodes))
         else:
             ss = subset
 
@@ -186,7 +191,7 @@ class LocVib (object) :
 
     def try_localize_vcisdiff(self, subset=None, thresh=1e-6, thresh2=1e-4) :
         if subset is None :
-            ss = range(self.nmodes)
+            ss = list(range(self.nmodes))
         else:
             ss = subset
 
@@ -231,7 +236,7 @@ class LocVib (object) :
             # END TEST PAWEL
 
             diag =  numpy.diag(omega)
-        print 'Obtaining coupling matrix in [a.u.]'
+        print('Obtaining coupling matrix in [a.u.]')
         # first normal modes    
         cmat = numpy.dot(numpy.dot(self.transmat, diag), self.transmat.transpose())
 
@@ -251,8 +256,12 @@ class LocVib (object) :
         # VCIS matrix in cm-1
         return vcis_mat
 
-    def sort_by_residue (self) :
-        sortmat = self.locmodes.sortmat_by_residue()
+    def sort_by_residue (self, pdb_mol=None) :
+        if pdb_mol:
+            print('Using external molecule definition')
+            sortmat = self.locmodes.sortmat_by_residue(external_molecule=pdb_mol)
+        else:
+            sortmat = self.locmodes.sortmat_by_residue()
         tmat = numpy.dot(sortmat, self.transmat)
         self.set_transmat(tmat)
 

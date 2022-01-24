@@ -23,8 +23,16 @@
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
-import openbabel
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import division
+from builtins import zip
+from builtins import str
+from builtins import range
+from builtins import object
+from openbabel import openbabel
 import numpy
+
 
 class AbstractMolecule (object) :
 
@@ -135,8 +143,8 @@ class VibToolsMolecule (AbstractMolecule) :
             groupnames.append(str(r.GetNum()))
             groups.append(resgroup)
 
-        z = zip(groupnames, groups)
-        z.sort(lambda x,y: cmp(int(x[0]), int(y[0])))
+        z = list(zip(groupnames, groups))
+        z.sort(key=(lambda x: x[0]))
         groupnames = [x[0] for x in z]
         groups     = [x[1] for x in z]
 
@@ -145,6 +153,8 @@ class VibToolsMolecule (AbstractMolecule) :
     def attype_groups (self) :
         groupnames = ['N', 'H', 'C', 'O',  'CA', 'HA', 'CB', 'HB', 'OXT', 'HXT', 'H2O']
         groups     = []
+
+        print(groupnames)
 
         for k in groupnames :
             groups.append([])
@@ -158,7 +168,7 @@ class VibToolsMolecule (AbstractMolecule) :
                 attype = 'HXT'
 
             if at.GetResidue().GetName() == 'HOH' :
-	        attype = 'H2O'
+                attype = 'H2O'
 
             ind = groupnames.index(attype)
             groups[ind].append(at.GetIdx()-1)
@@ -281,6 +291,38 @@ class VibToolsMolecule (AbstractMolecule) :
 
         return groups, groupnames
 
+    def attype_all_groups(self):
+        #groupnames = ['N', 'H', 'C', 'O', 'CA', 'HA', 'CB', 'HB', 'OXT', 'HXT', 'H2O', 'CH3', 'HH3']
+        groupnames = []
+        groups = []
+
+        #print groupnames
+
+        #for k in groupnames:
+        #    groups.append([])
+        for at in openbabel.OBMolAtomIter(self.obmol):
+            attype = at.GetResidue().GetAtomID(at)
+
+            attype = attype.strip()
+
+            if attype in ['1HB', '2HB', '3HB', 'HB1', 'HB2', 'HB3']:
+                attype = 'HB'
+            if attype in ['1H', '2H', 'H 1', 'H 2', 'H1', 'H2']:
+                attype = 'HXT'
+            if attype in ['1HH3', '2HH3', '3HH3']:
+                attype = 'HH3'
+
+            if at.GetResidue().GetName() == 'HOH':
+                attype = 'H2O'
+
+            if attype not in groupnames:
+                groupnames.append(attype)
+                groups.append([])
+
+            ind = groupnames.index(attype)
+            groups[ind].append(at.GetIdx() - 1)
+
+        return groups, groupnames
 
     def atom_groups (self) :
         group_dict = {}
@@ -448,7 +490,7 @@ class VibToolsMolecule (AbstractMolecule) :
             try:
                 ind = groupnames.index(attype)
             except ValueError :
-                print attype
+                print(attype)
                 raise
             groups[ind].append(at.GetIdx()-1)
 
@@ -506,7 +548,7 @@ class VibToolsMolecule (AbstractMolecule) :
             try:
                 ind = groupnames.index(attype)
             except ValueError :
-                print attype
+                print(attype)
                 raise
             groups[ind].append(at.GetIdx()-1)
 
@@ -554,7 +596,7 @@ class VibToolsMolecule (AbstractMolecule) :
             try:
                 ind = groupnames.index(attype)
             except ValueError :
-                print attype
+                print(attype)
                 raise
             groups[ind].append(at.GetIdx()-1)
 

@@ -25,6 +25,9 @@
 """
  Constants used in program.
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
 pi = 3.141592653589793
 
