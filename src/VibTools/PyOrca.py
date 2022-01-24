@@ -23,9 +23,9 @@
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
-from Molecule import VibToolsMolecule
-from Modes    import VibModes
-from Results  import Results
+from .Molecule import VibToolsMolecule
+from .Modes    import VibModes
+from .Results  import Results
 
 class OrcaResults (Results) :
 
