@@ -30,7 +30,7 @@ from .Results  import Results
 class OrcaResults (Results) :
 
     def __init__ (self) :
-        self.mol          = VibToolsMolecule()
+        self.mol    = VibToolsMolecule()
         self.modes  = None
         self.nmodes = None
         self.natoms = None
@@ -56,7 +56,7 @@ class OrcaResults (Results) :
     def read(self, coords, output) :
         import numpy, re
 
-        self.mol.read(coords)
+        self.mol.read(filename=coords)
         natoms = self.mol.natoms
         #read akira iterations
         f = open(output)
