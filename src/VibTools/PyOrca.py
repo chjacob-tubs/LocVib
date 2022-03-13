@@ -94,7 +94,7 @@ class OrcaResults (Results) :
         freqs = numpy.asarray(freqs)
         normalmodes = numpy.asarray(normalmodes)
  
-        modes.set_modes_mw(normalmodes)
+        modes.set_modes_c(normalmodes)
         modes.set_freqs(freqs)
 
         self.natoms = natoms
