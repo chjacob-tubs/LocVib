@@ -148,7 +148,7 @@ class SNFOutputFile (object) :
         self.intonly = False
 
     def read (self, mol) :
-        f = open(self.filename, 'r')
+        f = open(self.filename, 'r', encoding='charmap')
         lines = f.readlines()
         f.close()
 
