@@ -119,7 +119,7 @@ class VibModes (object) :
         if self.nmodes % 3 == 0 :
             temp_modes = modes
         else:
-            temp_modes = numpy.zeros((3*(self.nmodes/3)+3,3*self.natoms))
+            temp_modes = numpy.zeros((3*(self.nmodes//3)+3,3*self.natoms))
             temp_modes[:self.nmodes,:] = modes[:,:]
 
         temp_freqs = numpy.zeros((temp_modes.shape[0],))
