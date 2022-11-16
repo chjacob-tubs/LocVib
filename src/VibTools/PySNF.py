@@ -142,7 +142,7 @@ class SNFOutputFile:
         self.intonly = False
 
     def read (self, mol) :
-        f = open(self.filename, 'r')
+        f = open(self.filename, 'r', encoding='charmap')
         lines = f.readlines()
         f.close()
 
@@ -323,8 +323,8 @@ class SNFResults (Results) :
     modes = property(_get_modes)
     lwl   = property(lambda self: self.snfoutput.lwl)
         
-    def read (self) :
-        self.mol.read_from_coord(filename=self.coordfile)
+    def read (self, deuterium=None) :
+        self.mol.read_from_coord(filename=self.coordfile, deuterium=deuterium)
 
         self.snfoutput.read(self.mol)
         self.intonly = self.snfoutput.intonly
