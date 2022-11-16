@@ -26,10 +26,11 @@
 import math
 import numpy
 
-import Plotting
-import Modes
+from . import Plotting
+from . import Modes
 
-class VibSpectrum (object) :
+
+class VibSpectrum:
 
     def __init__ (self, freqs, ints) :
         if isinstance(freqs, Modes.VibModes) :
@@ -171,10 +172,10 @@ class VibSpectrum (object) :
 
         if label_maxima :
             maxima = self.get_band_maxima(spec[1][0], spec[1][1]) 
-            pl.add_peaklabels(zip(maxima, [1]*len(maxima)))
+            pl.add_peaklabels(list(zip(maxima, [1]*len(maxima))))
         if label_min :
             minima = self.get_band_minima(spec[1][0], spec[1][1]) 
-            pl.add_peaklabels(zip(minima, [-1]*len(minima)))
+            pl.add_peaklabels(list(zip(minima, [-1]*len(minima))))
 
         if boxes is not None :
             bands, names = boxes

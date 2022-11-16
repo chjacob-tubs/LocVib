@@ -27,9 +27,9 @@ import math
 import numpy
 import pylab
 
-import Constants
+from . import Constants
 
-class VibModes (object) :
+class VibModes:
 
     def __init__ (self, nmodes, mol) :
         self.nmodes = nmodes
@@ -114,13 +114,13 @@ class VibModes (object) :
         if self.nmodes % 3 == 0 :
             temp_modes = modes
         else:
-            temp_modes = numpy.zeros((3*(self.nmodes/3)+3,3*self.natoms))
+            temp_modes = numpy.zeros((3*(self.nmodes//3)+3,3*self.natoms))
             temp_modes[:self.nmodes,:] = modes[:,:]
 
         temp_freqs = numpy.zeros((temp_modes.shape[0],))
         temp_freqs[:self.nmodes] = self.freqs
         
-        f = file(filename, 'w')
+        f = open(filename, 'w')
         f.write(' Entering Gaussian System \n')
         f.write(' *********************************************\n')
         f.write(' Gaussian 98:\n')
@@ -188,28 +188,28 @@ class VibModes (object) :
         else:
             lab = labels
         
-        print (" "*len(lab[0])),
+        print((" "*len(lab[0])), end=' ')
         for t in groupnames :
-            print "%5s  " % t,
-        print
+            print("%5s  " % t, end=' ')
+        print()
 
         for i in range(comp.shape[1]) :
-            print lab[i],
+            print(lab[i], end=' ')
             for t in range(comp.shape[0]) :
-                print "%5.1f  " % (comp[t,i]*100.0),
-            print
+                print("%5.1f  " % (comp[t,i]*100.0), end=' ')
+            print()
 
-        print
-        print "min: " + " "*(len(lab[0])-5),
+        print()
+        print("min: " + " "*(len(lab[0])-5), end=' ')
         for t in range(comp.shape[0]) :
-            print "%5.1f  " % (comp[t,:].min()*100.0),
-        print
+            print("%5.1f  " % (comp[t,:].min()*100.0), end=' ')
+        print()
 
-        print "max: " + " "*(len(lab[0])-5),
+        print("max: " + " "*(len(lab[0])-5), end=' ')
         for t in range(comp.shape[0]) :
-            print "%5.1f  " % (comp[t,:].max()*100.0),
-        print
-        print
+            print("%5.1f  " % (comp[t,:].max()*100.0), end=' ')
+        print()
+        print()
 
     def print_residue_composition(self, labels=None) :
         groups, groupnames = self.mol.residue_groups()
@@ -266,10 +266,10 @@ class VibModes (object) :
                 if (types[t][i] > 0.4) :
                     maxind = t
             max_res.append((i,maxind))
-
-        max_res.sort(lambda x,y: -cmp(self.freqs[x[0]], self.freqs[y[0]]))
-        max_res.sort(lambda x,y: cmp(x[1],y[1]))
-
+        
+        max_res.sort(key=(lambda x: self.freqs[x[0]]), reverse=True)
+        max_res.sort(key=(lambda x: x[1])) 
+        
         sortmat = numpy.zeros((self.nmodes, self.nmodes))
         for i in range(self.nmodes) :
             sortmat[i, max_res[i][0]] = 1.0
@@ -345,7 +345,7 @@ class VibModes (object) :
             dipi_vec = dipole[i] / dipi_mag
 
             #dipole is in  a.u./(amu^-0.5 * A)
-            print i, dipi_mag * (Constants.au_in_Debye/Constants.Bohr_in_Angstrom)
+            print(i, dipi_mag * (Constants.au_in_Debye/Constants.Bohr_in_Angstrom))
         
             for j in range(i+1, self.nmodes) :
                 dipj_mag = math.sqrt(numpy.dot(dipole[j], dipole[j]))
@@ -420,7 +420,7 @@ class VibModes (object) :
                 tmp = []
             i += 1
             tmp.append(i)
-        if tmp <> [] : groupmodes.append(tmp)
+        if tmp != [] : groupmodes.append(tmp)
         tmp = []
 
         for g in groupmodes :

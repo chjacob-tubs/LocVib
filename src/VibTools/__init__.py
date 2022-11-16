@@ -23,20 +23,23 @@
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
-from Constants import *
+import matplotlib
+matplotlib.use('Agg')
 
-from Molecule import *
-from Modes    import *
-from Spectrum import *
+from .Constants import *
 
-from PySNF import *
-from PyAKIRA import *
-from PyTurbomole import *
-from PyVASP import *
+from .Molecule import *
+from .Modes    import *
+from .Spectrum import *
+
+from .PySNF import *
+from .PyAKIRA import *
+from .PyTurbomole import *
+from .PyVASP import *
 try:
-    from PyTape21 import *
+    from .PyTape21 import *
 except ImportError:
     pass
-from HugAnalysis import *
-from LocVib import *
-from Plotting import *
+from .HugAnalysis import *
+from .LocVib import *
+from .Plotting import *

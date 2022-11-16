@@ -25,10 +25,11 @@
 
 import numpy
 
-from Constants import *
-from Molecule import VibToolsMolecule
+from .Constants import *
+from .Molecule import VibToolsMolecule
 
-class Results (object) :
+
+class Results:
 
     def __init__ (self) :
         self.mol = VibToolsMolecule()
@@ -62,7 +63,7 @@ class Results (object) :
             modes_c = modes.modes_c
 
         nmodes  = modes_c.shape[0]
-        natoms  = modes_c.shape[1] / 3
+        natoms  = modes_c.shape[1] // 3
 
         deriv_nm = numpy.zeros((nmodes, ncomp))
 

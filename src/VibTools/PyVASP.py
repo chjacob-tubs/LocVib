@@ -28,13 +28,14 @@
 import numpy 
 import math
 
-from Constants import *
+from .Constants import *
 
-from Molecule import VibToolsMolecule
-from Modes    import VibModes
-from Results  import Results
+from .Molecule import VibToolsMolecule
+from .Modes    import VibModes
+from .Results  import Results
 
-class VASPoutput(object) :
+
+class VASPoutput:
     """
     Class that handles VASP output (OUTCAR) file.
     """
@@ -67,7 +68,7 @@ class VASPoutput(object) :
         ion = []
         while line != '' and line != '\n':
             if 'ion' not in line:
-                line = map(float,line.split()[1:])
+                line = list(map(float,line.split()[1:]))
                 ion.append(line)
                 line = f.readline()
             else:
@@ -77,7 +78,7 @@ class VASPoutput(object) :
         bec.append(ion)
         ion = []
         self.dipgrad = numpy.array(bec)
-        print self.dipgrad.shape
+        print(self.dipgrad.shape)
         f.close()        
 
         #dipgrad = ' '.join(lines[start+1:end]).replace('D', 'E').replace('d', 'E').split()
@@ -113,7 +114,7 @@ class VASPoutput(object) :
         for i,l in enumerate(tmp):
             l = l.split()
             l.pop(0)
-            tmp[i] = map(float,l)
+            tmp[i] = list(map(float,l))
         self.hessian = numpy.array(tmp) 
         #symmetrizing the hessian
         self.hessian = -(self.hessian+self.hessian.transpose())/2.0

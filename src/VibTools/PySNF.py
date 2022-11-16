@@ -26,13 +26,13 @@
 import numpy 
 import math
 
-from Constants import *
+from .Constants import *
 
-from Molecule import VibToolsMolecule
-from Modes    import VibModes
-from Results  import Results
+from .Molecule import VibToolsMolecule
+from .Modes    import VibModes
+from .Results  import Results
 
-class SNFRestartFile (object) :
+class SNFRestartFile:
 
     def __init__ (self) :
         self.n_per_line = None
@@ -46,7 +46,7 @@ class SNFRestartFile (object) :
         self.nmodes  = 0
 
     def read (self, filename='restart') :
-        f = file(filename, 'r')
+        f = open(filename, 'r')
         
         f.readline()  # first line: some path
 
@@ -58,7 +58,7 @@ class SNFRestartFile (object) :
         line = [int(i) for i in line.split()]
 
         self.nvar   = line[4]
-        self.natoms = self.nvar / 3
+        self.natoms = self.nvar // 3
         self.iaus   = line[5]
         self.nmodes = line[6]
         if self.nmodes > 0 :
@@ -76,7 +76,7 @@ class SNFRestartFile (object) :
         f.readline()  # fourth line: some other path
         f.readline()  # fifth line: and yet another path
 
-        for i in xrange(self.ncalcsets) :
+        for i in range(self.ncalcsets) :
             line = f.readline()
             line = [int(i) for i in line.split()]
             for i in line[1:] :
@@ -108,20 +108,20 @@ class SNFRestartFile (object) :
 
         result = numpy.zeros((self.ncalcsets, nread))
         
-        nlines = nread / self.n_per_line
+        nlines = nread // self.n_per_line
         if nlines*self.n_per_line < nread:
             nlines = nlines + 1
 
-        for i in xrange(self.ncalcsets) :
+        for i in range(self.ncalcsets) :
             f.readline()
             n = 0
-            for j in xrange(nlines) :
+            for j in range(nlines) :
                 line = f.readline().replace('D', 'E').split()
                 for fl in line :
                     result[i,n] = float(fl)
                     n += 1
 
-        result.shape = (self.ncalcsets, nread / ncomp, ncomp)
+        result.shape = (self.ncalcsets, nread // ncomp, ncomp)
         return result
 
     def del_int_for_atoms(self, atoms) :
@@ -133,7 +133,7 @@ class SNFRestartFile (object) :
         self.aten[atoms,:,:]    = 0.0
 
     
-class SNFOutputFile (object) :
+class SNFOutputFile:
 
     def __init__ (self, filename='snf.out') :
         self.modes = None
@@ -142,7 +142,7 @@ class SNFOutputFile (object) :
         self.intonly = False
 
     def read (self, mol) :
-        f = file(self.filename, 'r')
+        f = open(self.filename, 'r', encoding='charmap')
         lines = f.readlines()
         f.close()
 
@@ -217,7 +217,7 @@ class SNFOutputFile (object) :
         but I want to work with a 3*nr_atoms x 3
         """
 
-        f = file(self.filename, 'r')
+        f = open(self.filename, 'r')
         
         # Little hack to assure that you find the right polarizabilities (length vs. velocity representation)
         vel = False
@@ -271,13 +271,13 @@ class SNFOutputFile (object) :
         self.aten = self.read_mat("gradient of A tensor").reshape(mol.natoms, 3, 27)
 
 
-class SNFControlFile (object) :
+class SNFControlFile:
 
     def __init__ (self) :
         self.modes = None 
 
     def read (self, mol) :
-        f = file('snf_control', 'r')
+        f = open('snf_control', 'r')
         lines = f.readlines()
         f.close()
 
@@ -323,8 +323,8 @@ class SNFResults (Results) :
     modes = property(_get_modes)
     lwl   = property(lambda self: self.snfoutput.lwl)
         
-    def read (self) :
-        self.mol.read_from_coord(filename=self.coordfile)
+    def read (self, deuterium=None) :
+        self.mol.read_from_coord(filename=self.coordfile, deuterium=deuterium)
 
         self.snfoutput.read(self.mol)
         self.intonly = self.snfoutput.intonly
@@ -332,7 +332,7 @@ class SNFResults (Results) :
         if self.snfoutput.intonly :
             self.snfcontrol.read(self.mol)
 
-	if self.restartname :
+        if self.restartname :
             self.restartfile.read(filename=self.restartname)
         else:
             self.snfoutput.read_derivatives(self.mol)
@@ -348,7 +348,7 @@ class SNFResults (Results) :
         tensor = eval('self.restartfile' + '.' + tens)
 
         ncalcsets = tensor.shape[0]
-        nval = tensor.shape[1] / 2
+        nval = tensor.shape[1] // 2
         if (ncomp == None) :
             ncomp = tensor.shape[2]
 
@@ -422,10 +422,10 @@ class SNFResults (Results) :
         return deriv_nm
 
     def check_consistency (self) :
-        print
-        print "Checking consistency of SNF restart file "
-        print "  Large numbers mean that the change of the polarizabilities deviates from linear behavior."
-        print
+        print()
+        print("Checking consistency of SNF restart file ")
+        print("  Large numbers mean that the change of the polarizabilities deviates from linear behavior.")
+        print()
 
         def check (ten) :
             if ten.startswith('pol') :
@@ -438,10 +438,10 @@ class SNFResults (Results) :
 
             mean_pol = mean_pol.reshape((ncalcsets*nval,ncomp))
             for icomp in range(ncomp) :
-                print " %14.8f  min: %3i  max:  %3i" % \
+                print(" %14.8f  min: %3i  max:  %3i" % \
                       (mean_pol[:,icomp].max()-mean_pol[:,icomp].min(),
-                       mean_pol[:,icomp].argmin(), mean_pol[:,icomp].argmax() )
-            print
+                       mean_pol[:,icomp].argmin(), mean_pol[:,icomp].argmax() ))
+            print()
 
             wrong = {} 
 
@@ -450,26 +450,26 @@ class SNFResults (Results) :
                     wrong[i+1] = [ abs(mean_pol[3*i,0] - mean_pol[0,0]) > 0.001, 
                                    abs(mean_pol[3*i+1,0] - mean_pol[0,0]) > 0.001, 
                                    abs(mean_pol[3*i+2,0] - mean_pol[0,0]) > 0.001]
-                    print i+1, mean_pol[3*i:3*i+3,0] - mean_pol[0,0]
+                    print(i+1, mean_pol[3*i:3*i+3,0] - mean_pol[0,0])
 
             return wrong
 
-        print " Dipole moment "
+        print(" Dipole moment ")
         return check('dipole')
 
         return
 
-        print " Polarizability (length) "
+        print(" Polarizability (length) ")
         check('pollen')
 
-        print " Polarizability (vel) "
+        print(" Polarizability (vel) ")
         check('polvel')
 
-        print " G-tensor (len) "
+        print(" G-tensor (len) ")
         check('gtenlen')
 
-        print " G-tensor (vel) "
+        print(" G-tensor (vel) ")
         check('gtenvel')
 
-        print " A-tensor "
+        print(" A-tensor ")
         check('aten')

@@ -27,11 +27,11 @@ import kf
 import numpy
 import math
 
-from Constants import *
+from .Constants import *
 
-from Molecule import VibToolsMolecule
-from Modes    import VibModes
-from Results  import Results
+from .Molecule import VibToolsMolecule
+from .Modes    import VibModes
+from .Results  import Results
 
 
 class ADFResults (Results) :

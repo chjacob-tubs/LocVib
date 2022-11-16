@@ -23,10 +23,11 @@
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
-import openbabel
+from openbabel import openbabel
 import numpy
 
-class AbstractMolecule (object) :
+
+class AbstractMolecule:
 
     def __init__ (self) :
         self.natoms      = None
@@ -55,7 +56,7 @@ class VibToolsMolecule (AbstractMolecule) :
         self._atnums = None
         self._coords = None
 
-    def read (self, filename, filetype="xyz") :
+    def read (self, filename, filetype="xyz", deuterium=None) :
         self.reset_molcache()
 
         obconv = openbabel.OBConversion()
@@ -64,8 +65,15 @@ class VibToolsMolecule (AbstractMolecule) :
         if not obconv.ReadFile(self.obmol, filename) :
             raise Exception('Error reading file')
 
-    def read_from_coord (self, filename='coord') :
-        self.read(filename, "tmol")
+        if deuterium is not None:
+            for at in deuterium:
+                self.obmol.GetAtom(at).SetIsotope(2)
+            print('Set atoms ', deuterium, 'to deuterium')
+            print('Atomic masses: ')
+            print(self.atmasses)
+
+    def read_from_coord (self, filename='coord', deuterium=None) :
+        self.read(filename, "tmol", deuterium=deuterium)
 
     def write (self, filename, filetype="xyz") :
         obconv = openbabel.OBConversion()
@@ -135,8 +143,8 @@ class VibToolsMolecule (AbstractMolecule) :
             groupnames.append(str(r.GetNum()))
             groups.append(resgroup)
 
-        z = zip(groupnames, groups)
-        z.sort(lambda x,y: cmp(int(x[0]), int(y[0])))
+        z = list(zip(groupnames, groups))
+        z.sort(key=(lambda x: x[0]))
         groupnames = [x[0] for x in z]
         groups     = [x[1] for x in z]
 
@@ -146,7 +154,7 @@ class VibToolsMolecule (AbstractMolecule) :
         groupnames = ['N', 'H', 'C', 'O',  'CA', 'HA', 'CB', 'HB', 'OXT', 'HXT', 'H2O']
         groups     = []
 
-        print groupnames
+        print(groupnames)
 
         for k in groupnames :
             groups.append([])
@@ -482,7 +490,7 @@ class VibToolsMolecule (AbstractMolecule) :
             try:
                 ind = groupnames.index(attype)
             except ValueError :
-                print attype
+                print(attype)
                 raise
             groups[ind].append(at.GetIdx()-1)
 
@@ -540,7 +548,7 @@ class VibToolsMolecule (AbstractMolecule) :
             try:
                 ind = groupnames.index(attype)
             except ValueError :
-                print attype
+                print(attype)
                 raise
             groups[ind].append(at.GetIdx()-1)
 
@@ -588,7 +596,7 @@ class VibToolsMolecule (AbstractMolecule) :
             try:
                 ind = groupnames.index(attype)
             except ValueError :
-                print attype
+                print(attype)
                 raise
             groups[ind].append(at.GetIdx()-1)
 
