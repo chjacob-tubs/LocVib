@@ -33,6 +33,7 @@ from .Modes    import *
 from .Spectrum import *
 
 from .PySNF import *
+from .PyOrca import *
 from .PyAKIRA import *
 from .PyTurbomole import *
 from .PyVASP import *
@@ -43,3 +44,4 @@ except ImportError:
 from .HugAnalysis import *
 from .LocVib import *
 from .Plotting import *
+
