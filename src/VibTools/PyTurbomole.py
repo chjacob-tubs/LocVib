@@ -23,11 +23,6 @@
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import division
-from builtins import range
-from builtins import object
 import numpy 
 import math
 
@@ -37,7 +32,8 @@ from .Molecule import VibToolsMolecule
 from .Modes    import VibModes
 from .Results  import Results
 
-class AOForceOutputFile(object) :
+
+class AOForceOutputFile:
 
     def __init__ (self, filename='aoforce.out') :
         self.filename = filename
@@ -91,8 +87,9 @@ class AOForceOutputFile(object) :
                 normalmodes[icol:icol+ncol,irow] = line
 
         self.modes.set_modes_c(normalmodes)
-        
-class TMControlFile(object) :
+       
+ 
+class TMControlFile:
 
     def __init__ (self, filename='control') :
         self.filename = filename

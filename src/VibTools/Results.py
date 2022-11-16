@@ -23,17 +23,13 @@
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from builtins import range
-from builtins import object
 import numpy
 
 from .Constants import *
 from .Molecule import VibToolsMolecule
 
-class Results (object) :
+
+class Results:
 
     def __init__ (self) :
         self.mol = VibToolsMolecule()

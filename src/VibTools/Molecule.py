@@ -23,18 +23,11 @@
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import division
-from builtins import zip
-from builtins import str
-from builtins import range
-from builtins import object
 from openbabel import openbabel
 import numpy
 
 
-class AbstractMolecule (object) :
+class AbstractMolecule:
 
     def __init__ (self) :
         self.natoms      = None

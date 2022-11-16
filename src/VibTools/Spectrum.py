@@ -23,19 +23,14 @@
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from builtins import zip
-from builtins import range
-from builtins import object
 import math
 import numpy
 
 from . import Plotting
 from . import Modes
 
-class VibSpectrum (object) :
+
+class VibSpectrum:
 
     def __init__ (self, freqs, ints) :
         if isinstance(freqs, Modes.VibModes) :

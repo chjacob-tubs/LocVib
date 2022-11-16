@@ -25,11 +25,6 @@
 """
  Localizing normal modes
 """
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import division
-from builtins import range
-from builtins import object
 import math
 import numpy
 import copy
@@ -37,7 +32,7 @@ import copy
 from .Modes import VibModes
 from . import Constants
 
-class LocVib (object) :
+class LocVib:
 
     def __init__ (self, modes, loctype='PM') :
         self.startmodes = modes
@@ -298,7 +293,8 @@ class LocVib (object) :
          tmat = numpy.dot(sortmat, self.transmat)
          self.set_transmat(tmat)
 
-class AutomaticAssignment(object):
+
+class AutomaticAssignment:
 
     def __init__(self, lv) :
         self.lv = lv

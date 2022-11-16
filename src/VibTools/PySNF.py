@@ -23,12 +23,6 @@
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import division
-from builtins import str
-from builtins import range
-from builtins import object
 import numpy 
 import math
 
@@ -38,7 +32,7 @@ from .Molecule import VibToolsMolecule
 from .Modes    import VibModes
 from .Results  import Results
 
-class SNFRestartFile (object) :
+class SNFRestartFile:
 
     def __init__ (self) :
         self.n_per_line = None
@@ -139,7 +133,7 @@ class SNFRestartFile (object) :
         self.aten[atoms,:,:]    = 0.0
 
     
-class SNFOutputFile (object) :
+class SNFOutputFile:
 
     def __init__ (self, filename='snf.out') :
         self.modes = None
@@ -277,7 +271,7 @@ class SNFOutputFile (object) :
         self.aten = self.read_mat("gradient of A tensor").reshape(mol.natoms, 3, 27)
 
 
-class SNFControlFile (object) :
+class SNFControlFile:
 
     def __init__ (self) :
         self.modes = None 

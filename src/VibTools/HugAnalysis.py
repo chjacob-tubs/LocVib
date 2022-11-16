@@ -23,17 +23,12 @@
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import division
-from builtins import range
-from builtins import object
 import numpy
 
 from . import Constants
 from . import Modes
 
-class HugAnalysis (object) :
+class HugAnalysis:
 
     def __init__ (self, res, tensor, scale=1.0) :
         self.natoms = res.modes.natoms

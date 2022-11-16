@@ -23,18 +23,13 @@
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import division
-from builtins import range
-from builtins import object
 import math
 import numpy
 import pylab
 
 from . import Constants
 
-class VibModes (object) :
+class VibModes:
 
     def __init__ (self, nmodes, mol) :
         self.nmodes = nmodes
