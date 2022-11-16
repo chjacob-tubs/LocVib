@@ -23,12 +23,6 @@
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from builtins import zip
-from builtins import range
-from builtins import object
 import math
 import numpy
 from matplotlib import pylab as plt
@@ -38,7 +32,7 @@ from matplotlib.patches import Arrow
 from matplotlib.lines import Line2D
 
 
-class Plot (object) :
+class Plot:
 
     def __init__ (self) :
         self.fig = plt.figure()

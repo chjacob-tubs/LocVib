@@ -23,18 +23,11 @@
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import division
-from builtins import zip
-from builtins import str
-from builtins import range
-from builtins import object
 from openbabel import openbabel
 import numpy
 
 
-class AbstractMolecule (object) :
+class AbstractMolecule:
 
     def __init__ (self) :
         self.natoms      = None
@@ -63,7 +56,7 @@ class VibToolsMolecule (AbstractMolecule) :
         self._atnums = None
         self._coords = None
 
-    def read (self, filename, filetype="xyz") :
+    def read (self, filename, filetype="xyz", deuterium=None) :
         self.reset_molcache()
 
         obconv = openbabel.OBConversion()
@@ -72,8 +65,15 @@ class VibToolsMolecule (AbstractMolecule) :
         if not obconv.ReadFile(self.obmol, filename) :
             raise Exception('Error reading file')
 
-    def read_from_coord (self, filename='coord') :
-        self.read(filename, "tmol")
+        if deuterium is not None:
+            for at in deuterium:
+                self.obmol.GetAtom(at).SetIsotope(2)
+            print('Set atoms ', deuterium, 'to deuterium')
+            print('Atomic masses: ')
+            print(self.atmasses)
+
+    def read_from_coord (self, filename='coord', deuterium=None) :
+        self.read(filename, "tmol", deuterium=deuterium)
 
     def write (self, filename, filetype="xyz") :
         obconv = openbabel.OBConversion()

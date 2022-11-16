@@ -23,18 +23,13 @@
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import division
-from builtins import range
-from builtins import object
 import math
 import numpy
 import pylab
 
 from . import Constants
 
-class VibModes (object) :
+class VibModes:
 
     def __init__ (self, nmodes, mol) :
         self.nmodes = nmodes
@@ -119,7 +114,7 @@ class VibModes (object) :
         if self.nmodes % 3 == 0 :
             temp_modes = modes
         else:
-            temp_modes = numpy.zeros((3*(self.nmodes/3)+3,3*self.natoms))
+            temp_modes = numpy.zeros((3*(self.nmodes//3)+3,3*self.natoms))
             temp_modes[:self.nmodes,:] = modes[:,:]
 
         temp_freqs = numpy.zeros((temp_modes.shape[0],))
