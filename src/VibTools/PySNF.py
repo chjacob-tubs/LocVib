@@ -23,6 +23,13 @@
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
+"""
+This module enables a comfortable connection between SNF and LocVib/VibTools.
+
+SNF 4.0.0, Manual (2007):
+
+https://ethz.ch/content/dam/ethz/special-interest/chab/physical-chemistry/reiher-dam/documents/Software/SNF_4.0.0_manual.pdf
+"""
 import numpy 
 import math
 
@@ -32,9 +39,65 @@ from .Molecule import VibToolsMolecule
 from .Modes    import VibModes
 from .Results  import Results
 
-class SNFRestartFile:
+class SNFRestartFile(object):
+    """
+    reads relevant data from the restart (SNF) file for LocVib.
+
+    Parameters
+    ----------
+    n_per_line : int or None
+       reads the letters up to D in the format string of the SNF-restart file.\n
+       Example: 4D20.10 (line 2) n_per_line =  4
+    nvar : int or None
+       -> SNF manual: number of nuclear coordinates = number of atoms x 3.
+    natoms : int or None
+       total number of atoms in the molecule: floor(nvar/3).
+    iaus : int or None
+       order of the used difference quotient.\n
+       iaus = 2 (3-point-formula)\n
+       iaus = 4 (5-point-formula)\n
+       ! LocVib only supports iaus = 2 
+    displ : float or None
+       Displacement.\n
+       -> SNF manual: displ(LocVib) == cstep(SNF)\n
+       step size for the numerical derivatives, i.e.,\n 
+       distortion of the Cartesian nuclear coordinates, in [bohr]. 
+    intonly : Bool
+       If true then only intensities should be calculated.
+       If False then intensities and fequencies should be calculated.
+    nmodes : int 
+        number of modes.
+    dipol : narray (natoms, 6, 3)
+      gradient of dipole moments.
+    gradient : narray (natoms, 6, nvar)
+      gradient of ??? Hesse-Matrix ??? 
+    pollen : narray (natoms, 6, 8?)
+      gradient of polarizability tensor
+    polvel : narray (natoms, 6, 8?)
+      gradient of polarizability tensor (velocity representation).
+    gtenlen : narray (natoms, 6, 9?)
+      gradient of G/LAO tensor 
+    gtenvel : narray (natoms, 6, 9?) 
+      gradient of G/AO tensor
+    aten :  narray (natoms, 6, 27?)
+       gradient of A tensor
+    """
+    # Discrepancies between LocVib-doc and SNF-doc:
+    # :iaus: int or None
+    #    -> SNF manual: iaus(LocVib) == scfconf(SNF)
+    #    convergence criterion for the energy (10^{-scfconf})
+    # :nmodes: int 
+    #    -> SNF manual: nmodes(LocVib) == naus(SNF)
+    #    number of steps along each coordinate 
+    #    (for a n-point central differences formula 
+    #    for the numerical derivatives, 
+    #    naus= (n − 1); n must be odd)
 
     def __init__ (self) :
+        """
+        SNFRestartFile constructor.
+        For more details see the class description/docstring
+        """
         self.n_per_line = None
         
         self.nvar   = None
@@ -46,6 +109,14 @@ class SNFRestartFile:
         self.nmodes  = 0
 
     def read (self, filename='restart') :
+        """
+        reads a SNF restart file.
+
+        Parameters
+        ----------
+        filename : str
+            filename (with path) of restart-file (SNF).
+        """
         f = open(filename, 'r')
         
         f.readline()  # first line: some path
@@ -55,7 +126,8 @@ class SNFRestartFile:
         self.n_per_line = int(format[1:format.find('D')])
         
         line = f.readline() # third line
-        line = [int(i) for i in line.split()]
+        # Convert third line in a python list
+        line = [int(i) for i in line.split()] 
 
         self.nvar   = line[4]
         self.natoms = self.nvar // 3
@@ -100,6 +172,19 @@ class SNFRestartFile:
         f.close()
 
     def _read_section(self, f, ncomp) :
+        """
+        reads sections of restart-file.
+        \n\n
+        SNFRestartFile._read_section is 
+        a support/help-method for SNFRestartFile.read.
+
+        Parameters
+        ----------
+        f : ?
+           opened file from method SNFRestartFile.read.
+        ncomp : int 
+           number of restart-file component.   
+        """
 
         if self.intonly :
             nread = ncomp * self.iaus 
@@ -125,6 +210,17 @@ class SNFRestartFile:
         return result
 
     def del_int_for_atoms(self, atoms) :
+        """
+        deletes data entries for atoms.
+
+        Parameters
+        ----------
+        atoms : integer or array 
+           Atom index indicating which atoms should be deleted.
+           Example: \n
+           atoms = 1 or atoms = [0,1,5,6]\n
+           len(atoms) <= natoms
+        """
         self.dipole[atoms,:,:]  = 0.0
         self.pollen[atoms,:,:]  = 0.0 
         self.polvel[atoms,:,:]  = 0.0
@@ -133,25 +229,50 @@ class SNFRestartFile:
         self.aten[atoms,:,:]    = 0.0
 
     
-class SNFOutputFile:
+class SNFOutputFile(object):
+    """
+    reads the snf.out-files.
+
+    Parameters
+    ----------
+    modes : class VibModes(3*natoms,mol)
+       -> natoms: number of atoms of the molecule\n
+       -> mol: class VibToolsMolecule (Modul: Molecule)\n
+    lwl : float
+       laser wave length
+    filename : str or None
+        filename (with path) of snf-output file.
+    intonly : Bool
+       If true then only intensities should be calculated.
+       If False then intensities and fequencies should be calculated.
+    """
 
     def __init__ (self, filename='snf.out') :
+        """
+        SNFOutputFile constructor.
+        For more details see the class description/docstring.
+        """
         self.modes = None
         self.lwl = None
         self.filename = filename
         self.intonly = False
 
     def read (self, mol) :
+        """in progress"""
         f = open(self.filename, 'r', encoding='charmap')
-        lines = f.readlines()
+        lines = f.readlines() # lines = all line of snf.out
         f.close()
 
-        for l in lines :
+        # Check if intonly == True in lines
+        for l in lines : # line by line of lines
             if 'intensities-only-mode' in l :
                 self.intonly = True
 
         first = 0
         last  = 0
+        # Preperation for further reading snf.out
+        # assign start/last lines
+        # i: current iteration, l: line by line of lines(snf.out)
         for i, l in enumerate(lines) :
             if (first == 0) and ('root no.' in l) :
                 first = i
@@ -164,6 +285,7 @@ class SNFOutputFile:
             if 'Raman Optical Activity properties for freq.' in l :
                 self.lwl = float(l[46:57])
 
+        # read normal modes and corresponding frequencies from snf.out
         if not self.intonly :
             natoms = mol.natoms
             self.modes = VibModes(3*natoms-6, mol)
@@ -196,28 +318,51 @@ class SNFOutputFile:
             self.modes.set_modes_mw(normalmodes)
             self.modes.set_freqs(freqs)
 
+
     def read_mat(self, id_string):
         """Read in a matrix from the snf.out file, starting with the id_string.
         
         The matrix in the snf.out file should have the following form (only for the dipole gradients):
         
-                    1            2               3
-        1: dmu_x / dx   dmu_x / dy      dmu_x / dz
-        2: dmu_y / dx   dmu_y / dy      dmu_y / dz     # Atom 1
-        3: dmu_z / dx   dmu_z / dy      dmu_z / dz
-        
-                    4            5               6
-        1: dmu_x / dx   dmu_x / dy      dmu_x / dz
-        2: dmu_y / dx   dmu_y / dy      dmu_y / dz     # Atom 2
-        3: dmu_z / dx   dmu_z / dy      dmu_z / dz
+        ======== ======== ======== ======
+        1        2        3          
+        ======== ======== ======== ======
+        dmu_x/dx dmu_x/dy dmu_x/dz       
+        dmu_y/dx dmu_y/dy dmu_y/dz Atom 1
+        dmu_z/dx dmu_z/dy dmu_z/dz       
+        ======== ======== ======== ======
 
+        ======== ======== ======== ======
+          4         5         6          
+        ======== ======== ======== ======
+        dmu_x/dx dmu_x/dy dmu_x/dz       
+        dmu_y/dx dmu_y/dy dmu_y/dz Atom 2
+        dmu_z/dx dmu_z/dy dmu_z/dz       
+        ======== ======== ======== ======
+
+        
         etc.
         
         put one piece from the button to the right of the previous on and you get a 3 x 3*nr_atoms matrix
         but I want to work with a 3*nr_atoms x 3
+        
+        Parameters
+        ----------
+        Possible id_string strings : str        
+           "gradient of dipole moments",
+           "gradient of polarizability tensor",
+           "gradient of polarizability tensor (velocity representation)",
+           "gradient of G/LAO tensor",
+           "gradient of G/AO tensor",
+           "gradient of A tensor".
+
+        Returns
+        -------
+        matrix : ?
+           ?
         """
 
-        f = open(self.filename, 'r')
+        f = open(self.filename, 'r',encoding='charmap')
         
         # Little hack to assure that you find the right polarizabilities (length vs. velocity representation)
         vel = False
@@ -261,6 +406,13 @@ class SNFOutputFile:
         return matrix
 
     def read_derivatives (self, mol) :
+        """
+        Based on VibTool's PySNF.SNFOutputFile.read_mat(id_strings).
+        
+        Parameters
+        ---------- 
+        mol : VibTools Molecule class
+        """
         self.dipole = self.read_mat("gradient of dipole moments").reshape(mol.natoms, 3, 3)
         self.pollen = self.read_mat("gradient of polarizability tensor").reshape(mol.natoms, 3, 8)
         self.polvel = self.read_mat("gradient of polarizability tensor (velocity representation)").reshape(mol.natoms, 3, 8)
@@ -274,10 +426,14 @@ class SNFOutputFile:
 class SNFControlFile:
 
     def __init__ (self) :
+        """
+        SNFControlFile constructor.
+        For more details see the class description/docstring.
+        """
         self.modes = None 
 
     def read (self, mol) :
-        f = open('snf_control', 'r')
+        f = open('snf_control', 'r',encoding='charmap')
         lines = f.readlines()
         f.close()
 
@@ -302,9 +458,42 @@ class SNFControlFile:
         self.modes.set_modes_c(normalmodes)
         self.modes.set_freqs(freqs)
         
-class SNFResults (Results) :
+class SNFResults(Results) :
+    """
+    reads all relevant all SNF-data.
+
+    (Attributes)
+    Parameters
+    ----------
+    mol : class VibToolsMolecule
+       VibTools.Molecule.
+    snfoutput : class SNFOutputFile
+       VibTools.PySNF.
+    snfcontrol : class SNFControlFile
+       VibTools.PySNF.
+    restartfile :  SNFRestartFile
+        VibTools.PySNF.
+
+    Parameters
+    ----------
+    restartname : string
+       filename for SNF restart file needed in class SNFRestartFile.
+    coordfile : string    
+       filenname for coordfile.
+    outname : string
+       filename for SNF output file.
+    intonly : Bool     
+       Default = False.
+       If true then only intensities should be calculated.
+       If False then intensities and fequencies should be calculated.        
+    """
+
 
     def __init__ (self, outname='snf.out', restartname='restart', coordfile='coord') :
+        """
+        SNFResults constructor.
+        For more details see the class description/docstring.
+        """
         self.mol          = VibToolsMolecule()
         self.snfoutput    = SNFOutputFile(filename=outname) 
         self.snfcontrol   = SNFControlFile() 
@@ -322,8 +511,12 @@ class SNFResults (Results) :
     
     modes = property(_get_modes)
     lwl   = property(lambda self: self.snfoutput.lwl)
-        
+    
+    
     def read (self, deuterium=None) :
+        """
+        reads the molecule, snfoutput, snfcontrol and restart files.
+        """ 
         self.mol.read_from_coord(filename=self.coordfile, deuterium=deuterium)
 
         self.snfoutput.read(self.mol)
@@ -345,6 +538,7 @@ class SNFResults (Results) :
             self.aten_deriv_c    = self.snfoutput.aten
 
     def get_tensor_mean (self, tens, ncomp=None) :
+        # ??? tens = restartfile.dipole_deriv_c ?????
         tensor = eval('self.restartfile' + '.' + tens)
 
         ncalcsets = tensor.shape[0]
@@ -386,11 +580,9 @@ class SNFResults (Results) :
             deriv[:,i,:] = (tensor[:,2*i,:ncomp] - tensor[:,2*i+1,:ncomp]) / (2.0 * displ)
 
         setattr(self, tens+'_deriv_c', deriv)
-
         return deriv
 
     def get_tensor_deriv_nm (self, tens, ncomp=None, modes=None) :
-
         if modes==None :
             if hasattr(self, tens+'_deriv_nm') :
                 return eval('self.'+tens+'_deriv_nm')
@@ -418,7 +610,6 @@ class SNFResults (Results) :
 
         if modes==None :
             setattr(self, tens+'_deriv_nm', deriv_nm)
-
         return deriv_nm
 
     def check_consistency (self) :

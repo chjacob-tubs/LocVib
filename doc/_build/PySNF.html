@@ -1,0 +1,798 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PySNF &mdash; LocVib 0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="LocVib 0.1 documentation" href="index.html"/>
+        <link rel="up" title="LocVib" href="LocVib.html"/>
+        <link rel="next" title="Constants" href="Constants.html"/>
+        <link rel="prev" title="LocVib" href="LocVib.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> LocVib
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">VibTools Modules</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Molecule.html">Molecule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modes.html">Modes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="LocVib.html">LocVib</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="LocVib.html#id1">LocVib</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="LocVib.html#examples">Examples</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="LocVib.html#preparation-and-initiate-vibtools-modes">Preparation and Initiate VibTools.Modes</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="Molecule.html">Molecule</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Modes.html">Modes</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">PySNF</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="LocVib.html#maximize-localization">Maximize localization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="LocVib.html#localize-subsets-of-normal-modes">Localize subsets of normal modes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="LocVib.html#automaticassignment">AutomaticAssignment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Results.html">Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Spectrum.html">Spectrum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plotting.html">Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HugAnalysis.html">HugAnalysis</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="PyAKIRA.html">PyAKIRA</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">PySNF</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#snf-files-output-restart-control">SNF-Files: Output, Restart, Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#snfrestartfile">SNFRestartFile</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#snfoutputfile">SNFOutputFile</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id3">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#snfcontrolfile">SNFControlFile</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id5">Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#snfresults">SNFResults</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Molecule.html">Molecule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Modes.html">Modes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Molecule.html">Molecule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Modes.html">Modes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="PyTape21.html">PyTape21</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PyTurbomole.html">PyTurbomole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PyVASP.html">PyVASP</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">LocVib</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="LocVib.html">LocVib</a> &raquo;</li>
+        
+      <li>PySNF</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/PySNF.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="pysnf">
+<h1>PySNF<a class="headerlink" href="#pysnf" title="Permalink to this heading">¶</a></h1>
+<p>This module enables a comfortable connection between SNF and LocVib/VibTools.</p>
+<p>SNF 4.0.0, Manual (2007):</p>
+<p><a class="reference external" href="https://ethz.ch/content/dam/ethz/special-interest/chab/physical-chemistry/reiher-dam/documents/Software/SNF_4.0.0_manual.pdf">https://ethz.ch/content/dam/ethz/special-interest/chab/physical-chemistry/reiher-dam/documents/Software/SNF_4.0.0_manual.pdf</a></p>
+<section id="snf-files-output-restart-control">
+<h2>SNF-Files: Output, Restart, Control<a class="headerlink" href="#snf-files-output-restart-control" title="Permalink to this heading">¶</a></h2>
+<section id="snfrestartfile">
+<h3>SNFRestartFile<a class="headerlink" href="#snfrestartfile" title="Permalink to this heading">¶</a></h3>
+<blockquote>
+<div><span class="target" id="id1"></span></div></blockquote>
+<dl class="py class">
+<dt class="sig sig-object py" id="VibTools.SNFRestartFile">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">VibTools.</span></span><span class="sig-name descname"><span class="pre">SNFRestartFile</span></span><a class="headerlink" href="#VibTools.SNFRestartFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>reads relevant data from the restart (SNF) file for LocVib.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_per_line</strong> (<em>int</em><em> or </em><em>None</em>) – <p>reads the letters up to D in the format string of the SNF-restart file.</p>
+<p>Example: 4D20.10 (line 2) n_per_line =  4</p>
+</p></li>
+<li><p><strong>nvar</strong> (<em>int</em><em> or </em><em>None</em>) – -&gt; SNF manual: number of nuclear coordinates = number of atoms x 3.</p></li>
+<li><p><strong>natoms</strong> (<em>int</em><em> or </em><em>None</em>) – total number of atoms in the molecule: floor(nvar/3).</p></li>
+<li><p><strong>iaus</strong> (<em>int</em><em> or </em><em>None</em>) – <p>order of the used difference quotient.</p>
+<p>iaus = 2 (3-point-formula)</p>
+<p>iaus = 4 (5-point-formula)</p>
+<p>! LocVib only supports iaus = 2</p>
+</p></li>
+<li><p><strong>displ</strong> (<em>float</em><em> or </em><em>None</em>) – <p>Displacement.</p>
+<p>-&gt; SNF manual: displ(LocVib) == cstep(SNF)</p>
+<p>step size for the numerical derivatives, i.e.,</p>
+<p>distortion of the Cartesian nuclear coordinates, in [bohr].</p>
+</p></li>
+<li><p><strong>intonly</strong> (<em>Bool</em>) – If true then only intensities should be calculated.
+If False then intensities and fequencies should be calculated.</p></li>
+<li><p><strong>nmodes</strong> (<em>int</em>) – number of modes.</p></li>
+<li><p><strong>dipol</strong> (<em>narray</em><em> (</em><em>natoms</em><em>, </em><em>6</em><em>, </em><em>3</em><em>)</em>) – gradient of dipole moments.</p></li>
+<li><p><strong>gradient</strong> (<em>narray</em><em> (</em><em>natoms</em><em>, </em><em>6</em><em>, </em><em>nvar</em><em>)</em>) – gradient of ??? Hesse-Matrix ???</p></li>
+<li><p><strong>pollen</strong> (<em>narray</em><em> (</em><em>natoms</em><em>, </em><em>6</em><em>, </em><em>8?</em><em>)</em>) – gradient of polarizability tensor</p></li>
+<li><p><strong>polvel</strong> (<em>narray</em><em> (</em><em>natoms</em><em>, </em><em>6</em><em>, </em><em>8?</em><em>)</em>) – gradient of polarizability tensor (velocity representation).</p></li>
+<li><p><strong>gtenlen</strong> (<em>narray</em><em> (</em><em>natoms</em><em>, </em><em>6</em><em>, </em><em>9?</em><em>)</em>) – gradient of G/LAO tensor</p></li>
+<li><p><strong>gtenvel</strong> (<em>narray</em><em> (</em><em>natoms</em><em>, </em><em>6</em><em>, </em><em>9?</em><em>)</em>) – gradient of G/AO tensor</p></li>
+<li><p><strong>aten</strong> (<em>narray</em><em> (</em><em>natoms</em><em>, </em><em>6</em><em>, </em><em>27?</em><em>)</em>) – gradient of A tensor</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.SNFRestartFile.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'restart'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.SNFRestartFile.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>reads a SNF restart file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – filename (with path) of restart-file (SNF).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.SNFRestartFile.del_int_for_atoms">
+<span class="sig-name descname"><span class="pre">del_int_for_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.SNFRestartFile.del_int_for_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>deletes data entries for atoms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>atoms</strong> (<em>integer</em><em> or </em><em>array</em>) – <p>Atom index indicating which atoms should be deleted.
+Example:</p>
+<p>atoms = 1 or atoms = [0,1,5,6]</p>
+<p>len(atoms) &lt;= natoms</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<section id="example">
+<h4>Example<a class="headerlink" href="#example" title="Permalink to this heading">¶</a></h4>
+<p>LocVib(VibTools) should already be installed as a loadable Python module.</p>
+<p>Import package:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">VibTools</span> <span class="k">as</span> <span class="nn">vt</span>
+</pre></div>
+</div>
+<p>Reading in the data (SNF restart file) from the test folder in LocVib:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;LocVib/tests/test_data/H2O/restart&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SNFrest</span> <span class="o">=</span> <span class="n">vt</span><span class="o">.</span><span class="n">SNFRestartFile</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SNFrest</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Show restart file:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">vi</span> <span class="n">LocVib</span><span class="o">/</span><span class="n">tests</span><span class="o">/</span><span class="n">test_data</span><span class="o">/</span><span class="n">H2O</span><span class="o">/</span><span class="n">restart</span>
+<span class="go">/scratch/pawel/20130506-130557</span>
+<span class="go">(4D20.10)</span>
+<span class="go">420    1    2    0    9    2    0</span>
+<span class="go">0.1000000000D-01</span>
+<span class="go">/scratch/pawel/20130506-130557</span>
+<span class="go">/scratch/pawel/20130506-130557</span>
+<span class="go">  1  1  1  1  1  1  1</span>
+<span class="go">cfn218c1cfn218c1cfn218c1cfn218c1cfn218c1cfn218c1</span>
+<span class="go">  2  1  1  1  1  1  1</span>
+<span class="go">cfn218c1cfn218c1cfn218c1cfn218c1cfn218c1cfn218c1</span>
+<span class="go">  3  1  1  1  1  1  1</span>
+<span class="go">cfn218c1cfn218c1cfn218c1cfn218c1cfn218c1cfn218c1</span>
+<span class="go"> dipoles atom            1</span>
+<span class="go">    0.2268563907D-02   -0.6000000000D-13   -0.8362887813D+00   -0.2300478509D-02</span>
+<span class="go">   -0.2112800000D-08   -0.8377209034D+00   -0.4937777690D-05    0.3705567367D-02</span>
+<span class="go">   -0.8370071800D+00   -0.4937777740D-05   -0.3705567367D-02   -0.8370071800D+00</span>
+<span class="go">    0.1087256160D-02   -0.2112810000D-08   -0.8354534977D+00   -0.1124379904D-02</span>
+<span class="go">   -0.4000000000D-13   -0.8385388605D+00</span>
+<span class="go">etc. ...</span>
+</pre></div>
+</div>
+<p>Print out some data (See the documentation above for the meaning of the variables):</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">SNFrest.nvar = &quot;</span><span class="p">,</span><span class="n">SNFrest</span><span class="o">.</span><span class="n">nvar</span><span class="p">)</span>
+<span class="go">SNFrest.nvar =  9</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">SNFrest.natoms = &quot;</span><span class="p">,</span><span class="n">SNFrest</span><span class="o">.</span><span class="n">natoms</span> <span class="p">)</span>
+<span class="go">SNFrest.natoms =  3</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">SNFrest.iaus = &quot;</span><span class="p">,</span><span class="n">SNFrest</span><span class="o">.</span><span class="n">iaus</span> <span class="p">)</span>
+<span class="go">SNFrest.iaus =  2</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">SNFrest.nmodes = &quot;</span><span class="p">,</span><span class="n">SNFrest</span><span class="o">.</span><span class="n">nmodes</span>  <span class="p">)</span>
+<span class="go">SNFrest.nmodes =  0</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">SNFrest.displ = &quot;</span><span class="p">,</span><span class="n">SNFrest</span><span class="o">.</span><span class="n">displ</span> <span class="p">)</span>
+<span class="go">SNFrest.displ =  0.01</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">SNFrest.intonly = &quot;</span><span class="p">,</span><span class="n">SNFrest</span><span class="o">.</span><span class="n">intonly</span>  <span class="p">)</span>
+<span class="go">SNFrest.intonly =  False</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">SNFrest.ncalcsets = &quot;</span><span class="p">,</span><span class="n">SNFrest</span><span class="o">.</span><span class="n">ncalcsets</span>  <span class="p">)</span>
+<span class="go">SNFrest.ncalcsets =  3</span>
+</pre></div>
+</div>
+<p>Print dipoles with narray size:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">SNFrest</span><span class="o">.</span><span class="n">dipole</span><span class="p">)</span> <span class="o">=</span><span class="s2">&quot;,np.size(dipole))</span>
+<span class="go">shape(SNFrest.dipole) = (3, 6, 3)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SNFrest.dipole =&quot;</span><span class="p">,</span><span class="n">dipole</span> <span class="p">)</span>
+<span class="go">SNFrest.dipole = [[[ 2.26856391e-03 -6.00000000e-14 -8.36288781e-01]</span>
+<span class="go">  [-2.30047851e-03 -2.11280000e-09 -8.37720903e-01]</span>
+<span class="go">  [-4.93777769e-06  3.70556737e-03 -8.37007180e-01]</span>
+<span class="go">  [-4.93777774e-06 -3.70556737e-03 -8.37007180e-01]</span>
+<span class="go">  [ 1.08725616e-03 -2.11281000e-09 -8.35453498e-01]</span>
+<span class="go">  [-1.12437990e-03 -4.00000000e-14 -8.38538861e-01]]</span>
+<span class="go"> [[-4.54573646e-03 -2.10000000e-13 -8.37013826e-01]</span>
+<span class="go">  [ 4.54573641e-03 -1.50000000e-13 -8.37013826e-01]</span>
+<span class="go">  [-2.28900000e-11 -7.41105902e-03 -8.36994205e-01]</span>
+<span class="go">  [-2.28200000e-11  7.41105902e-03 -8.36994205e-01]</span>
+<span class="go">  [-2.26200000e-11 -1.20000000e-13 -8.40054999e-01]</span>
+<span class="go">  [-2.28700000e-11 -2.00000000e-14 -8.33917908e-01]]</span>
+<span class="go"> [[ 2.30046648e-03 -2.11276000e-09 -8.37720903e-01]</span>
+<span class="go">  [-2.26856395e-03 -5.00000000e-14 -8.36288781e-01]</span>
+<span class="go">  [ 4.93773211e-06  3.70556737e-03 -8.37007180e-01]</span>
+<span class="go">  [ 4.93773206e-06 -3.70556737e-03 -8.37007180e-01]</span>
+<span class="go">  [-1.08726819e-03 -2.11277000e-09 -8.35453498e-01]</span>
+<span class="go">  [ 1.12437986e-03 -8.00000000e-14 -8.38538861e-01]]]</span>
+</pre></div>
+</div>
+<p>This is analogous for the other variables/attributes.</p>
+<p>Delete the data entries of Atom 1 and 2:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">atoms</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SNFrest</span><span class="o">.</span><span class="n">del_int_for_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Show dipoles of class with deleted data entries (example - dipoles):</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SNFrest.dipole = &quot;</span><span class="p">,</span>  <span class="n">SNFrest</span><span class="o">.</span><span class="n">dipole</span> <span class="p">)</span>
+<span class="go">SNFrest.dipole ) =  [[[ 0.00000000e+00  0.00000000e+00  0.00000000e+00]</span>
+<span class="go">  [ 0.00000000e+00  0.00000000e+00  0.00000000e+00]</span>
+<span class="go">  [ 0.00000000e+00  0.00000000e+00  0.00000000e+00]</span>
+<span class="go">  [ 0.00000000e+00  0.00000000e+00  0.00000000e+00]</span>
+<span class="go">  [ 0.00000000e+00  0.00000000e+00  0.00000000e+00]</span>
+<span class="go">  [ 0.00000000e+00  0.00000000e+00  0.00000000e+00]]</span>
+<span class="go"> [[-4.54573646e-03 -2.10000000e-13 -8.37013826e-01]</span>
+<span class="go">  [ 4.54573641e-03 -1.50000000e-13 -8.37013826e-01]</span>
+<span class="go">  [-2.28900000e-11 -7.41105902e-03 -8.36994205e-01]</span>
+<span class="go">  [-2.28200000e-11  7.41105902e-03 -8.36994205e-01]</span>
+<span class="go">  [-2.26200000e-11 -1.20000000e-13 -8.40054999e-01]</span>
+<span class="go">  [-2.28700000e-11 -2.00000000e-14 -8.33917908e-01]]</span>
+<span class="go"> [[ 0.00000000e+00  0.00000000e+00  0.00000000e+00]</span>
+<span class="go">  [ 0.00000000e+00  0.00000000e+00  0.00000000e+00]</span>
+<span class="go">  [ 0.00000000e+00  0.00000000e+00  0.00000000e+00]</span>
+<span class="go">  [ 0.00000000e+00  0.00000000e+00  0.00000000e+00]</span>
+<span class="go">  [ 0.00000000e+00  0.00000000e+00  0.00000000e+00]</span>
+<span class="go">  [ 0.00000000e+00  0.00000000e+00  0.00000000e+00]]]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="snfoutputfile">
+<h3>SNFOutputFile<a class="headerlink" href="#snfoutputfile" title="Permalink to this heading">¶</a></h3>
+<blockquote>
+<div><span class="target" id="id2"></span></div></blockquote>
+<dl class="py class">
+<dt class="sig sig-object py" id="VibTools.SNFOutputFile">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">VibTools.</span></span><span class="sig-name descname"><span class="pre">SNFOutputFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'snf.out'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.SNFOutputFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>reads the snf.out-files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>modes</strong> (<em>class VibModes</em><em>(</em><em>3*natoms</em><em>,</em><em>mol</em><em>)</em>) – <p>-&gt; natoms: number of atoms of the molecule</p>
+<p>-&gt; mol: class VibToolsMolecule (Modul: Molecule)</p>
+</p></li>
+<li><p><strong>lwl</strong> (<em>float</em>) – laser wave length</p></li>
+<li><p><strong>filename</strong> (<em>str</em><em> or </em><em>None</em>) – filename (with path) of snf-output file.</p></li>
+<li><p><strong>intonly</strong> (<em>Bool</em>) – If true then only intensities should be calculated.
+If False then intensities and fequencies should be calculated.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.SNFOutputFile.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.SNFOutputFile.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>in progress</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.SNFOutputFile.read_mat">
+<span class="sig-name descname"><span class="pre">read_mat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.SNFOutputFile.read_mat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read in a matrix from the snf.out file, starting with the id_string.</p>
+<p>The matrix in the snf.out file should have the following form (only for the dipole gradients):</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>1</p></th>
+<th class="head"><p>2</p></th>
+<th class="head"><p>3</p></th>
+<th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>dmu_x/dx</p></td>
+<td><p>dmu_x/dy</p></td>
+<td><p>dmu_x/dz</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>dmu_y/dx</p></td>
+<td><p>dmu_y/dy</p></td>
+<td><p>dmu_y/dz</p></td>
+<td><p>Atom 1</p></td>
+</tr>
+<tr class="row-even"><td><p>dmu_z/dx</p></td>
+<td><p>dmu_z/dy</p></td>
+<td><p>dmu_z/dz</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>4</p></th>
+<th class="head"><p>5</p></th>
+<th class="head"><p>6</p></th>
+<th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>dmu_x/dx</p></td>
+<td><p>dmu_x/dy</p></td>
+<td><p>dmu_x/dz</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>dmu_y/dx</p></td>
+<td><p>dmu_y/dy</p></td>
+<td><p>dmu_y/dz</p></td>
+<td><p>Atom 2</p></td>
+</tr>
+<tr class="row-even"><td><p>dmu_z/dx</p></td>
+<td><p>dmu_z/dy</p></td>
+<td><p>dmu_z/dz</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>etc.</p>
+<p>put one piece from the button to the right of the previous on and you get a 3 x 3*nr_atoms matrix
+but I want to work with a 3*nr_atoms x 3</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>strings</strong> (<em>Possible id_string</em>) – “gradient of dipole moments”,
+“gradient of polarizability tensor”,
+“gradient of polarizability tensor (velocity representation)”,
+“gradient of G/LAO tensor”,
+“gradient of G/AO tensor”,
+“gradient of A tensor”.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>matrix</strong> – ?</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><p>?</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.SNFOutputFile.read_derivatives">
+<span class="sig-name descname"><span class="pre">read_derivatives</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.SNFOutputFile.read_derivatives" title="Permalink to this definition">¶</a></dt>
+<dd><p>Based on VibTool’s PySNF.SNFOutputFile.read_mat(id_strings).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mol</strong> (<em>VibTools Molecule class</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<section id="id3">
+<h4>Example<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h4>
+<p>LocVib(VibTools) should already be installed as a loadable Python module.</p>
+<p>Import package:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">VibTools</span> <span class="k">as</span> <span class="nn">vt</span>
+</pre></div>
+</div>
+<p>First, we need Vibtools’s molecule class and use a water molecule from the test data folder (LINK):</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span><span class="s1">&#39;LocVib/tests/test_data/H2O/&#39;</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">molefilename</span> <span class="o">=</span> <span class="n">path</span><span class="o">+</span><span class="s1">&#39;coord&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vtmole</span> <span class="o">=</span> <span class="n">vt</span><span class="o">.</span><span class="n">VibToolsMolecule</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vtmole</span><span class="o">.</span><span class="n">read_from_coord</span><span class="p">(</span><span class="n">molefilename</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Create the SNFoutputFile class:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">outfilename</span> <span class="o">=</span> <span class="n">path</span><span class="o">+</span><span class="s1">&#39;snf.out&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SNFoutput</span> <span class="o">=</span> <span class="n">vt</span><span class="o">.</span><span class="n">SNFOutputFile</span><span class="p">(</span><span class="n">outfilename</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now we read in the snf.out-file:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SNFoutput</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">vtmole</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Print some data:</p>
+<p>Print modes class:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;modes = &quot;</span><span class="p">,</span> <span class="n">SNFoutput</span><span class="o">.</span><span class="n">modes</span><span class="p">)</span>
+<span class="go">modes = &lt;VibTools.Modes.VibModes object at 0x1545d4222b50&gt;</span>
+</pre></div>
+</div>
+<p>Print lwl:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;lwl = &quot;</span><span class="p">,</span> <span class="n">SNFoutput</span><span class="o">.</span><span class="n">lwl</span><span class="p">)</span>
+<span class="go">None</span>
+</pre></div>
+</div>
+<p>Print filename:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;filename = &quot;</span><span class="p">,</span> <span class="n">SNFoutput</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+<span class="go">filename = test_data/H2O/snf.out</span>
+</pre></div>
+</div>
+<p>Print intonly:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;intonly = &quot;</span><span class="p">,</span> <span class="n">SNFoutput</span><span class="o">.</span><span class="n">intonly</span><span class="p">)</span>
+<span class="go">intonly = False</span>
+</pre></div>
+</div>
+<p>Print mass-weighted normal modes:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;modes_mw = &quot;</span><span class="p">,</span><span class="n">SNFoutput</span><span class="o">.</span><span class="n">modes</span><span class="o">.</span><span class="n">modes_mw</span><span class="p">)</span>
+<span class="go"> modes_mw = [[ 0.41227257  0.          0.54138338 -0.         -0.         -0.2717917</span>
+<span class="go">  -0.41227257 -0.          0.54138338]</span>
+<span class="go"> [-0.57448154  0.          0.38852104 -0.         -0.         -0.19505052</span>
+<span class="go">   0.57448154 -0.          0.38852104]</span>
+<span class="go"> [-0.536967   -0.          0.41872766  0.26956849  0.         -0.</span>
+<span class="go">  -0.536967    0.         -0.41872766]]</span>
+</pre></div>
+</div>
+<p>Print frequencies corresponding to the normal modes above:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;freqs = &quot;</span><span class="p">,</span><span class="n">SNFoutput</span><span class="o">.</span><span class="n">modes</span><span class="o">.</span><span class="n">freqs</span><span class="p">)</span>
+<span class="go">freqs = [1575.16798 3685.32274 3796.19483]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="snfcontrolfile">
+<h3>SNFControlFile<a class="headerlink" href="#snfcontrolfile" title="Permalink to this heading">¶</a></h3>
+<blockquote>
+<div></div></blockquote>
+<p id="id4">This part of the documentation is still in progress.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="VibTools.SNFControlFile">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">VibTools.</span></span><span class="sig-name descname"><span class="pre">SNFControlFile</span></span><a class="headerlink" href="#VibTools.SNFControlFile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<section id="id5">
+<h4>Example<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h4>
+<p>This part of the documentation is still in progress.</p>
+</section>
+</section>
+</section>
+<section id="snfresults">
+<h2>SNFResults<a class="headerlink" href="#snfresults" title="Permalink to this heading">¶</a></h2>
+<p>SNFResults based on the classes <a class="reference internal" href="#id1">SNFRestartFile</a>, <a class="reference internal" href="#id2">SNFOutputFile</a>, <a class="reference internal" href="#id4">SNFControlFile</a> and
+the LocVib’s main modules:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Molecule.html">Molecule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modes.html">Modes</a></li>
+</ul>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="VibTools.SNFResults">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">VibTools.</span></span><span class="sig-name descname"><span class="pre">SNFResults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'snf.out'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restartname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'restart'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'coord'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.SNFResults" title="Permalink to this definition">¶</a></dt>
+<dd><p>reads all relevant all SNF-data.</p>
+<p>(Attributes)
+:param mol: VibTools.Molecule.
+:type mol: class VibToolsMolecule
+:param snfoutput: VibTools.PySNF.
+:type snfoutput: class SNFOutputFile
+:param snfcontrol: VibTools.PySNF.
+:type snfcontrol: class SNFControlFile
+:param restartfile: VibTools.PySNF.
+:type restartfile: SNFRestartFile</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>restartname</strong> (<em>string</em>) – filename for SNF restart file needed in class SNFRestartFile.</p></li>
+<li><p><strong>coordfile</strong> (<em>string</em>) – filenname for coordfile.</p></li>
+<li><p><strong>outname</strong> (<em>string</em>) – filename for SNF output file.</p></li>
+<li><p><strong>intonly</strong> (<em>Bool</em>) – Default = False.
+If true then only intensities should be calculated.
+If False then intensities and fequencies should be calculated.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.SNFResults.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.SNFResults.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>reads the molecule, snfoutput, snfcontrol and restart files.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="id6">
+<h2>Example<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h2>
+<p>LocVib(VibTools) should already be installed as a loadable Python module.</p>
+<p>Import package:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">VibTools</span> <span class="k">as</span> <span class="nn">vt</span>
+</pre></div>
+</div>
+<p>First, we need some data from a molecule(water) from the test data folder (LINK):</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span><span class="s1">&#39;LocVib/tests/test_data/H2O/&#39;</span>
+</pre></div>
+</div>
+<p>The corresponding files (snf.out, restart, cood) are in this folder.
+Now we run SNFResults init and read:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">vt</span><span class="o">.</span><span class="n">SNFResults</span><span class="p">(</span><span class="n">outname</span><span class="o">=</span><span class="n">path</span><span class="o">+</span><span class="s1">&#39;snf.out&#39;</span><span class="p">,</span>
+<span class="go">                          restartname=path+&#39;restart&#39;,</span>
+<span class="go">                          coordfile=path+&#39;coord&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>What data are in the molecular module?</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Molecule.html">Molecule</a></li>
+</ul>
+</div>
+<p>Here, we see some general molecular informations as number of atoms (natoms),
+atomic masses (atmasses), atomic numbers (atnums) and coordinates (coordinates).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mol</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">mol</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;natoms=&#39;</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">natoms</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;atmasses=&#39;</span><span class="p">,</span><span class="n">mol</span><span class="o">.</span><span class="n">atmasses</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;atnums=&#39;</span><span class="p">,</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;coordinates=&#39;</span><span class="p">,</span><span class="n">mol</span><span class="o">.</span><span class="n">coordinates</span><span class="p">)</span>
+<span class="go">natoms= 3</span>
+<span class="go">atmasses= [ 1.00782503 15.99491462  1.00782503]</span>
+<span class="go">atnums= [1. 8. 1.]</span>
+<span class="go">coordinates= [[-2.40315717e+00 -1.11797830e+00 -2.19608983e-03]</span>
+<span class="go"> [-3.16918773e+00 -1.11797830e+00  5.95151641e-01]</span>
+<span class="go"> [-3.93521804e+00 -1.11797830e+00 -2.19608983e-03]]</span>
+</pre></div>
+</div>
+<p>What data are in the <a class="reference internal" href="#id2">SNFOutputFile</a> class?</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Modes.html">Modes</a></li>
+</ul>
+</div>
+<p>Here, we get some technical informations and the massweighted normal modes (modes_mw) and the corresponding frequencies (freqs):</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">output</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">snfoutput</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;lwl = &quot;</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">lwl</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;filename = &quot;</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;intonly = &quot;</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">intonly</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">modes_mw=</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">output</span><span class="o">.</span><span class="n">modes</span><span class="o">.</span><span class="n">modes_mw</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">freqs=</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">output</span><span class="o">.</span><span class="n">modes</span><span class="o">.</span><span class="n">freqs</span><span class="p">)</span>
+<span class="go">lwl =  None</span>
+<span class="go">filename =  test_data/H2O/snf.out</span>
+<span class="go">intonly =  False</span>
+<span class="go">modes_mw=</span>
+<span class="go"> [[ 0.41227257  0.          0.54138338 -0.         -0.         -0.2717917</span>
+<span class="go">  -0.41227257 -0.          0.54138338]</span>
+<span class="go"> [-0.57448154  0.          0.38852104 -0.         -0.         -0.19505052</span>
+<span class="go">   0.57448154 -0.          0.38852104]</span>
+<span class="go"> [-0.536967   -0.          0.41872766  0.26956849  0.         -0.</span>
+<span class="go">  -0.536967    0.         -0.41872766]]</span>
+<span class="go">freqs=</span>
+<span class="go"> [1575.16798 3685.32274 3796.19483]</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Constants.html" class="btn btn-neutral float-right" title="Constants" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="LocVib.html" class="btn btn-neutral" title="LocVib" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2022, Michael Welzel.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Sphinx-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/documentation_options.js"></script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

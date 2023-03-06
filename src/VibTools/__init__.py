@@ -22,6 +22,7 @@
 # 
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
+"""LocVib package constructor."""
 
 import matplotlib
 matplotlib.use('Agg')
@@ -44,4 +45,3 @@ except ImportError:
 from .HugAnalysis import *
 from .LocVib import *
 from .Plotting import *
-

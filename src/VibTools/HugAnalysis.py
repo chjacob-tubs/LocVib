@@ -31,6 +31,10 @@ from . import Modes
 class HugAnalysis:
 
     def __init__ (self, res, tensor, scale=1.0) :
+        """
+        HugAnalysis constructor.
+        For more details see the class description/docstring
+        """
         self.natoms = res.modes.natoms
         
         if tensor == 'ROA' :
@@ -216,6 +220,9 @@ class HugAnalysis:
 class LocModeAnalysis (HugAnalysis) :
 
     def __init__ (self, res, tensor, locmodes, scale=1.0) :
+        """
+        LocModeAnalysis constructor.
+        """
         HugAnalysis.__init__(self, res, tensor, scale)
         self.locmodes = locmodes
         self.nmodes   = locmodes.nmodes

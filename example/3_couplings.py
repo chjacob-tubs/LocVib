@@ -8,8 +8,8 @@ def print_mat (a) :
     print
     for k in a :
         for l in k :
-            print "%6.1f" % l,
-        print
+            print("%6.1f" % l,)
+        print()
  
 def main () :
     res = VibTools.SNFResults(outname='Ala10/snf.out',
@@ -32,16 +32,16 @@ def main () :
     # vibrational coupling constants
     cmat = lv.get_couplingmat()
 
-    print
-    print "Vibrational coupling matrix [in cm-1]"
+    print()
+    print("Vibrational coupling matrix [in cm-1]")
     print_mat(cmat)
 
     # intensity coupling constants
     lma = VibTools.LocModeAnalysis(res, 'ROA', lv.locmodes)
     intcmat = lma.get_intensity_coupling_matrix()
 
-    print
-    print "Intensity coupling matrix for ROA backscattering"
+    print()
+    print("Intensity coupling matrix for ROA backscattering")
     print_mat(1000.0*intcmat)
 
 main()

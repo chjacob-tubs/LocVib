@@ -1,0 +1,115 @@
+variables:
+  SCHEDULER_PARAMETERS: "-n 1 -p nitrogen"
+  USER: legit
+  LOCVIBHOME: $CI_BUILDS_DIR/$CI_PROJECT_PATH
+
+
+stages:
+    - build
+    - test
+    - deploy
+
+
+check-requirements:
+    tags:
+        - nodes
+    stage: build
+    script:
+        - hostname
+        - module load module_include_dir
+        - . /usr/share/modules/init/bash
+        - . /usr/share/modules/init/setup
+        - export PYTHONPATH=$PYTHONPATH:$LOCVIBHOME/src
+        - module load python/anaconda3-2021.11
+        - source activate base
+        #- conda remove --name Vib --all
+        # conda clean -a
+        - conda init bash
+        #- conda env create -f environment.yml
+        - conda activate VT_CI
+        - conda env list
+        - conda list
+
+before_script:
+        - hostname
+        - module load module_include_dir
+        - . /usr/share/modules/init/bash
+        - . /usr/share/modules/init/setup
+        - export PYTHONPATH=$PYTHONPATH:$LOCVIBHOME/src
+        - module load python/anaconda3-2021.11
+        - source activate base
+        - conda init bash
+        #- conda remove --name Vib_dev --all
+        #- conda clean -a
+        #- conda env create -f environment.yml
+        - conda activate VT_CI
+        - conda env list
+        - conda list
+
+
+unittest-Molecule:
+    tags:
+        - nodes
+    stage: test
+    script:
+        - cd tests/
+        - pytest -v test_Molecule.py
+        - cd ../
+
+
+unittest-Modes:
+    tags:
+        - nodes
+    stage: test
+    script:
+        - cd tests/
+        - pytest -v test_Modes.py
+        - cd ../
+
+
+unittest-PySNF:
+    tags:
+        - nodes
+    stage: test
+    script:
+        - cd tests/
+        - pytest -v test_PySNF.py
+        - cd ../
+
+
+unittest-LocVib:
+    tags:
+        - nodes
+    stage: test
+    script:
+        - cd tests/
+        - pytest -v test_LocVib.py
+        - cd ../
+
+unittest-HugAnalysis:
+    tags:
+        - nodes
+    stage: test
+    script:
+        - cd tests/
+        - pytest -v test_HugAnalysis.py
+        - cd ../
+
+unittest-Spectrum:
+    tags:
+        - nodes
+    stage: test
+    script:
+        - cd tests/
+        - pytest -v test_Spectrum.py
+        - cd ../
+
+
+pages:
+    tags:
+        - nodes
+    stage: deploy
+    script:
+        - cd doc/
+        - sphinx-build . _build/
+        - cd ../

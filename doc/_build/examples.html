@@ -1,0 +1,611 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Examples &mdash; LocVib 0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="LocVib 0.1 documentation" href="index.html"/>
+        <link rel="next" title="Tutorial" href="Tutorial.html"/>
+        <link rel="prev" title="Installation" href="installation.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> LocVib
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#composition">Composition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#locmodes">locmodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#couplings">couplings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Molecule.html">Molecule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modes.html">Modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LocVib.html">LocVib</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Results.html">Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Spectrum.html">Spectrum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plotting.html">Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HugAnalysis.html">HugAnalysis</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="PyAKIRA.html">PyAKIRA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PySNF.html">PySNF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PyTape21.html">PyTape21</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PyTurbomole.html">PyTurbomole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PyVASP.html">PyVASP</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">LocVib</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Examples</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/examples.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h1>
+<p>See <cite>/LocVib/example/</cite> directory for some examples of typical runs.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">/LocVib/example/</span>
+<span class="go">├── 1_composition.py</span>
+<span class="go">├── 2_locmodes.py</span>
+<span class="go">├── 3_couplings.py</span>
+<span class="go">├── Ala10</span>
+<span class="go">│   ├── coord</span>
+<span class="go">│   ├── restart</span>
+<span class="go">│   └── snf.out</span>
+</pre></div>
+</div>
+<p>As a typical example of a vibrational spectra calculation in terms of localized modes, we take the results of an <strong>SNF</strong> calculation (<a class="reference external" href="https://reiher.ethz.ch/software/snf.html">https://reiher.ethz.ch/software/snf.html</a>) of an <em>Ala10</em> molecule (harmonic approximation).</p>
+<div class="section" id="composition">
+<h2>Composition<a class="headerlink" href="#composition" title="Permalink to this heading">¶</a></h2>
+<p>Here we see the script for the first part of the example <cite>1_composition.py</cite>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">VibTools</span>
+
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="k">def</span> <span class="nf">main</span> <span class="p">():</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">VibTools</span><span class="o">.</span><span class="n">SNFResults</span><span class="p">(</span><span class="n">outname</span><span class="o">=</span><span class="s1">&#39;Ala10/snf.out&#39;</span><span class="p">,</span>
+                              <span class="n">restartname</span><span class="o">=</span><span class="s1">&#39;Ala10/restart&#39;</span><span class="p">,</span>
+                              <span class="n">coordfile</span><span class="o">=</span><span class="s1">&#39;Ala10/coord&#39;</span><span class="p">)</span>
+    <span class="n">res</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="c1"># change here to range of modes which are possibly of interest</span>
+    <span class="n">ml</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">140</span><span class="p">,</span><span class="mi">251</span><span class="p">)</span>
+
+    <span class="n">modes</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">modes</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span><span class="n">ml</span><span class="p">)</span>
+
+    <span class="n">irint</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">get_ir_intensity</span><span class="p">(</span><span class="n">modes</span><span class="p">)</span>
+    <span class="n">ri</span>    <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">get_raman_int</span><span class="p">(</span><span class="n">modes</span><span class="p">)</span>
+    <span class="n">bi</span>    <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">get_backscattering_int</span><span class="p">(</span><span class="n">modes</span><span class="p">)</span>
+
+    <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="si">%i</span><span class="s2"> </span><span class="si">%6.1f</span><span class="s2"> </span><span class="si">%10.4f</span><span class="s2"> </span><span class="si">%10.4f</span><span class="s2"> </span><span class="si">%10.4f</span><span class="s2">    &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">ir</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+              <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">ir</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ml</span><span class="p">,</span> <span class="n">modes</span><span class="o">.</span><span class="n">freqs</span><span class="p">,</span> <span class="n">irint</span><span class="p">,</span> <span class="n">ri</span><span class="p">,</span> <span class="n">bi</span><span class="p">)]</span>
+
+    <span class="n">modes</span><span class="o">.</span><span class="n">print_attype2_composition</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+
+<span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>When we run the script we get:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="o">/</span><span class="n">LocVib</span><span class="o">/</span><span class="n">example</span><span class="o">/</span><span class="n">python3</span> <span class="mi">1</span><span class="n">_composition</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">                                                   NH      CO      CA      HA     CHB</span>
+<span class="go">140 1003.4     0.8322     0.4861     0.0018       8.4     4.6    23.3    23.2    40.6</span>
+<span class="go">141 1010.1     2.1909     0.2414     0.0018       9.8     5.5    22.6    21.8    40.3</span>
+<span class="go">142 1018.1     1.2079     0.3277     0.0017      11.1     6.7    21.8    20.0    40.3</span>
+<span class="go">143 1025.9     8.8684     0.8042    -0.0039      11.7     8.1    20.9    18.0    41.3</span>
+<span class="go">144 1032.4     4.1386     0.2587     0.0158      12.0     9.4    19.3    16.7    42.5</span>
+<span class="go">145 1038.2    28.0831     2.2072     0.0140      12.6     9.1    17.8    16.6    43.8</span>
+<span class="go">146 1044.3    41.6849     1.4998    -0.0598      13.9     7.6    17.3    16.5    44.7</span>
+<span class="go">147 1049.1    10.7513     0.7006    -0.0094      14.5     6.7    16.9    16.1    45.8</span>
+<span class="go">148 1052.4     0.8579     0.2134     0.0001      13.6     6.4    16.6    15.7    47.8</span>
+<span class="go">149 1054.3     2.6367     0.2466     0.0017       8.9     7.5    16.7    15.3    51.6</span>
+<span class="go">.</span>
+<span class="go">.</span>
+<span class="go">.</span>
+<span class="go">238 1506.4   217.9075     7.7164    -0.0585      75.1    16.3     2.8     2.7     3.2</span>
+<span class="go">239 1508.5   407.3909     6.8705    -0.0143      76.4    18.1     2.3     1.1     2.2</span>
+<span class="go">240 1617.6    53.4093     8.3601    -0.0152      98.4     0.3     0.8     0.2     0.3</span>
+<span class="go">241 1644.0    22.0081     1.8999     0.0294       3.0    94.1     0.9     1.5     0.5</span>
+<span class="go">242 1650.0   322.4753    17.5984     0.0226       3.3    94.2     0.6     1.4     0.5</span>
+<span class="go">243 1651.1  1361.5743   112.2062     0.0108       5.1    93.3     0.2     0.8     0.5</span>
+<span class="go">244 1656.1   232.1278     2.5841    -0.0374       3.5    94.3     0.5     1.3     0.4</span>
+<span class="go">245 1657.2    41.6081     1.2601    -0.0010       4.4    93.9     0.3     1.0     0.4</span>
+<span class="go">246 1663.7    86.5379     1.8897    -0.0026       3.3    94.5     0.6     1.1     0.4</span>
+<span class="go">247 1668.3   247.8201     8.6080     0.0088       2.4    96.2     0.5     0.4     0.5</span>
+<span class="go">248 1670.0   290.1721    24.3792     0.0023       4.0    94.4     0.3     0.9     0.4</span>
+<span class="go">249 1677.3   217.4265     9.0573     0.0112       3.0    95.6     0.4     0.5     0.4</span>
+<span class="go">250 1736.0   326.1756    11.9512     0.0017       2.5    96.7     0.4     0.0     0.3</span>
+
+<span class="go">min:                                              0.3     0.2     0.1     0.0     0.3</span>
+<span class="go">max:                                             98.4    96.7    40.1    74.1    98.8</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="locmodes">
+<h2>locmodes<a class="headerlink" href="#locmodes" title="Permalink to this heading">¶</a></h2>
+<p>Here we see the script for the first part of the example <cite>2_locmodes.py</cite>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">VibTools</span>
+
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="k">def</span> <span class="nf">main</span> <span class="p">()</span> <span class="p">:</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">VibTools</span><span class="o">.</span><span class="n">SNFResults</span><span class="p">(</span><span class="n">outname</span><span class="o">=</span><span class="s1">&#39;Ala10/snf.out&#39;</span><span class="p">,</span>
+                              <span class="n">restartname</span><span class="o">=</span><span class="s1">&#39;Ala10/restart&#39;</span><span class="p">,</span>
+                              <span class="n">coordfile</span><span class="o">=</span><span class="s1">&#39;Ala10/coord&#39;</span><span class="p">)</span>
+    <span class="n">res</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="c1"># numbers of amide I normal modes (found with composition.py)</span>
+    <span class="n">ml</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">241</span><span class="p">,</span><span class="mi">250</span><span class="p">)</span>
+
+    <span class="n">modes</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">modes</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span><span class="n">ml</span><span class="p">)</span>
+
+    <span class="n">backint</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">get_backscattering_int</span><span class="p">(</span><span class="n">modes</span><span class="o">=</span><span class="n">modes</span><span class="p">)</span>
+
+    <span class="n">lv</span> <span class="o">=</span> <span class="n">VibTools</span><span class="o">.</span><span class="n">LocVib</span><span class="p">(</span><span class="n">modes</span><span class="p">,</span> <span class="s1">&#39;PM&#39;</span><span class="p">)</span>
+    <span class="n">lv</span><span class="o">.</span><span class="n">localize</span><span class="p">()</span>
+    <span class="n">lv</span><span class="o">.</span><span class="n">sort_by_residue</span><span class="p">()</span>
+    <span class="n">lv</span><span class="o">.</span><span class="n">adjust_signs</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Composition of localized modes: &quot;</span><span class="p">)</span>
+    <span class="n">lv</span><span class="o">.</span><span class="n">locmodes</span><span class="o">.</span><span class="n">print_attype2_composition</span><span class="p">()</span>
+    <span class="n">lv</span><span class="o">.</span><span class="n">locmodes</span><span class="o">.</span><span class="n">print_residue_composition</span><span class="p">()</span>
+
+    <span class="c1"># write localized modes to g98-style file</span>
+    <span class="n">lv</span><span class="o">.</span><span class="n">locmodes</span><span class="o">.</span><span class="n">write_g98out</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s2">&quot;locmodes-amide1.out&quot;</span><span class="p">)</span>
+
+    <span class="n">backint_loc</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">get_backscattering_int</span><span class="p">(</span><span class="n">modes</span><span class="o">=</span><span class="n">lv</span><span class="o">.</span><span class="n">locmodes</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ROA backscattering intensities of normal modes and localized modes&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  normal modes        |  localized modes &quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;     freq       int   |    freq       int&quot;</span><span class="p">)</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">bi</span><span class="p">,</span> <span class="n">f_loc</span><span class="p">,</span> <span class="n">bi_loc</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ml</span><span class="p">,</span> <span class="n">modes</span><span class="o">.</span><span class="n">freqs</span><span class="p">,</span> <span class="n">backint</span><span class="o">*</span><span class="mf">1e3</span><span class="p">,</span>
+                                           <span class="n">lv</span><span class="o">.</span><span class="n">locmodes</span><span class="o">.</span><span class="n">freqs</span><span class="p">,</span> <span class="n">backint_loc</span><span class="o">*</span><span class="mf">1e3</span><span class="p">)</span> <span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;</span><span class="si">%i</span><span class="s2">  </span><span class="si">%6.1f</span><span class="s2">  </span><span class="si">%8.2f</span><span class="s2"> | </span><span class="si">%2i</span><span class="s2"> </span><span class="si">%6.1f</span><span class="s2"> </span><span class="si">%8.2f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">bi</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">f_loc</span><span class="p">,</span> <span class="n">bi_loc</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total ROA Int    : &quot;</span><span class="p">,</span> <span class="n">backint</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1e3</span><span class="p">)</span>
+
+<span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>When we run the script we get:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="o">/</span><span class="n">LocVib</span><span class="o">/</span><span class="n">example</span><span class="o">/</span><span class="n">python3</span> <span class="mi">2</span><span class="n">_locmodes</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go"> Normal mode localization: Cycle   1    p:    4.501   change:  2.3145195     6.41573</span>
+<span class="go"> Normal mode localization: Cycle   2    p:    4.565   change:  0.0635835     0.57591</span>
+<span class="go"> Normal mode localization: Cycle   3    p:    4.565   change:  0.0000638     0.00852</span>
+<span class="go"> Normal mode localization: Cycle   4    p:    4.565   change:  0.0000000     0.00000</span>
+<span class="go">Obtaining coupling matrix in [a.u.]</span>
+<span class="go">Obtaining coupling matrix in [a.u.]</span>
+<span class="go">Obtaining coupling matrix in [a.u.]</span>
+<span class="go">Obtaining coupling matrix in [a.u.]</span>
+<span class="go">Obtaining coupling matrix in [a.u.]</span>
+<span class="go">Obtaining coupling matrix in [a.u.]</span>
+<span class="go">Obtaining coupling matrix in [a.u.]</span>
+<span class="go">Obtaining coupling matrix in [a.u.]</span>
+
+<span class="go">Composition of localized modes:</span>
+<span class="go">                    NH      CO      CA      HA     CHB</span>
+<span class="go">   0   1663.7      3.6    94.5     0.6     0.8     0.5</span>
+<span class="go">   1   1667.1      3.4    94.5     0.5     1.2     0.4</span>
+<span class="go">   2   1654.1      3.9    93.9     0.5     1.2     0.5</span>
+<span class="go">   3   1651.6      3.8    94.0     0.5     1.2     0.5</span>
+<span class="go">   4   1651.7      3.9    94.0     0.5     1.2     0.5</span>
+<span class="go">   5   1652.2      3.8    94.1     0.5     1.1     0.4</span>
+<span class="go">   6   1652.2      4.2    93.6     0.5     1.2     0.5</span>
+<span class="go">   7   1676.9      2.9    95.7     0.4     0.5     0.4</span>
+<span class="go">   8   1668.2      2.6    96.0     0.5     0.4     0.5</span>
+
+<span class="go">min:               2.6    93.6     0.4     0.4     0.4</span>
+<span class="go">max:               4.2    96.0     0.6     1.2     0.5</span>
+
+<span class="go">                     1      10       2       3       4       5       6       7       8       9</span>
+<span class="go">   0   1663.7     95.5     0.0     3.6     0.5     0.3     0.0     0.0     0.0     0.0     0.0</span>
+<span class="go">   1   1667.1      0.0     0.0    95.9     3.2     0.5     0.3     0.0     0.0     0.0     0.0</span>
+<span class="go">   2   1654.1      0.0     0.0     0.0    95.2     3.8     0.6     0.3     0.0     0.0     0.0</span>
+<span class="go">   3   1651.6      0.0     0.0     0.0     0.0    95.3     3.6     0.7     0.3     0.1     0.0</span>
+<span class="go">   4   1651.7      0.0     0.0     0.0     0.0     0.0    95.3     3.6     0.6     0.4     0.1</span>
+<span class="go">   5   1652.2      0.0     0.1     0.0     0.0     0.0     0.0    95.4     3.6     0.6     0.4</span>
+<span class="go">   6   1652.2      0.0     0.7     0.0     0.0     0.0     0.0     0.0    94.9     3.7     0.8</span>
+<span class="go">   7   1676.9      0.0     0.4     0.0     0.0     0.0     0.0     0.0     0.0    96.5     3.1</span>
+<span class="go">   8   1668.2      0.0     3.2     0.0     0.0     0.0     0.0     0.0     0.0     0.0    96.8</span>
+
+<span class="go">min:               0.0     0.0     0.0     0.0     0.0     0.0     0.0     0.0     0.0     0.0</span>
+<span class="go">max:              95.5     3.2    95.9    95.2    95.3    95.3    95.4    94.9    96.5    96.8</span>
+
+
+<span class="go">ROA backscattering intensities of normal modes and localized modes</span>
+
+<span class="go">  normal modes        |  localized modes</span>
+<span class="go">     freq       int   |    freq       int</span>
+<span class="go">241  1644.0     29.38 |  1 1663.7     4.81</span>
+<span class="go">242  1650.0     22.59 |  2 1667.1    12.55</span>
+<span class="go">243  1651.1     10.84 |  3 1654.1     0.54</span>
+<span class="go">244  1656.1    -37.40 |  4 1651.6    -0.25</span>
+<span class="go">245  1657.2     -0.96 |  5 1651.7     5.95</span>
+<span class="go">246  1663.7     -2.65 |  6 1652.2    -5.54</span>
+<span class="go">247  1668.3      8.81 |  7 1652.2     1.44</span>
+<span class="go">248  1670.0      2.27 |  8 1676.9    13.08</span>
+<span class="go">249  1677.3     11.15 |  9 1668.2    11.46</span>
+
+<span class="go">Total ROA Int    :  44.02970684750486</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="couplings">
+<h2>couplings<a class="headerlink" href="#couplings" title="Permalink to this heading">¶</a></h2>
+<p>Here we see the script for the first part of the example <cite>3_couplings.py</cite>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">VibTools</span>
+
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="k">def</span> <span class="nf">print_mat</span> <span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="p">:</span>
+    <span class="nb">print</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">a</span> <span class="p">:</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">k</span> <span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%6.1f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">l</span><span class="p">,)</span>
+        <span class="nb">print</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">main</span> <span class="p">()</span> <span class="p">:</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">VibTools</span><span class="o">.</span><span class="n">SNFResults</span><span class="p">(</span><span class="n">outname</span><span class="o">=</span><span class="s1">&#39;Ala10/snf.out&#39;</span><span class="p">,</span>
+                              <span class="n">restartname</span><span class="o">=</span><span class="s1">&#39;Ala10/restart&#39;</span><span class="p">,</span>
+                              <span class="n">coordfile</span><span class="o">=</span><span class="s1">&#39;Ala10/coord&#39;</span><span class="p">)</span>
+    <span class="n">res</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="n">plots</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># numbers of the amide I modes</span>
+    <span class="n">ml</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">241</span><span class="p">,</span><span class="mi">250</span><span class="p">)</span>
+
+    <span class="n">modes</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">modes</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span><span class="n">ml</span><span class="p">)</span>
+
+    <span class="n">lv</span> <span class="o">=</span> <span class="n">VibTools</span><span class="o">.</span><span class="n">LocVib</span><span class="p">(</span><span class="n">modes</span><span class="p">,</span> <span class="s1">&#39;PM&#39;</span><span class="p">)</span>
+    <span class="n">lv</span><span class="o">.</span><span class="n">localize</span><span class="p">()</span>
+    <span class="n">lv</span><span class="o">.</span><span class="n">sort_by_residue</span><span class="p">()</span>
+    <span class="n">lv</span><span class="o">.</span><span class="n">adjust_signs</span><span class="p">()</span>
+
+    <span class="c1"># vibrational coupling constants</span>
+    <span class="n">cmat</span> <span class="o">=</span> <span class="n">lv</span><span class="o">.</span><span class="n">get_couplingmat</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Vibrational coupling matrix [in cm-1]&quot;</span><span class="p">)</span>
+    <span class="n">print_mat</span><span class="p">(</span><span class="n">cmat</span><span class="p">)</span>
+
+    <span class="c1"># intensity coupling constants</span>
+    <span class="n">lma</span> <span class="o">=</span> <span class="n">VibTools</span><span class="o">.</span><span class="n">LocModeAnalysis</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="s1">&#39;ROA&#39;</span><span class="p">,</span> <span class="n">lv</span><span class="o">.</span><span class="n">locmodes</span><span class="p">)</span>
+    <span class="n">intcmat</span> <span class="o">=</span> <span class="n">lma</span><span class="o">.</span><span class="n">get_intensity_coupling_matrix</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Intensity coupling matrix for ROA backscattering&quot;</span><span class="p">)</span>
+    <span class="n">print_mat</span><span class="p">(</span><span class="mf">1000.0</span><span class="o">*</span><span class="n">intcmat</span><span class="p">)</span>
+
+<span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>When we run the script we get:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="o">/</span><span class="n">LocVib</span><span class="o">/</span><span class="n">example</span><span class="o">/</span><span class="n">python3</span> <span class="n">couplings</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go"> Normal mode localization: Cycle   1    p:    4.501   change:  2.3145195     6.41573</span>
+<span class="go"> Normal mode localization: Cycle   2    p:    4.565   change:  0.0635835     0.57591</span>
+<span class="go"> Normal mode localization: Cycle   3    p:    4.565   change:  0.0000638     0.00852</span>
+<span class="go"> Normal mode localization: Cycle   4    p:    4.565   change:  0.0000000     0.00000</span>
+<span class="go">Obtaining coupling matrix in [a.u.]</span>
+<span class="go">Obtaining coupling matrix in [a.u.]</span>
+<span class="go">Obtaining coupling matrix in [a.u.]</span>
+<span class="go">Obtaining coupling matrix in [a.u.]</span>
+<span class="go">Obtaining coupling matrix in [a.u.]</span>
+<span class="go">Obtaining coupling matrix in [a.u.]</span>
+<span class="go">Obtaining coupling matrix in [a.u.]</span>
+<span class="go">Obtaining coupling matrix in [a.u.]</span>
+<span class="go">Obtaining coupling matrix in [a.u.]</span>
+
+<span class="go">Vibrational coupling matrix [in cm-1]</span>
+<span class="go">1663.7</span>
+<span class="go">   3.6</span>
+<span class="go">  -3.7</span>
+<span class="go">  -0.8</span>
+<span class="go">  -0.7</span>
+<span class="go">  -0.5</span>
+<span class="go">  -0.3</span>
+<span class="go">  -0.2</span>
+<span class="go">  -0.2</span>
+
+<span class="go">  .</span>
+<span class="go">  .</span>
+<span class="go">  .</span>
+
+<span class="go">  -0.2</span>
+<span class="go">  -0.2</span>
+<span class="go">  -0.4</span>
+<span class="go">  -0.5</span>
+<span class="go">  -0.3</span>
+<span class="go">  -2.5</span>
+<span class="go">   1.0</span>
+<span class="go">1676.9</span>
+<span class="go">   1.0</span>
+
+<span class="go">  -0.2</span>
+<span class="go">  -0.2</span>
+<span class="go">  -0.1</span>
+<span class="go">  -0.4</span>
+<span class="go">  -0.7</span>
+<span class="go">  -0.6</span>
+<span class="go">  -1.4</span>
+<span class="go">   1.0</span>
+<span class="go">1668.2</span>
+
+
+<span class="go">Intensity coupling matrix for ROA backscattering</span>
+<span class="go">   4.8</span>
+<span class="go">  -9.8</span>
+<span class="go">  42.1</span>
+<span class="go"> -24.6</span>
+<span class="go">  -1.4</span>
+<span class="go">  76.0</span>
+<span class="go">-109.7</span>
+<span class="go"> -68.2</span>
+<span class="go">  57.6</span>
+
+<span class="go">   0.0</span>
+<span class="go">  12.6</span>
+<span class="go">   1.8</span>
+<span class="go">  19.1</span>
+<span class="go">  11.2</span>
+<span class="go"> -27.2</span>
+<span class="go">  83.0</span>
+<span class="go"> -92.6</span>
+<span class="go"> -21.5</span>
+
+<span class="go"> .</span>
+<span class="go"> .</span>
+<span class="go"> .</span>
+
+<span class="go">   0.0</span>
+<span class="go">   0.0</span>
+<span class="go">   0.0</span>
+<span class="go">   0.0</span>
+<span class="go">   0.0</span>
+<span class="go">   0.0</span>
+<span class="go">   1.4</span>
+<span class="go"> -75.7</span>
+<span class="go">  40.1</span>
+
+<span class="go">   0.0</span>
+<span class="go">   0.0</span>
+<span class="go">   0.0</span>
+<span class="go">   0.0</span>
+<span class="go">   0.0</span>
+<span class="go">   0.0</span>
+<span class="go">   0.0</span>
+<span class="go">  13.1</span>
+<span class="go">  -3.1</span>
+
+<span class="go">   0.0</span>
+<span class="go">   0.0</span>
+<span class="go">   0.0</span>
+<span class="go">   0.0</span>
+<span class="go">   0.0</span>
+<span class="go">   0.0</span>
+<span class="go">   0.0</span>
+<span class="go">   0.0</span>
+<span class="go">  11.5</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Tutorial.html" class="btn btn-neutral float-right" title="Tutorial" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral" title="Installation" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2022, Michael Welzel.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Sphinx-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/documentation_options.js"></script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

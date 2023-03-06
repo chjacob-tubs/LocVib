@@ -22,8 +22,8 @@ def main () :
     lv.sort_by_residue()
     lv.adjust_signs()
 
-    print
-    print "Composition of localized modes: "
+    print()
+    print("Composition of localized modes: ")
     lv.locmodes.print_attype2_composition()
     lv.locmodes.print_residue_composition()
 
@@ -32,20 +32,20 @@ def main () :
 
     backint_loc = res.get_backscattering_int(modes=lv.locmodes)
 
-    print
-    print "ROA backscattering intensities of normal modes and localized modes" 
+    print()
+    print("ROA backscattering intensities of normal modes and localized modes")
 
-    print
-    print "  normal modes        |  localized modes "
-    print "     freq       int   |    freq       int"
+    print()
+    print("  normal modes        |  localized modes ")
+    print("     freq       int   |    freq       int")
 
     n = 0
     for i, f, bi, f_loc, bi_loc in zip(ml, modes.freqs, backint*1e3,
                                            lv.locmodes.freqs, backint_loc*1e3) :
         n = n+1
-        print r"%i  %6.1f  %8.2f | %2i %6.1f %8.2f" % (i, f, bi, n, f_loc, bi_loc)
+        print(r"%i  %6.1f  %8.2f | %2i %6.1f %8.2f" % (i, f, bi, n, f_loc, bi_loc))
 
-    print
-    print "Total ROA Int    : ", backint.sum() * 1e3
+    print()
+    print("Total ROA Int    : ", backint.sum() * 1e3)
 
 main()

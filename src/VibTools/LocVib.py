@@ -22,6 +22,7 @@
 # 
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
+
 """
  Localizing normal modes
 """
@@ -32,10 +33,38 @@ import copy
 from .Modes import VibModes
 from . import Constants
 
-class LocVib:
+class LocVib (object) :
+    """
+    Local Modes (LocVib) class.
+
+    :Attributes: = Parameters.
+
+    Parameters
+    ----------  
+    startmodes : VibTools.Modes class
+        modes to be localized.  
+    nmodes : int
+        number of modes.
+    natoms : int
+        number of atoms in molecule.
+    loctype : String
+        Localization criterion: 
+        PM (Pipek and Mezey); B (Boys)
+    coords : ndarray 
+        coordinates 
+    transmat : ndarray (nmodes x nmodes)
+        (localization) transformation matrix.
+    """
 
     def __init__ (self, modes, loctype='PM') :
-        self.startmodes = modes
+        """
+        LocVib constructor.
+        For more details see the class description/docstring
+        """
+        self.startmodes = modes 
+        # TODO: name "modes" is used twice - risk of confusion -> calc_p,calc_ab
+        # here: modes = VibTools.Modes class
+        # elsewhere: modes = a set of normal modes
         self.nmodes = self.startmodes.nmodes
         self.natoms = self.startmodes.natoms
         self.loctype = loctype
@@ -50,21 +79,53 @@ class LocVib:
         self.subsets = None
 
     def calc_p (self, modes) :
-        squared_modes = modes**2
+        """
+        calculates the localization measure chi.
 
+        Paper:
+        *Ch. R. Jacob, J. Chem. Phys 130 (2009), 084106*
+
+        Parameters
+        ----------
+        modes : ndarray (3*natoms-6,3*natoms)
+            normal modes.
+
+        Returns
+        -------
+        p : tba ?
+        tba ?
+        """
+        squared_modes = modes**2
+        # LocVib paper eq. 6
         c = squared_modes[:,0::3] + squared_modes[:,1::3] + squared_modes[:,2::3]
                 
-        if self.loctype == 'PM' :
-            p = numpy.linalg.norm(c)**2
-        elif self.loctype.startswith('B') :
-            p_mode = numpy.zeros((3,self.nmodes))
+        if self.loctype == 'PM' : # Pipek + Mezey criterion
+            p = numpy.linalg.norm(c)**2 # LocVibpaper eq. 5
+        elif self.loctype.startswith('B') : # Boys criterion
+            p_mode = numpy.zeros((3,self.nmodes))# LocVib paper eq. 9
             for idir in range(3):
                 p_mode[idir] = (self.coords[:,idir] * c).sum(axis=1)
             p = (p_mode**2).sum()
 
         return p
 
-    def calc_ab (self, modes, i, j) :
+    def calc_ab (self, modes, i, j):
+        """
+        TASK ??
+        
+        Parameters
+        ----------
+        modes : ndarray (3*natoms-6,3*natoms)
+            normal modes.
+        i,j : int, int
+            index of modes array.
+
+        Returns
+        -------
+        a,b : tba ?
+        tba ?
+        """
+        # Pipek Mezey Ref-Paper? Eq.14 or 29???
         squared_modes = modes**2
 
         ci = squared_modes[i, 0::3] + squared_modes[i, 1::3] + squared_modes[i, 2::3]
@@ -94,6 +155,23 @@ class LocVib:
         return a, b
             
     def rotate (self, modes, i, j) :
+        """
+        rotates normal modes.
+
+        Parameters
+        ----------
+        modes : ndarray (3*natoms-6,3*natoms)
+            normal modes.
+        i,j : int
+            index of modes array.
+
+        Returns
+        -------
+        rotated modes : tba ?
+        tba ?
+        alpha : tba ?
+        tba ?
+        """
         a, b = self.calc_ab(modes, i, j)
 
         alpha = math.acos(-a/math.sqrt(a*a+b*b))
@@ -113,6 +191,28 @@ class LocVib:
         return rotated_modes, alpha
 
     def try_localize (self, subset=None, thresh=1e-6, thresh2=1e-4, printing=False) :
+        """
+        maximizes the localization measure (procedere).
+   
+        Parameters
+        ----------
+        subset : ndarray(? x ?)
+            subset of normal modes. or list of indicies?
+        thresh : float
+            first optimization threshold.
+        thresh2 : float
+            second optimization threshold. 
+        printing : Bool
+            If True: print out optimization informations.
+
+
+        Returns
+        -------
+        transmat : tba ?
+        tba ?
+        del_p : ?
+        tba ?
+        """
         if subset is None :
             ss = list(range(self.nmodes))
         else:
@@ -161,6 +261,21 @@ class LocVib:
         return transmat, del_p
 
     def localize (self, subset=None, thresh=1e-6, thresh2=1e-4, printing=True) :
+        """
+        maximizes the localization measure 
+        and set the (localization) transformation matrix in LocVib class.
+   
+        Parameters
+        ----------
+        subset : narray(? x ?)
+            subset of normal modes.
+        thresh : float
+            first optimization threshold.
+        thresh2 : float
+            second optimization threshold. 
+        printing : Bool
+            If True: print out optimization informations. 
+        """
         if subset is None :
             ss = list(range(self.nmodes))
         else:
@@ -173,6 +288,14 @@ class LocVib:
         self.set_transmat(numpy.dot(full_transmat, self.transmat))
 
     def localize_subsets(self, subsets, printing=True):
+        """
+        Task ?        
+
+        Parameters
+        ----------
+        subsets : list of integer lists
+            subsets = [[0,1],[2],[0,1,2]]
+        """
         for subset in subsets:
             self.localize(subset, printing=printing)
 
@@ -180,11 +303,40 @@ class LocVib:
         self.subsets = subsets
 
     def localize_automatic_subsets(self, maxerr):
+        """
+        Automatic localization assignments of subsets.
+
+        Parameters
+        ----------
+        maxerr : tba?
+            tba ?
+        """
         auto_assignment = AutomaticAssignment(self)
         self.subsets = auto_assignment.automatic_subsets(maxerr)
         self.sort_by_freqs()
 
     def try_localize_vcisdiff(self, subset=None, thresh=1e-6, thresh2=1e-4) :
+        """
+        tries to localize vibrational configuration intersection singles.
+        *See: Panek, Hoeske, Jacob, J. Chem. Phys. 150, 054107 (2019)
+        (doi: 10.1063/1.5083186)* 
+
+        Parameters
+        ----------
+        subset : tba?
+            tba?
+        thresh : tba?
+            tba?
+        thresh2 : tba?
+            tba?
+
+        Returns
+        -------
+        vcis : tba
+        tba
+        del_p : tba
+        tba
+        """
         if subset is None :
             ss = list(range(self.nmodes))
         else:
@@ -206,10 +358,31 @@ class LocVib:
         return vcis_maxdiff, del_p
 
     def set_transmat (self, tmat) :
+        """
+        Sets the transformation matrix.
+
+        Parameters
+        ----------
+        tmat : tba
+            tba
+        """
         self.transmat = tmat
         self.locmodes = self.startmodes.transform(tmat)
 
     def get_couplingmat (self, hessian=False) :
+        """
+        TEXT.
+
+        Parameters
+        ----------
+        hessian : bool
+            tba
+
+        Returns
+        -------
+        cmat : ndarray
+           Coupling matrix.
+        """
         # coupling matrix is defined as in the paper:
         #   eigenvectors are rows of U / columns of U^t = transmat
         #   eigenvectors give normal mode in basis of localized modes
@@ -240,6 +413,14 @@ class LocVib:
         return cmat
 
     def get_vcismat (self) :
+        """
+        TEXT
+
+        Returns
+        -------
+        vcis_mat : tba
+        tba
+        """
         diag = numpy.diag(self.startmodes.freqs**2)
         hmat = numpy.dot(numpy.dot(self.transmat, diag), self.transmat.transpose())
 
@@ -251,7 +432,16 @@ class LocVib:
         # VCIS matrix in cm-1
         return vcis_mat
 
+
     def sort_by_residue (self, pdb_mol=None) :
+        """
+        TEXT
+
+        Parameters
+        ----------
+        pdb_mol : tba
+            tba
+        """
         if pdb_mol:
             print('Using external molecule definition')
             sortmat = self.locmodes.sortmat_by_residue(external_molecule=pdb_mol)
@@ -260,17 +450,33 @@ class LocVib:
         tmat = numpy.dot(sortmat, self.transmat)
         self.set_transmat(tmat)
 
+
     def sort_by_groups (self, groups) :
+        """
+        TEXT
+
+        Parameters
+        ----------
+        groups : tba
+            tba
+        """
         sortmat = self.locmodes.sortmat_by_groups(groups)
         tmat = numpy.dot(sortmat, self.transmat)
         self.set_transmat(tmat)
 
+
     def sort_by_freqs (self) :
+        """
+        TEXT
+        """
         sortmat = self.locmodes.sortmat_by_freqs()
         tmat = numpy.dot(sortmat, self.transmat)
         self.set_transmat(tmat)
 
     def adjust_signs (self) :
+        """
+        TEXT
+        """
         for imode in range(1,self.nmodes) :
             cmat = self.get_couplingmat()
             if cmat[imode-1,imode] < 0.0 :
@@ -279,24 +485,46 @@ class LocVib:
                 self.set_transmat(tmat)
 
     def invert_signs (self, nums) :
+        """
+        TEXT
+
+        Parameters
+        ----------
+        nums : tba
+            tba
+        """
         tmat = self.transmat
         tmat[nums,:] = -tmat[nums,:]
         self.set_transmat(tmat)
 
     def flip_modes (self, m1, m2) :
-         sortmat = numpy.identity(self.nmodes)
-         sortmat[m1,m1] = 0.0
-         sortmat[m2,m2] = 0.0
-         sortmat[m1,m2] = 1.0
-         sortmat[m2,m1] = 1.0
+        """
+        TEXT
 
-         tmat = numpy.dot(sortmat, self.transmat)
-         self.set_transmat(tmat)
+        Parameters
+        ----------
+        m1 : tba
+            tba
+        m2 : tba
+            tba
+        """
+        sortmat = numpy.identity(self.nmodes)
+        sortmat[m1,m1] = 0.0
+        sortmat[m2,m2] = 0.0
+        sortmat[m1,m2] = 1.0
+        sortmat[m2,m1] = 1.0
 
+        tmat = numpy.dot(sortmat, self.transmat)
+        self.set_transmat(tmat)
 
-class AutomaticAssignment:
+class AutomaticAssignment(object):
+    """ TEXT ... """
 
     def __init__(self, lv) :
+        """
+        AutomaticAssignment constructor.
+        For more details see the class description/docstring
+        """
         self.lv = lv
         nmodes = self.lv.nmodes
 
@@ -311,6 +539,14 @@ class AutomaticAssignment:
                 self.calc_ij(i, j)
 
     def calc_ij(self, i, j):
+        """
+        TEXT 
+        
+        Parameters
+        ----------
+        i,j : int
+            tba
+        """
         s1 = self.subsets[i]
         s2 = self.subsets[j]
 
@@ -344,6 +580,23 @@ class AutomaticAssignment:
         self.diffmat[s2[0], s1[0]] = max(diff1, diff2)
 
     def find_maxp(self, maxerr, maxdiff):
+        """
+        TEXT
+
+        Parameters
+        ----------
+        maxerr : tba
+            tba
+        maxdiff : tba
+            tba
+
+        Returns
+        -------
+        ind_maxp : tba
+        tba
+        maxp : tba
+        tba
+        """
         pmat_masked = numpy.where(self.errmat < maxerr, self.pmat, 0.0)
         pmat_masked = numpy.where(self.diffmat < maxdiff, pmat_masked, 0.0)
 
@@ -360,13 +613,33 @@ class AutomaticAssignment:
         return ind_maxp, maxp
 
     def update_subset(self, i):
+        """
+        TEXT
+
+        Parameters
+        ----------
+        i : int
+            tba
+        """
         self.lv.localize(self.subsets[i], printing=False)
         for j in range(len(self.subsets)) :
             if not (i == j) :
                 self.calc_ij(i, j)
 
     def automatic_subsets(self, maxerr) :
+        """
+        TEXT
 
+        Parameters
+        ----------
+        maxerr : tba
+            tba
+
+        Returns
+        -------
+        subsets : tba
+        tba
+        """
         # find minimal frequency difference
         mask = numpy.ones(self.diffmat.shape, dtype=bool)
         numpy.fill_diagonal(mask, 0)
