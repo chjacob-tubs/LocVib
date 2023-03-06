@@ -35,6 +35,10 @@ from matplotlib.lines import Line2D
 class Plot:
 
     def __init__ (self) :
+        """
+        Plot constructor.
+        For more details see the class description/docstring
+        """
         self.fig = plt.figure()
         self.ax  = None
 
@@ -72,6 +76,10 @@ class Plot:
 class CombinedPlot (Plot) :
 
     def __init__ (self) :
+        """
+        CombinedPlot constructor.
+        For more details see the class description/docstring
+        """
         Plot.__init__(self)
 
     def plot (self, ncols, nrows, plots) :
@@ -93,6 +101,10 @@ class CombinedPlot (Plot) :
 class HugAnalysisPlot (Plot) :
 
     def __init__ (self) :
+        """
+        HugAnalysisPlot constructor.        
+        For more details see the class description/docstring
+        """
         self.fig = plt.figure(figsize=(8.0,8.0))
         self.ax  = None
 
@@ -184,6 +196,10 @@ class HugAnalysisPlot (Plot) :
 class SpectrumPlot (Plot) :
 
     def __init__ (self) :
+        """
+        SpectrumPlot constructor.
+        For more details see the class description/docstring
+        """
         self.fig = plt.figure(figsize=(8.0,4.0))
         self.ax  = None
 
@@ -382,6 +398,10 @@ class SpectrumPlot (Plot) :
 class ModesPlot (Plot) :
 
     def __init__ (self) :
+        """
+        ModesPlot constructor.
+        For more details see the class description/docstring
+        """
         self.fig = plt.figure(figsize=(7.0,10.0))
         self.ax  = None
 

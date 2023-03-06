@@ -36,6 +36,9 @@ from .Results  import Results
 class AOForceOutputFile:
 
     def __init__ (self, filename='aoforce.out') :
+        """
+        AOForceOutputFile constructor.
+        """
         self.filename = filename
         self.modes = None
 
@@ -92,6 +95,9 @@ class AOForceOutputFile:
 class TMControlFile:
 
     def __init__ (self, filename='control') :
+        """
+        TMControlFile constructor.
+        """
         self.filename = filename
         self.dipgrad = None
         self.hessian = None
@@ -180,6 +186,9 @@ class TMControlFile:
 class TurbomoleResults (Results) :
 
     def __init__ (self, controlfile='control', coordfile='coord', outname=None) :
+        """
+        TurbomoleResults constructor.
+        """
         self.mol          = VibToolsMolecule()
         self.coordfile    = coordfile
 

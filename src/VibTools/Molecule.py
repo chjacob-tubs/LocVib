@@ -23,19 +23,59 @@
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
+#import openbabel # works on Version 3.1.1.1. 
 from openbabel import openbabel
 import numpy
 
 
-class AbstractMolecule:
+class AbstractMolecule(object):
+    """
+    A class to represent an abstract Molecule:
+    
+    The module Molecule.py makes molecular structures 
+    (e.g. from Turbomole or PySNF) usable for LocVib.
+    
+    (Attributes := Parameters)
 
-    def __init__ (self) :
+    Parameters
+    ----------
+    natoms : int or None
+        total number of atoms in the molecule
+    atmasses : array (1 x natoms) or None
+        All atomic masses in the molecule
+    atnums : array (1 x  natoms) or None
+        All atomic numbers in the molecule
+    coordinates : ndarray (natoms x (x y z)) or None
+        coordinates of atoms in molecule natoms times (x y z)
+    """
+
+
+    def __init__(self):
+        """
+        Constructs all the necessary attributes
+        for the abstract-Molecule object.
+        """
         self.natoms      = None
         self.atmasses    = None
         self.atnums      = None
         self.coordinates = None
     
-    def get_fragment (self, atomlist) :
+    def get_fragment(self, atomlist):
+        """
+        It takes a fragment from the Molecule.
+
+        Parameter
+        ---------
+        atomlist: list of integers 
+            Index list of current molecule. Example (H2O):
+            atomlist = [0,1,2] -> Complete H2O-Molecule.
+            atomlist = [1] -> single atom is left.
+        
+        Returns
+        -------
+        frag: VibToolsMolecule class
+        Fragment from the Molecule.
+        """
         frag = AbstractMolecule()
 
         frag.natoms      = len(atomlist)
@@ -45,24 +85,73 @@ class AbstractMolecule:
 
         return frag
 
-class VibToolsMolecule (AbstractMolecule) :
+class VibToolsMolecule(AbstractMolecule):
+    """
+    *VibToolisMolecule() uses the properies of the class AbstractMolecule() and
+    makes molecular structures (e.g. from Turbomole or PySNF) 
+    usable for LocVib and relies on **Openbabel**.*    
+
+    *Initial:
+    Creates the object: openbabel.OBmol() and resets the molecular-cache
+    (atomic masses, atomic numbers and coordinates).*
+
+    *The OBMol class is designed to store all the basic information associated with a molecule, 
+    to make manipulations on the connection table of a molecule facile (see Openbabel).*
+
+    :Attributes: =Parameters (from AbstractMolecule)
     
+    Parameters
+    ----------
+    natoms : int or None
+        total number of atoms in the molecule
+    atmasses : array (1 x natoms) or None
+        All atomic masses in the molecule
+    atnums : array (1 x  natoms) or None
+        All atomic numbers in the molecule
+    coordinates : ndarray (natoms x (x y z)) or None
+        coordinates of atoms in molecule natoms times (x y z)
+    """
+
     def __init__ (self) :
+        """
+        Constructs all the necessary attributes 
+        for the abstract-Molecule object (openbabel).
+        
+        Reset molcache (openbabel).
+        """
         self.obmol = openbabel.OBMol()
         self.reset_molcache()
 
     def reset_molcache (self) :
+        """
+        reset_molcache() resets the entries for 
+        atomic masses,
+        atomic numbers and
+        coordinates.
+        See class AbstractMolecule (object).
+        """
         self._atmasses = None
         self._atnums = None
         self._coords = None
 
-    def read (self, filename, filetype="xyz", deuterium=None) :
+
+    def read (self, filename, filetype="xyz", deuterium=None):
+        """
+        Reads the file into the openbabel OBMolecule object.
+        
+        Parameters
+        ----------
+        filename : str
+            filename with path
+        filetype : str
+            coordinate format (Default: xyz)
+            (further informations: see openbabel)
+        """
         self.reset_molcache()
 
-        obconv = openbabel.OBConversion()
-        obconv.SetInAndOutFormats(filetype, filetype)
-
-        if not obconv.ReadFile(self.obmol, filename) :
+        obconv = openbabel.OBConversion() 
+        obconv.SetInAndOutFormats(filetype, filetype) # sets format: it requires both arguments
+        if not obconv.ReadFile(self.obmol, filename) : # Reads the file into the OBMolecule object
             raise Exception('Error reading file')
 
         if deuterium is not None:
@@ -72,21 +161,57 @@ class VibToolsMolecule (AbstractMolecule) :
             print('Atomic masses: ')
             print(self.atmasses)
 
-    def read_from_coord (self, filename='coord', deuterium=None) :
+
+    def read_from_coord (self, filename='coord',deuterium=None) :
+        """
+        reads a coord-file with 'tmol' format 
+        and delivers the corresponding AbstractMolcule attributes from file.
+        
+        Parameters
+        ----------
+        filename : str
+            filename with path (tmol-file)
+        """
         self.read(filename, "tmol", deuterium=deuterium)
 
+
     def write (self, filename, filetype="xyz") :
+        """
+        reads a file into the openbabel OBMolecule object.
+        
+        Parameters
+        ----------
+        filename : str
+            filename with path
+        filetype : str
+            coordinate format (Default: xyz)
+            (further informations: see openbabel)
+        """
         obconv = openbabel.OBConversion()
         obconv.SetInAndOutFormats(filetype, filetype)
         
         if not obconv.WriteFile(self.obmol, filename) :
             raise Exception('Error writing file')
 
+
     def get_natoms (self) :
+        """
+        Returns
+        -------
+        natoms : int or None
+        total number of atoms in the molecule.
+        """
         return self.obmol.NumAtoms()
     natoms = property(get_natoms)
+
         
     def get_atmasses (self) :
+        """
+        Returns
+        -------
+        atmasses : array (1 x natoms) or None
+        All atomic masses in the molecule.
+        """
         if self._atmasses is None:
             self._atmasses = numpy.zeros((self.natoms,))
             for at in openbabel.OBMolAtomIter(self.obmol) :
@@ -95,7 +220,14 @@ class VibToolsMolecule (AbstractMolecule) :
         return self._atmasses
     atmasses = property(get_atmasses)
 
+
     def get_atnums (self) :
+        """
+        Returns
+        -------
+        atnums : array (1 x  natoms) or None
+        All atomic numbers in the molecule.
+        """
         if self._atnums is None :
             self._atnums = numpy.zeros((self.natoms,))
             for at in openbabel.OBMolAtomIter(self.obmol) :
@@ -105,6 +237,12 @@ class VibToolsMolecule (AbstractMolecule) :
     atnums = property(get_atnums)
 
     def get_coordinates (self) :
+        """
+        Returns
+        -------
+        coordinates : ndarray (natoms x (x y z)) or None
+        coordinates of atoms in molecule natoms times (x y z).
+        """
         if self._coords is None :
             self._coords = numpy.zeros((self.natoms,3))
             for at in openbabel.OBMolAtomIter(self.obmol) :
@@ -117,6 +255,14 @@ class VibToolsMolecule (AbstractMolecule) :
     coordinates = property(get_coordinates)
 
     def add_atoms (self, atnums, coords) :
+        """
+        Parameters
+        ----------
+        atnums : array (1 x  natoms) or None
+           All atomic numbers in the molecule.
+        coordinates : ndarray (natoms x (x y z)) or None
+           coordinates of atoms in molecule natoms times (x y z).
+        """
         self.obmol.BeginModify()
 
         for i in range(len(atnums)):
@@ -127,9 +273,14 @@ class VibToolsMolecule (AbstractMolecule) :
 
         self.reset_molcache()
 
-    ## the following methods rely on Openbabel
-    
+    ###########################################
+    # the following methods rely on Openbabel #
+    ###########################################
+  
     def residue_groups (self) :
+        """
+        Doc-String in progress.
+        """
         groupnames = []
         groups     = []
 
@@ -151,6 +302,9 @@ class VibToolsMolecule (AbstractMolecule) :
         return groups, groupnames
 
     def attype_groups (self) :
+        """
+        Doc-String in progress.
+        """
         groupnames = ['N', 'H', 'C', 'O',  'CA', 'HA', 'CB', 'HB', 'OXT', 'HXT', 'H2O']
         groups     = []
 
@@ -176,6 +330,9 @@ class VibToolsMolecule (AbstractMolecule) :
         return groups, groupnames
 
     def attype_groups_2 (self) :
+        """
+        Doc-String in progress.
+        """
         groupnames = ['NH', 'CO', 'CA', 'HA', 'CHB']
         groups     = []
 
@@ -203,7 +360,14 @@ class VibToolsMolecule (AbstractMolecule) :
         return groups, groupnames
 
     def attype_groups_3 (self) :
-        groupnames = ['NH', 'CO', 'CA', 'CHB1', 'CHB2', 'CHG1', 'CHD1']
+        """
+        Doc-String in progress.
+        """
+        #groupnames = ['NH', 'CO', 'CA', 'CHB1', 'CHB2', 'CHG1', 'CHD1']
+        #Attention: This list has been modified to make the test runnable
+        # added Strings: "CB", "HB3", "HA"
+        groupnames = ['NH', 'CO', 'CA','CB','HA','HB3', 'CHB1', 'CHB2', 'CHG1', 'CHD1']
+      
         groups     = []
 
         for k in groupnames :
@@ -242,7 +406,14 @@ class VibToolsMolecule (AbstractMolecule) :
         return groups, groupnames
 
     def attype_groups_7B (self) :
-        groupnames = ['NH', 'CO', 'CHA', 'CHB1', 'CHB2', 'CHG1', 'CHD1', 'Ring', 'Term']
+        """
+        Doc-String in progress.
+        """
+        #Attention: This list has been modified to make the test runnable
+        # added Strings: "CB", "HB3", "HA"
+        groupnames = ['NH', 'CO', 'CHA', 'CHB1', 
+                      'CHB2', 'CHG1', 'CHD1', 'Ring', 'Term',
+                      'HB3']
         groups     = []
 
         for k in groupnames :
@@ -292,6 +463,9 @@ class VibToolsMolecule (AbstractMolecule) :
         return groups, groupnames
 
     def attype_all_groups(self):
+        """
+        Doc-String in progress.
+        """
         #groupnames = ['N', 'H', 'C', 'O', 'CA', 'HA', 'CB', 'HB', 'OXT', 'HXT', 'H2O', 'CH3', 'HH3']
         groupnames = []
         groups = []
@@ -325,12 +499,22 @@ class VibToolsMolecule (AbstractMolecule) :
         return groups, groupnames
 
     def atom_groups (self) :
+        """
+        Doc-String in progress.
+        """
         group_dict = {}
 
-        pse = openbabel.OBElementTable()
-        
+        # Openbabel 2.x Version
+        #        pse = openbabel.OBElementTable()
+        #       
+        #        for at in openbabel.OBMolAtomIter(self.obmol) :
+        #            atname = pse.GetSymbol(at.GetAtomicNum())
+
+        # Openbabel 3.x Version (Start) 
         for at in openbabel.OBMolAtomIter(self.obmol) :
-            atname = pse.GetSymbol(at.GetAtomicNum())
+            atname = openbabel.GetSymbol(at.GetAtomicNum())
+        # Openbabel 3.x Version (End)
+
             if atname in group_dict :
                 group_dict[atname].append(at.GetIdx()-1)
             else :
@@ -346,6 +530,16 @@ class VibToolsMolecule (AbstractMolecule) :
         return groups, groupnames
 
     def amide1_groups (self, res) :
+        # Attention: The term "ref" is also used differently in VibTools: 
+        # see results/residue etc.
+        """
+        Doc-String in progress.
+
+        :Variable:*
+
+        **res:** int
+           in progress
+        """
         groupnames = ['CO', 'NH', 'NH2', 'NH3', 'CAH', 'CA0', 'CA2', 'COo', 'CBa', 'R']
         groups     = []
 
@@ -386,7 +580,9 @@ class VibToolsMolecule (AbstractMolecule) :
         return groups, groupnames
 
     def amide2_groups (self, res) :
-
+        """
+        Doc-String in progress.
+        """
         groupnames = [ 'CO-1', 'NH', 'CO', 'NH+1', 'CO+1', 'NH+2', 'CH01', 'R']
         groups     = []
 
@@ -437,7 +633,9 @@ class VibToolsMolecule (AbstractMolecule) :
 
 
     def amide3_groups (self, res) :
-
+        """
+        Doc-String in progress.
+        """
         groupnames = [ 'Am-1/0', 'CA0', 'Am0/1', 'CA+1', 'Am1/2', 'CA+2', 'CB', 'R']
         groups     = []
 
@@ -497,7 +695,9 @@ class VibToolsMolecule (AbstractMolecule) :
         return groups, groupnames
 
     def skelCN_groups (self, res) :
-
+        """
+        Doc-String in progress.
+        """
         groupnames = ['NCA0', 'HA0', 'CO0',
                       'H+1', 'NCA+1', 'HA+1', 'CHB+1', 'CO+1', 
                       'H+2', 'NCA+2',
@@ -556,7 +756,9 @@ class VibToolsMolecule (AbstractMolecule) :
 
 
     def ch3_groups (self, res) :
-
+        """
+        Doc-String in progress.
+        """
         groupnames = ['CO0', 'NH+1', 'CA+1', 'CB+1', 'CO+1', 'NH+2', 'R']
         groups     = []
 

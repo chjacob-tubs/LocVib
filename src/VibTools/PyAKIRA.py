@@ -30,6 +30,9 @@ from .Results  import Results
 class AKIRAResults (Results) :
 
     def __init__ (self, iterationsfile='akira_iterations.out', coordfile='coord') :
+        """
+        AKIRAResults constructor.
+        """
         self.mol          = VibToolsMolecule()
 
         self.iterationsfile = iterationsfile

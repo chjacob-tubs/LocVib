@@ -32,6 +32,9 @@ from .Molecule import VibToolsMolecule
 class Results:
 
     def __init__ (self) :
+        """
+        Results constructor.
+        """
         self.mol = VibToolsMolecule()
 
         self.modes = None # instance of class VibModes
@@ -52,11 +55,8 @@ class Results:
         raise Exception('Abstract method not implemented')
 
     def get_tensor_deriv_nm (self, tens, ncomp=None, modes=None) :
-
         deriv_c  = self.get_tensor_deriv_c (tens, ncomp)
-
         ncomp = deriv_c.shape[2]
-
         if modes==None :
             modes_c = self.get_c_normalmodes()
         else:
@@ -69,7 +69,6 @@ class Results:
 
         for icomp in range(ncomp) :
             deriv_nm[:, icomp] = numpy.dot(modes_c,deriv_c[:,:,icomp].reshape((3*natoms)))
-
         return deriv_nm
 
     def get_ir_intensity (self, modes=None) :

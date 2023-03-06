@@ -33,6 +33,9 @@ from . import Modes
 class VibSpectrum:
 
     def __init__ (self, freqs, ints) :
+        """
+        VibSpecctrum constructor.
+        """
         if isinstance(freqs, Modes.VibModes) :
             self.freqs = freqs.freqs
         else :

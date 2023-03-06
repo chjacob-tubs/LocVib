@@ -1,0 +1,690 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Molecule &mdash; LocVib 0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="LocVib 0.1 documentation" href="index.html"/>
+        <link rel="next" title="Modes" href="Modes.html"/>
+        <link rel="prev" title="Tutorial" href="Tutorial.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> LocVib
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">VibTools Modules</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Molecule</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#abstractmolecule">AbstractMolecule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#vibtoolsmolecule">VibToolsMolecule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Modes.html">Modes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="LocVib.html">LocVib</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="LocVib.html#id1">LocVib</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="LocVib.html#examples">Examples</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="LocVib.html#preparation-and-initiate-vibtools-modes">Preparation and Initiate VibTools.Modes</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Molecule</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Modes.html">Modes</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="PySNF.html">PySNF</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="LocVib.html#maximize-localization">Maximize localization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="LocVib.html#localize-subsets-of-normal-modes">Localize subsets of normal modes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="LocVib.html#automaticassignment">AutomaticAssignment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Results.html">Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Spectrum.html">Spectrum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plotting.html">Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HugAnalysis.html">HugAnalysis</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="PyAKIRA.html">PyAKIRA</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="PySNF.html">PySNF</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="PySNF.html#snf-files-output-restart-control">SNF-Files: Output, Restart, Control</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="PySNF.html#snfresults">SNFResults</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Molecule</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#abstractmolecule">AbstractMolecule</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vibtoolsmolecule">VibToolsMolecule</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Modes.html">Modes</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="PySNF.html#id6">Example</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Molecule</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#abstractmolecule">AbstractMolecule</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vibtoolsmolecule">VibToolsMolecule</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Modes.html">Modes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="PyTape21.html">PyTape21</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PyTurbomole.html">PyTurbomole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PyVASP.html">PyVASP</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">LocVib</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Molecule</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Molecule.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="molecule">
+<h1>Molecule<a class="headerlink" href="#molecule" title="Permalink to this heading">¶</a></h1>
+<p>The module Molecule.py makes molecular structures
+(e.g. from Turbomole or PySNF) usable for LocVib.</p>
+<section id="abstractmolecule">
+<h2>AbstractMolecule<a class="headerlink" href="#abstractmolecule" title="Permalink to this heading">¶</a></h2>
+<p>The class AbstractMolecule serves as a preparation for the class <a class="reference internal" href="#id2">VibToolsMolecule</a> and inherits its properties.</p>
+<blockquote>
+<div><span class="target" id="id1"></span></div></blockquote>
+<dl class="py class">
+<dt class="sig sig-object py" id="VibTools.AbstractMolecule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">VibTools.</span></span><span class="sig-name descname"><span class="pre">AbstractMolecule</span></span><a class="headerlink" href="#VibTools.AbstractMolecule" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class to represent an abstract Molecule:</p>
+<p>The module Molecule.py makes molecular structures
+(e.g. from Turbomole or PySNF) usable for LocVib.</p>
+<p>(Attributes := Parameters)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>natoms</strong> (<em>int</em><em> or </em><em>None</em>) – total number of atoms in the molecule</p></li>
+<li><p><strong>atmasses</strong> (<em>array</em><em> (</em><em>1 x natoms</em><em>) or </em><em>None</em>) – All atomic masses in the molecule</p></li>
+<li><p><strong>atnums</strong> (<em>array</em><em> (</em><em>1 x  natoms</em><em>) or </em><em>None</em>) – All atomic numbers in the molecule</p></li>
+<li><p><strong>coordinates</strong> (<em>ndarray</em><em> (</em><em>natoms x</em><em> (</em><em>x y z</em><em>)</em><em>) or </em><em>None</em>) – coordinates of atoms in molecule natoms times (x y z)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="vibtoolsmolecule">
+<h2>VibToolsMolecule<a class="headerlink" href="#vibtoolsmolecule" title="Permalink to this heading">¶</a></h2>
+<blockquote>
+<div></div></blockquote>
+<p id="id2">Following is the main class of VibToolsMolecule and relies on openbabel
+and VibToolsMolecule uses <a class="reference internal" href="#id1">AbstractMolecule</a>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">VibTools.</span></span><span class="sig-name descname"><span class="pre">VibToolsMolecule</span></span><a class="headerlink" href="#VibTools.VibToolsMolecule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#VibTools.AbstractMolecule" title="VibTools.Molecule.AbstractMolecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractMolecule</span></code></a></p>
+<p><em>VibToolisMolecule() uses the properies of the class AbstractMolecule() and
+makes molecular structures (e.g. from Turbomole or PySNF)
+usable for LocVib and relies on **Openbabel*</em>.*</p>
+<p><em>Initial:
+Creates the object: openbabel.OBmol() and resets the molecular-cache
+(atomic masses, atomic numbers and coordinates).</em></p>
+<p><em>The OBMol class is designed to store all the basic information associated with a molecule,
+to make manipulations on the connection table of a molecule facile (see Openbabel).</em></p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><p>=Parameters (from AbstractMolecule)</p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>natoms</strong> (<em>int</em><em> or </em><em>None</em>) – total number of atoms in the molecule</p></li>
+<li><p><strong>atmasses</strong> (<em>array</em><em> (</em><em>1 x natoms</em><em>) or </em><em>None</em>) – All atomic masses in the molecule</p></li>
+<li><p><strong>atnums</strong> (<em>array</em><em> (</em><em>1 x  natoms</em><em>) or </em><em>None</em>) – All atomic numbers in the molecule</p></li>
+<li><p><strong>coordinates</strong> (<em>ndarray</em><em> (</em><em>natoms x</em><em> (</em><em>x y z</em><em>)</em><em>) or </em><em>None</em>) – coordinates of atoms in molecule natoms times (x y z)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.reset_molcache">
+<span class="sig-name descname"><span class="pre">reset_molcache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.VibToolsMolecule.reset_molcache" title="Permalink to this definition">¶</a></dt>
+<dd><p>reset_molcache() resets the entries for
+atomic masses,
+atomic numbers and
+coordinates.
+See class AbstractMolecule (object).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filetype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'xyz'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.VibToolsMolecule.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the file into the openbabel OBMolecule object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>str</em>) – filename with path</p></li>
+<li><p><strong>filetype</strong> (<em>str</em>) – coordinate format (Default: xyz)
+(further informations: see openbabel)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.read_from_coord">
+<span class="sig-name descname"><span class="pre">read_from_coord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'coord'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.VibToolsMolecule.read_from_coord" title="Permalink to this definition">¶</a></dt>
+<dd><p>reads a coord-file with ‘tmol’ format
+and delivers the corresponding AbstractMolcule attributes from file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – filename with path (tmol-file)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filetype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'xyz'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.VibToolsMolecule.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>reads a file into the openbabel OBMolecule object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>str</em>) – filename with path</p></li>
+<li><p><strong>filetype</strong> (<em>str</em>) – coordinate format (Default: xyz)
+(further informations: see openbabel)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.get_natoms">
+<span class="sig-name descname"><span class="pre">get_natoms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.VibToolsMolecule.get_natoms" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>natoms</strong> (<em>int or None</em>)</p></li>
+<li><p><em>total number of atoms in the molecule.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.natoms">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">natoms</span></span><a class="headerlink" href="#VibTools.VibToolsMolecule.natoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns: * <strong>natoms</strong> (<em>int or None</em>)
+* <em>total number of atoms in the molecule.</em></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.get_atmasses">
+<span class="sig-name descname"><span class="pre">get_atmasses</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.VibToolsMolecule.get_atmasses" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>atmasses</strong> (<em>array (1 x natoms) or None</em>)</p></li>
+<li><p><em>All atomic masses in the molecule.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.atmasses">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">atmasses</span></span><a class="headerlink" href="#VibTools.VibToolsMolecule.atmasses" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns: * <strong>atmasses</strong> (<em>array (1 x natoms) or None</em>)
+* <em>All atomic masses in the molecule.</em></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.get_atnums">
+<span class="sig-name descname"><span class="pre">get_atnums</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.VibToolsMolecule.get_atnums" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>atnums</strong> (<em>array (1 x  natoms) or None</em>)</p></li>
+<li><p><em>All atomic numbers in the molecule.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.atnums">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">atnums</span></span><a class="headerlink" href="#VibTools.VibToolsMolecule.atnums" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns: * <strong>atnums</strong> (<em>array (1 x  natoms) or None</em>)
+* <em>All atomic numbers in the molecule.</em></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.get_coordinates">
+<span class="sig-name descname"><span class="pre">get_coordinates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.VibToolsMolecule.get_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>coordinates</strong> (<em>ndarray (natoms x (x y z)) or None</em>)</p></li>
+<li><p><em>coordinates of atoms in molecule natoms times (x y z).</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.coordinates">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">coordinates</span></span><a class="headerlink" href="#VibTools.VibToolsMolecule.coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns: * <strong>coordinates</strong> (<em>ndarray (natoms x (x y z)) or None</em>)
+* <em>coordinates of atoms in molecule natoms times (x y z).</em></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.add_atoms">
+<span class="sig-name descname"><span class="pre">add_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atnums</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.VibToolsMolecule.add_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atnums</strong> (<em>array</em><em> (</em><em>1 x  natoms</em><em>) or </em><em>None</em>) – All atomic numbers in the molecule.</p></li>
+<li><p><strong>coordinates</strong> (<em>ndarray</em><em> (</em><em>natoms x</em><em> (</em><em>x y z</em><em>)</em><em>) or </em><em>None</em>) – coordinates of atoms in molecule natoms times (x y z).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.residue_groups">
+<span class="sig-name descname"><span class="pre">residue_groups</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.VibToolsMolecule.residue_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Doc-String in progress.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.attype_groups">
+<span class="sig-name descname"><span class="pre">attype_groups</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.VibToolsMolecule.attype_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Doc-String in progress.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.attype_groups_2">
+<span class="sig-name descname"><span class="pre">attype_groups_2</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.VibToolsMolecule.attype_groups_2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Doc-String in progress.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.attype_groups_3">
+<span class="sig-name descname"><span class="pre">attype_groups_3</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.VibToolsMolecule.attype_groups_3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Doc-String in progress.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.attype_groups_7B">
+<span class="sig-name descname"><span class="pre">attype_groups_7B</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.VibToolsMolecule.attype_groups_7B" title="Permalink to this definition">¶</a></dt>
+<dd><p>Doc-String in progress.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.attype_all_groups">
+<span class="sig-name descname"><span class="pre">attype_all_groups</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.VibToolsMolecule.attype_all_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Doc-String in progress.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.atom_groups">
+<span class="sig-name descname"><span class="pre">atom_groups</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.VibToolsMolecule.atom_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Doc-String in progress.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.amide1_groups">
+<span class="sig-name descname"><span class="pre">amide1_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">res</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.VibToolsMolecule.amide1_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Doc-String in progress.</p>
+<p>:Variable:*</p>
+<dl class="simple">
+<dt><strong>res:</strong> int</dt><dd><p>in progress</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.amide2_groups">
+<span class="sig-name descname"><span class="pre">amide2_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">res</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.VibToolsMolecule.amide2_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Doc-String in progress.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.amide3_groups">
+<span class="sig-name descname"><span class="pre">amide3_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">res</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.VibToolsMolecule.amide3_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Doc-String in progress.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.skelCN_groups">
+<span class="sig-name descname"><span class="pre">skelCN_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">res</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.VibToolsMolecule.skelCN_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Doc-String in progress.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="VibTools.VibToolsMolecule.ch3_groups">
+<span class="sig-name descname"><span class="pre">ch3_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">res</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#VibTools.VibToolsMolecule.ch3_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Doc-String in progress.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this heading">¶</a></h2>
+<p>LocVib(VibTools) should already be installed as a loadable Python module.</p>
+<p>Import package:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">VibTools</span> <span class="k">as</span> <span class="nn">vt</span>
+</pre></div>
+</div>
+<p>We can extract a coordinate file from the test folder /LocVib/tests/test_data/H2O.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">vtmole</span> <span class="o">=</span> <span class="n">vt</span><span class="o">.</span><span class="n">VibToolsMolecule</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vtmole</span><span class="o">.</span><span class="n">read_from_coord</span><span class="p">(</span><span class="s1">&#39;test_data/H2O/coord&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now let’s look at the properties of the loaded  molecule:</p>
+<p>Show the total number of atoms:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;natoms=&#39;</span><span class="p">,</span> <span class="n">vtmole</span><span class="o">.</span><span class="n">natoms</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;natoms=&#39;</span><span class="p">,</span> <span class="n">vtmole</span><span class="o">.</span><span class="n">get_natoms</span><span class="p">())</span>
+<span class="go">natoms= 3</span>
+</pre></div>
+</div>
+<p>Show the atom masses of the Molecule:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;atmasses=&#39;</span><span class="p">,</span><span class="n">vtmole</span><span class="o">.</span><span class="n">atmasses</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;atmasses=&#39;</span><span class="p">,</span><span class="n">vtmole</span><span class="o">.</span><span class="n">get_atmasses</span><span class="p">()</span> <span class="p">)</span>
+<span class="go">atmasses= [ 1.00782503 15.99491462  1.00782503]</span>
+</pre></div>
+</div>
+<p>Show the atomic numbers of the molecule:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;atnums=&#39;</span><span class="p">,</span><span class="n">vtmole</span><span class="o">.</span><span class="n">atnums</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;atnums=&#39;</span><span class="p">,</span><span class="n">vtmole</span><span class="o">.</span><span class="n">get_atnums</span><span class="p">())</span>
+<span class="go">atnums= [1. 8. 1.]</span>
+</pre></div>
+</div>
+<p>The molecule at hand is obviously water, unless the path has already given it away anyway.</p>
+<p>Show the cartesian coordinates (x y z) of the Molecule:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;coordinates=&#39;</span><span class="p">,</span><span class="n">vtmole</span><span class="o">.</span><span class="n">coordinates</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;coordinates=&#39;</span><span class="p">,</span><span class="n">vtmole</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">())</span>
+<span class="go">coordinates= [[-2.40315717e+00 -1.11797830e+00 -2.19608983e-03]</span>
+<span class="go">[-3.16918773e+00 -1.11797830e+00  5.95151641e-01]</span>
+<span class="go">[-3.93521804e+00 -1.11797830e+00 -2.19608983e-03]]</span>
+</pre></div>
+</div>
+<p>We can save the data in LocVib format</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;H2O_vt_data&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vtmole</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now we should find the file ‘H2O_vt_data’ in the current folder.
+Now we can open the file e.g. with VIM:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">&gt;&gt;&gt; vi H2O_vt_data</span>
+
+<span class="go">3</span>
+
+<span class="go">H         -2.40316       -1.11798       -0.00220</span>
+<span class="go">O         -3.16919       -1.11798        0.59515</span>
+<span class="go">H         -3.93522       -1.11798       -0.00220</span>
+</pre></div>
+</div>
+<p>We can now read this file back into LocVib:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span> <span class="n">vtmole</span> <span class="o">=</span> <span class="n">vt</span><span class="o">.</span><span class="n">VibToolsMolecule</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span> <span class="n">vtmole</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If we want to add more atoms to an existing molecule, we can use the following function.
+Our test atom is here a H-atom (atomic number: 1) with the coordinates (-1 1 1):</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">vtmole</span><span class="o">.</span><span class="n">add_atoms</span><span class="p">([</span><span class="mi">1</span><span class="p">],[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+</pre></div>
+</div>
+<p>The new coordinate and atomic number lists are as follows;
+Displayable with the commands above (natoms,atmasses,atnums,coordinates):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">natoms = 4</span>
+<span class="go">atmasses = [ 1.00782503 15.99491462  1.00782503  1.00782503]</span>
+<span class="go">atnums = [1. 8. 1. 1.]</span>
+<span class="go">coordinates = [[-2.40315717e+00 -1.11797830e+00 -2.19608983e-03]</span>
+<span class="go"> [-3.16918773e+00 -1.11797830e+00  5.95151641e-01]</span>
+<span class="go"> [-3.93521804e+00 -1.11797830e+00 -2.19608983e-03]</span>
+<span class="go"> [-1.00000000e+00  1.00000000e+00  1.00000000e+00]]</span>
+</pre></div>
+</div>
+<p>We can also take fragments of a molecule and process them analogously.
+For this we use the internal index list of the considered molecule.
+If we continue to use the water example, we have a complete index list:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">atomlist</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Execute the get_fragment method provides:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">frag</span> <span class="o">=</span> <span class="n">vtmole</span><span class="o">.</span><span class="n">get_fragment</span><span class="p">(</span><span class="n">atomlist</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;atomic numbers:&#39;</span><span class="p">,</span> <span class="n">frag</span><span class="o">.</span><span class="n">atnums</span><span class="p">)</span>
+<span class="go">atomic numbers: [1. 8. 1.]</span>
+</pre></div>
+</div>
+<p>Now we omit an index number:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">atomlist</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">frag</span> <span class="o">=</span> <span class="n">vtmole</span><span class="o">.</span><span class="n">get_fragment</span><span class="p">(</span><span class="n">atomlist</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;atomic numbers:&#39;</span><span class="p">,</span> <span class="n">frag</span><span class="o">.</span><span class="n">atnums</span><span class="p">)</span>
+<span class="go">atomic numbers: [1. 1.]</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Modes.html" class="btn btn-neutral float-right" title="Modes" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Tutorial.html" class="btn btn-neutral" title="Tutorial" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2022, Michael Welzel.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Sphinx-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/documentation_options.js"></script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

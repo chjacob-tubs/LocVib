@@ -37,6 +37,9 @@ from .Results  import Results
 class ADFResults (Results) :
 
     def __init__ (self, t21file='TAPE21', xyzfile='mol.xyz') :
+        """
+        ADFResults constructor.
+        """
         self.mol          = VibToolsMolecule()
         self.xyzfilename  = xyzfile
         self.t21filename  = t21file

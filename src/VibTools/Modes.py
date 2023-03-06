@@ -29,9 +29,44 @@ import pylab
 
 from . import Constants
 
-class VibModes:
+class VibModes(object):
+    """
+    Vibrational modes class
+
+    :Attributes=Parameters
+
+    Parameters
+    ----------
+    nmodes : int
+        number of modes.
+    mol : class
+        -> VibToolsMolecule class.
+    natoms: int or None
+        total number of atoms in the molecule.
+    freqs : array (nmodes)
+        vibrational frequencies.
+    modes_mw :  ndarray (nmodes x 3*natoms)
+        mass-weighted normal modes.
+    modes_c : ndarray(nmodes x 3*natoms)
+        cartesian normal modes.
+
+    Example
+    -------
+    *Modes(c/mw) format:* (3*natoms-6) times 3*natoms
+        Atom 1: [[X Y Z  X Y Z ...  X Y Z]
+
+        Atom 2: [X Y Z  X Y Z  ... X Y Z] 
+
+        ...
+
+        Atom n: [X Y Z  X Y Z ...  X Y Z]]
+    """
 
     def __init__ (self, nmodes, mol) :
+        """
+        VibModes constructor.
+        For more details see the class description/docstring
+        """
         self.nmodes = nmodes
 
         self.mol = mol
@@ -42,22 +77,27 @@ class VibModes:
         self.modes_mw = numpy.zeros((nmodes, 3*self.natoms))
         self.modes_c  = numpy.zeros((nmodes, 3*self.natoms))
 
-    def set_modes_mw (self, modes_mw)  :
+    def set_modes_mw (self, modes_mw):
+        """set mass-weighted modes."""
         self.modes_mw[:,:] = modes_mw
+        # Warum kein modes_mw_update wie bei modes_c????
         self.normalize_modes()
 
     def set_modes_c (self, modes_c)  :
+        """set cartesian modes."""
         self.modes_c[:,:] = modes_c
         self.update_modes_mw()
         self.normalize_modes()
 
     def set_mode_mw (self, i, mode, freq=None) :
+        """set single mode in mass-weighted modes."""
         self.modes_mw[i,:] = mode
         if freq:
             self.freqs[i] = freq
         self.normalize_modes()
 
     def set_mode_c (self, i, mode, freq=None) :
+        """set single mode in cartesian modes (mass-weighted normalized)."""
         self.modes_c[i,:] = mode
         if freq:
             self.freqs[i] = freq
@@ -65,9 +105,11 @@ class VibModes:
         self.normalize_modes()
       
     def set_freqs (self, freqs) :
+        """set frequencies."""
         self.freqs = freqs
         
     def get_modes_c_norm (self) :
+        """get cartesian normalized cartesian modes."""
         norm_modes = self.modes_c.copy()
         for imode in range(self.nmodes) :
             nc = math.sqrt((self.modes_c[imode,:]**2).sum())
@@ -75,6 +117,7 @@ class VibModes:
         return norm_modes
 
     def normalize_modes (self) :
+        """normalize cartesian and mass-weighted modes."""
         for imode in range(self.nmodes) :
             nc = math.sqrt((self.modes_mw[imode,:]**2).sum())
             if abs(nc) > 0.0 :
@@ -84,25 +127,65 @@ class VibModes:
     modes_c_norm = property(get_modes_c_norm)
     
     def update_modes_c (self) :
+        """update cartesian modes in respect to norm."""
         for idir in range(3):
             self.modes_c[:,idir::3] = self.modes_mw[:,idir::3] / numpy.sqrt(self.mol.atmasses)
 
     def update_modes_mw (self) :
+        """update the mass-weighted modes in respect to the norm."""
         for idir in range(3):
             self.modes_mw[:,idir::3] = self.modes_c[:,idir::3] * numpy.sqrt(self.mol.atmasses)
 
     def get_subset (self, modelist) :
+        """get subset of modes and frequencies.	
+
+        Parameters
+        ---------- 
+        modeslist : 1D-array
+            indexes of internal atomic assignments 
+            (see example in detailed documentation). 
+
+        Returns
+        -------
+        subset : VibTools.Modes class
+        returns the subset of the corresponding Modes class.
+        """
         subset = VibModes(len(modelist), self.mol)
         subset.set_modes_mw(self.modes_mw[modelist].copy())
         subset.set_freqs(self.freqs[modelist].copy())
         return subset
 
     def get_range (self, minfreq, maxfreq) :
+        """get a certain freqency range(minimal frequency, maximal frequency).
+
+        Parameters
+        ----------
+        minfreq : float
+            lower bound for freqency range.
+        maxfreq : float
+            upper bound for freqency range.
+
+        Returns
+        -------
+        subset : VibTools.Modes class
+        returns the range(subset) of the corresponding Modes class.
+        """ 
         modelist = numpy.where((self.freqs > minfreq) & (self.freqs < maxfreq))[0]
         return self.get_subset(modelist)
             
     def write_g98out (self, massweighted=False, normalize=True, filename='g98.out') :
+        """
+        Creates Gaussian system outfile g98.out.
 
+        Parameters
+        ----------
+        massweighted : Boolean
+             massweighting on/off
+        normalize : Boolean
+             normalizing on/off
+        filename : str
+             filename with path
+        """
         if massweighted :
             modes = self.modes_mw
         else:
@@ -172,6 +255,10 @@ class VibModes:
         f.write('--------\n')
         f.close()
         
+# TODO :Docs + test 
+# get_composition
+# print functions?
+
     def get_composition (self, groups) :
         types = numpy.zeros((len(groups), self.nmodes))
         squared_modes = self.modes_mw**2
@@ -247,6 +334,26 @@ class VibModes:
         self.print_composition(groupnames, comp, labels)
 
     def transform (self, tmat) :
+        """
+        Unitary transformation function
+
+        `H(q) = Q^t H(m) Q`
+
+        `Q` := Tranformation matrix (`Q^t` = transposed)
+
+        `H` := Hessian matrix; 
+        `m` = mass-weighted, `q` = diagonalized Hessian Matrix.
+        
+        Parameters
+        ---------- 
+        tmat : ndarray(3 x 3, dtype=float)
+            Unitary transformation matrix.
+
+        Returns
+        -------
+        tmodes : VibTools.Modes class
+        transformed modes.
+        """
         tmodes = VibModes(self.nmodes, self.mol)
         tmodes.set_modes_mw(numpy.dot(tmat, self.modes_mw))
 
@@ -257,6 +364,20 @@ class VibModes:
         return tmodes
 
     def sortmat_by_groups (self, groups) :
+        """
+        sorts modes based on composition.
+ 
+        Parameters
+        ----------
+        groups : list of lists
+           Example H2O: [[], [], [], [], [], [], [], [], [], [], [0, 1, 2]].
+           See VibTools.Molecule.attype_groups()
+
+        Returns
+        -------
+        sortmat : ndarray(nmodes x nmodes)
+        sorting matrix by groups
+        """
         types = self.get_composition(groups)
 
         max_res = []
@@ -277,12 +398,31 @@ class VibModes:
         return sortmat
         
     def sortmat_by_residue (self, external_molecule=None) :
+        """sorts modes based on sortmat_by_groups (composition).
+ 
+        Parameters
+        ----------
+        external_molecule : tba 
+            tba
+
+        Returns
+        -------
+        sortmat_by_groups : ndarray(nmodes x nmodes)
+        sorting matrix by groups.
+        """
         if external_molecule:
             return self.sortmat_by_groups(external_molecule.residue_groups()[0])
         else:
             return self.sortmat_by_groups(self.mol.residue_groups()[0])
 
     def sortmat_by_freqs (self) :
+        """*sorts modes based on freqs.*
+ 
+        Returns
+        -------
+        sortmat : ndarray(nmodes x nmodes)
+        sorting matrix by frequencies
+        """
         inds = numpy.argsort(self.freqs)
         sortmat = numpy.zeros((self.nmodes, self.nmodes))
         for i in range(self.nmodes) :
@@ -291,6 +431,19 @@ class VibModes:
         return sortmat
 
     def get_fragment_modes (self, atomlist) :
+        """get a certain fragment of modes (based on VibTools.Molecule.get_fragment).
+
+        Parameters
+        ---------- 
+        atomlist : list(dtype=int)
+            List consisting of atom indices which should be present in the new mode class.
+            Example: atomlist = [3,5,7] 
+
+        Returns
+        -------
+        subset : VibTools.Modes class
+        returns the fragment of the corresponding Modes class
+        """
         frag = self.mol.get_fragment(atomlist)
         
         indices = [0]*3*len(atomlist)
@@ -307,6 +460,20 @@ class VibModes:
         return modes
         
     def overlap (self, other) :
+        """
+        calculates the overlap between two mode matrices.
+
+        Parameters
+        ---------- 
+        other : -> Format is equal to the attribute modes_mw
+            A set of modes for which the overlap to the modes 
+            of the existing class is to be calculated.
+ 
+        Returns
+        -------
+        ov : list(float)
+        results of overlap calculation. 
+        """
         ov = numpy.zeros((self.nmodes,))
 
         for i in range(self.nmodes) :
@@ -317,6 +484,20 @@ class VibModes:
         return ov
 
     def center (self, imode) :
+        """
+        Calculates the center of mass of a mode.
+
+        Parameters
+        ----------
+        imode : int 
+            mode index in modes_mw or modes_c
+ 
+        Returns
+        -------
+        cen : list(float)
+        center of mass of the corresponding mode.
+        """
+
         sq_mode = self.modes_mw[imode,:]**2
 
         c = numpy.zeros((self.natoms,))
@@ -334,6 +515,22 @@ class VibModes:
         return cen
 
     def distance (self, imode, jmode) :
+        """
+        calculates distance between two centers of mass.
+
+        Parameters
+        ----------
+        imode : int 
+            mode index in modes_mw (or modes_c?)
+        jmode : int 
+            mode index in modes_mw (or modes_c?)
+
+
+        Returns
+        -------
+        return : float
+        Distance between two centers of mass.
+        """
         dist = self.center(imode) - self.center(jmode)
         return math.sqrt(numpy.dot(dist,dist))
     
