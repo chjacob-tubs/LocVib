@@ -12,6 +12,7 @@ tests/rumprobier_Molecule.py
 
 #Doc
 *.html
+doc/_build/
 
 # coverage
 .coverage

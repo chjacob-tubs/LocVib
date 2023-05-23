@@ -1,4 +1,0 @@
-PyVASP
-======
-
-in progress
