@@ -173,7 +173,4 @@ AutomaticAssignment
 
 in progress.
 
-Examples
-^^^^^^^^
 
-in progress.

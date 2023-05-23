@@ -7,28 +7,8 @@ variables:
 stages:
     - build
     - test
-    - deploy
+#    - deploy # GitLabPages does not work on https://gitlab.pyadf.org/ May 2023
 
-
-check-requirements:
-    tags:
-        - nodes
-    stage: build
-    script:
-        - hostname
-        - module load module_include_dir
-        - . /usr/share/modules/init/bash
-        - . /usr/share/modules/init/setup
-        - export PYTHONPATH=$PYTHONPATH:$LOCVIBHOME/src
-        - module load python/anaconda3-2021.11
-        - source activate base
-        #- conda remove --name Vib --all
-        # conda clean -a
-        - conda init bash
-        #- conda env create -f environment.yml
-        - conda activate VT_CI
-        - conda env list
-        - conda list
 
 before_script:
         - hostname
@@ -39,12 +19,29 @@ before_script:
         - module load python/anaconda3-2021.11
         - source activate base
         - conda init bash
-        #- conda remove --name Vib_dev --all
-        #- conda clean -a
-        #- conda env create -f environment.yml
-        - conda activate VT_CI
         - conda env list
         - conda list
+
+
+build-requirements:
+    tags:
+        - nodes
+    stage: build
+    script:
+        - cd requirements/
+        - conda env create -f environment_human_readable.yml --force # create conda env from human readable requirements
+        -  cd ../
+        - conda activate VThr #VT_CI: maschine readable VibTools conda CI-environment
+        - conda env list # Show some environment details for debugging
+        - conda list
+        - conda list -n VThr python
+        - conda list -n VThr matplotlib
+        - conda list -n VThr numpy     
+        - conda list -n VThr scipy
+        - conda list -n VThr openbabel
+        - conda list -n VThr pytest
+        - conda list -n VThr sphinx
+        - conda list -n VThr sphinx_rtd_theme
 
 
 unittest-Molecule:
@@ -52,6 +49,7 @@ unittest-Molecule:
         - nodes
     stage: test
     script:
+        - conda activate VThr
         - cd tests/
         - pytest -v test_Molecule.py
         - cd ../
@@ -62,6 +60,7 @@ unittest-Modes:
         - nodes
     stage: test
     script:
+        - conda activate VThr
         - cd tests/
         - pytest -v test_Modes.py
         - cd ../
@@ -72,6 +71,7 @@ unittest-PySNF:
         - nodes
     stage: test
     script:
+        - conda activate VThr
         - cd tests/
         - pytest -v test_PySNF.py
         - cd ../
@@ -82,6 +82,7 @@ unittest-LocVib:
         - nodes
     stage: test
     script:
+        - conda activate VThr
         - cd tests/
         - pytest -v test_LocVib.py
         - cd ../
@@ -91,6 +92,7 @@ unittest-HugAnalysis:
         - nodes
     stage: test
     script:
+        - conda activate VThr
         - cd tests/
         - pytest -v test_HugAnalysis.py
         - cd ../
@@ -100,16 +102,19 @@ unittest-Spectrum:
         - nodes
     stage: test
     script:
+        - conda activate VThr
         - cd tests/
         - pytest -v test_Spectrum.py
         - cd ../
 
 
-pages:
+test-sphinx-doc:
     tags:
         - nodes
-    stage: deploy
+    stage: test
     script:
+        - conda activate VT_CI # The VThr environment does not yet work for the Sphinx Doc
         - cd doc/
+        - mkdir _build
         - sphinx-build . _build/
         - cd ../
