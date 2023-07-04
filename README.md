@@ -2,7 +2,7 @@
 
 Python tools for localizing normal modes
 
-Copyright (C) 2009-2022 by Christoph R. Jacob and others.
+Copyright (C) 2009-2023 by Christoph R. Jacob and others.
 
 In scientific publications using the LocVib tools, please cite:
   Ch. R. Jacob, J. Chem. Phys 130 (2009), 084106 (https://doi.org/10.1063/1.3077690).
