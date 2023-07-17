@@ -262,22 +262,129 @@ def test_get_composition(H2O_VibToolsMolecule):
         i += 1
 
 
-#def test_print_composition(H2O_VibToolsMolecule):
-#
-#def test_print_residue_composition(H2O_VibToolsMolecule):
-#
-#def test_print_attype_composition(H2O_VibToolsMolecule) :
-#
-#def test_print_attype2_composition(H2O_VibToolsMolecule) :
-#
-#def test_print_attype3_composition(H2O_VibToolsMolecule) :
-#
-#def test_print_attype7B_composition(H2O_VibToolsMolecule) :
-#
-#def test_print_attype_all_composition(H2O_VibToolsMolecule):
-#
-#def test_print_atom_composition(H2O_VibToolsMolecule) :
+def test_print_composition(H2O_VibToolsMolecule):
+    # Arrange
+    mol = H2O_VibToolsMolecule
+    natoms = 3 # H20
+    modes = vt.VibModes(3*natoms-6,mol)
+    g,gn = modes.mol.attype_groups()
+    types = modes.get_composition(g)
+    # Act
+    try:
+        modes.print_composition(gn,types)
+        test = True
+    except:
+        test = False
+    # Assert
+    assert test == True
 
+
+
+def test_print_residue_composition(H2O_VibToolsMolecule):
+    # Arrange
+    mol = H2O_VibToolsMolecule
+    natoms = 3 # H20
+    modes = vt.VibModes(3*natoms-6,mol)
+    # Act
+    try:
+        modes.print_residue_composition()
+        test = True
+    except:
+        test = False
+    # Assert
+    assert test == True
+
+
+
+
+def test_print_attype_composition(H2O_VibToolsMolecule) :
+    # Arrange
+    mol = H2O_VibToolsMolecule
+    natoms = 3 # H20
+    modes = vt.VibModes(3*natoms-6,mol)
+    # Act
+    try:
+        modes.print_attype_composition()
+        test = True
+    except:
+        test = False
+    # Assert
+    assert test == True
+
+
+def test_print_attype2_composition(H2O_VibToolsMolecule) :
+    # Arrange
+    mol = H2O_VibToolsMolecule
+    natoms = 3 # H20
+    modes = vt.VibModes(3*natoms-6,mol)
+    # Act
+    try:
+        modes.print_attype2_composition()
+        test = True
+    except:
+        test = False
+    # Assert
+    assert test == True
+
+
+def test_print_attype3_composition(H2O_VibToolsMolecule) :
+    # Arrange
+    mol = H2O_VibToolsMolecule
+    natoms = 3 # H20
+    modes = vt.VibModes(3*natoms-6,mol)
+    # Act
+    try:
+        modes.print_attype3_composition()
+        test = True
+    except:
+        test = False
+    # Assert
+    assert test == True
+
+
+def test_print_attype7B_composition(H2O_VibToolsMolecule) :
+    # Arrange
+    mol = H2O_VibToolsMolecule
+    natoms = 3 # H20
+    modes = vt.VibModes(3*natoms-6,mol)
+    # Act
+    try:
+        modes.print_attype7B_composition()
+        test = True
+    except:
+        test = False
+    # Assert
+    assert test == True
+
+
+def test_print_attype_all_composition(H2O_VibToolsMolecule):
+    # Arrange
+    mol = H2O_VibToolsMolecule
+    natoms = 3 # H20
+    modes = vt.VibModes(3*natoms-6,mol)
+    # Act
+    try:
+        modes.print_attype_all_composition()
+        test = True
+    except:
+        test = False
+    # Assert
+    assert test == True
+
+
+def test_print_atom_composition(H2O_VibToolsMolecule) :
+    # Arrange
+    mol = H2O_VibToolsMolecule
+    natoms = 3 # H20
+    modes = vt.VibModes(3*natoms-6,mol)
+    # Act
+    try:
+        modes.print_atom_composition()
+        test = True
+    except:
+        test = False
+    # Assert
+    assert test == True
 
 
 

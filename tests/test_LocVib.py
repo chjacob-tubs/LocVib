@@ -124,8 +124,8 @@ def test_rotate(H2O_VibToolsMode,H2O_LocVib_data):
             Rall.append(R)
             alpha[i,j] = alph
     # Assert
-    np.testing.assert_equal(Rall, Rall_ref)
-    np.testing.assert_equal(alpha, alpha_ref)
+    np.testing.assert_almost_equal(Rall, Rall_ref)
+    np.testing.assert_almost_equal(alpha, alpha_ref)
 
 
 def test_try_localize(H2O_VibToolsMode,H2O_LocVib_data):

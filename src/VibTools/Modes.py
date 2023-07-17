@@ -254,12 +254,22 @@ class VibModes(object):
         f.write('\n')
         f.write('--------\n')
         f.close()
-        
-# TODO :Docs + test 
-# get_composition
-# print functions?
 
-    def get_composition (self, groups) :
+
+    def get_composition (self, groups):
+        """
+        gets composition
+
+        Parameters
+        ----------
+        groups : list of lists
+            You get the corresponding data from the molecule module (mol.attype_groups())
+
+        Returns
+        -------
+        types : numpy.ndarray
+            types array(:,3)
+        """
         types = numpy.zeros((len(groups), self.nmodes))
         squared_modes = self.modes_mw**2
         for itype, attype in enumerate(groups) :
@@ -270,6 +280,16 @@ class VibModes(object):
         return types
 
     def print_composition (self, groupnames, comp, labels=None) :
+        """
+        prints composition.
+
+        Parameters
+        ----------
+        groupnames : list of strings
+             Molecule.residue_groues relies on Openbabel residue indices.
+        comp : numpy.ndarray 
+           Returns of types = Modes.get_composition(groups).
+        """
         if labels==None :
             lab = ["%4i %8.1f   " % (i, self.freqs[i]) for i in range(comp.shape[1])]
         else:
@@ -298,37 +318,44 @@ class VibModes(object):
         print()
         print()
 
-    def print_residue_composition(self, labels=None) :
+    def print_residue_composition(self, labels=None):
+        """prints residue composition based on VibTools.Molecule"""
         groups, groupnames = self.mol.residue_groups()
         comp = self.get_composition(groups)
         self.print_composition(groupnames, comp, labels)
 
     def print_attype_composition(self, labels=None) :
+        """prints attype composition based on VibTools.Molecule"""
         groups, groupnames = self.mol.attype_groups()
         comp = self.get_composition(groups)
         self.print_composition(groupnames, comp, labels)
 
     def print_attype2_composition(self, labels=None) :
+        """prints attype2 composition based on VibTools.Molecule"""
         groups, groupnames = self.mol.attype_groups_2()
         comp = self.get_composition(groups)
         self.print_composition(groupnames, comp, labels)
 
     def print_attype3_composition(self, labels=None) :
+        """prints attype3 composition based on VibTools.Molecule"""
         groups, groupnames = self.mol.attype_groups_3()
         comp = self.get_composition(groups)
         self.print_composition(groupnames, comp, labels)
 
     def print_attype7B_composition(self, labels=None) :
+        """prints attype7B composition based on VibTools.Molecule"""
         groups, groupnames = self.mol.attype_groups_7B()
         comp = self.get_composition(groups)
         self.print_composition(groupnames, comp, labels)
 
     def print_attype_all_composition(self, labels=None):
+        """prints all composition based on VibTools.Molecule"""
         groups, groupnames = self.mol.attype_all_groups()
         comp = self.get_composition(groups)
         self.print_composition(groupnames, comp, labels)
 
     def print_atom_composition(self, labels=None) :
+        """prints atom composition based on VibTools.Molecule"""
         groups, groupnames = self.mol.atom_groups()
         comp = self.get_composition(groups)
         self.print_composition(groupnames, comp, labels)
@@ -535,6 +562,19 @@ class VibModes(object):
         return math.sqrt(numpy.dot(dist,dist))
     
     def get_tdc_couplingmat (self, dipole) :
+        """
+        getes tdc couplingmat.
+
+        Parameters
+        ----------
+        dipole : numpy.ndarray
+           dipolemoments - SNFResults - read() - modes.get_subset ... dipole=modes = res.modes.get_subset)a) dipole = res.get_tensor_deriv_nm('dipole',modes=modes).
+
+        Returns
+        -------
+        tdcmat : numpy.ndarray
+        tdc coupling matrix 
+        """
         tdcmat = numpy.diag(self.freqs)
 
         for i in range(self.nmodes) :
@@ -574,18 +614,23 @@ class VibModes(object):
         """
         Automatic assignment of normal modes to groups basing on cotributions of chosen groups/types of atoms to the normal modes.
 
-        @param groups: assignment of atoms to the groups, see VibToolsMolecule.attype_groups() in Molecule module
-        @type groups: list
-        @param thresh: threshold for modes similarity (0.0,1.0)
-        @type thresh: float
-        @param moddiff: maximal distance between two neighboring normal modes in the same group
-        @type moddiff: float
-        @param freqthresh: lower frequency limit of considered normal modes
-        @type freqthresh: float
-        @param graph: plotting modes similarity matrix
-        @type graph: bool
-        @rtype: list
-        @return: list of normal modes assigned to groups containing the most similar normal modes  
+        Parameters
+        ----------
+        groups : list
+           assignment of atoms to the groups, see VibToolsMolecule.attype_groups() in Molecule module
+        thresh : float
+           threshold for modes similarity (0.0,1.0)
+        modiff : float
+           maximal distance between two neighboring normal modes in the same group
+        freqthresh : float
+           lower frequency limit of considered normal modes
+        graph : bool
+           plotting modes similarity matrix
+
+        Returns
+        -------
+        groupmodes : list
+        list of normal modes assigned to groups containing the most similar normal modes  
         """
 
         nmodes = self.nmodes

@@ -279,7 +279,18 @@ class VibToolsMolecule(AbstractMolecule):
   
     def residue_groups (self) :
         """
-        Doc-String in progress.
+        Iterate over all atoms in an OBResidue.
+
+        To facilitate iteration through all atoms in a residue, 
+        without resorting to atom indexes (which may change in the future) 
+        a variety of iterator classes and methods are provided.
+
+        Returns
+        -------
+        groups : list(lists), ints
+            Openbal residue indices.
+        gorupnames : list of strings
+            Openbabel residue indices.
         """
         groupnames = []
         groups     = []
@@ -303,7 +314,7 @@ class VibToolsMolecule(AbstractMolecule):
 
     def attype_groups (self) :
         """
-        Doc-String in progress.
+        see residue_groups in respect to attype groups.
         """
         groupnames = ['N', 'H', 'C', 'O',  'CA', 'HA', 'CB', 'HB', 'OXT', 'HXT', 'H2O']
         groups     = []
@@ -331,7 +342,7 @@ class VibToolsMolecule(AbstractMolecule):
 
     def attype_groups_2 (self) :
         """
-        Doc-String in progress.
+        see residue_groups in respect to attype 2groups.
         """
         groupnames = ['NH', 'CO', 'CA', 'HA', 'CHB']
         groups     = []
@@ -361,7 +372,7 @@ class VibToolsMolecule(AbstractMolecule):
 
     def attype_groups_3 (self) :
         """
-        Doc-String in progress.
+        see residue_groups in respect to attype3 groups.
         """
         #groupnames = ['NH', 'CO', 'CA', 'CHB1', 'CHB2', 'CHG1', 'CHD1']
         #Attention: This list has been modified to make the test runnable
@@ -407,7 +418,7 @@ class VibToolsMolecule(AbstractMolecule):
 
     def attype_groups_7B (self) :
         """
-        Doc-String in progress.
+        see residue_groups in respect to attype 7B groups.
         """
         #Attention: This list has been modified to make the test runnable
         # added Strings: "CB", "HB3", "HA"
@@ -464,7 +475,7 @@ class VibToolsMolecule(AbstractMolecule):
 
     def attype_all_groups(self):
         """
-        Doc-String in progress.
+        see residue_groups in respect to all attype groups.
         """
         #groupnames = ['N', 'H', 'C', 'O', 'CA', 'HA', 'CB', 'HB', 'OXT', 'HXT', 'H2O', 'CH3', 'HH3']
         groupnames = []
@@ -500,7 +511,7 @@ class VibToolsMolecule(AbstractMolecule):
 
     def atom_groups (self) :
         """
-        Doc-String in progress.
+        see residue_groups in respect to atom groups.
         """
         group_dict = {}
 
@@ -533,12 +544,12 @@ class VibToolsMolecule(AbstractMolecule):
         # Attention: The term "ref" is also used differently in VibTools: 
         # see results/residue etc.
         """
-        Doc-String in progress.
+        see residue_groups in respect to index of groups.
 
-        :Variable:*
-
-        **res:** int
-           in progress
+        Parameters
+        ----------
+        res : int
+           index
         """
         groupnames = ['CO', 'NH', 'NH2', 'NH3', 'CAH', 'CA0', 'CA2', 'COo', 'CBa', 'R']
         groups     = []
@@ -581,7 +592,12 @@ class VibToolsMolecule(AbstractMolecule):
 
     def amide2_groups (self, res) :
         """
-        Doc-String in progress.
+        see residue_groups in respect to amide2 (index) groups.
+
+        Parameters
+        ----------
+        res : int
+           index
         """
         groupnames = [ 'CO-1', 'NH', 'CO', 'NH+1', 'CO+1', 'NH+2', 'CH01', 'R']
         groups     = []
@@ -634,7 +650,12 @@ class VibToolsMolecule(AbstractMolecule):
 
     def amide3_groups (self, res) :
         """
-        Doc-String in progress.
+        see residue_groups in respect to amide3 (index) groups.
+
+        Parameters
+        ----------
+        res : int
+           index
         """
         groupnames = [ 'Am-1/0', 'CA0', 'Am0/1', 'CA+1', 'Am1/2', 'CA+2', 'CB', 'R']
         groups     = []
@@ -696,7 +717,12 @@ class VibToolsMolecule(AbstractMolecule):
 
     def skelCN_groups (self, res) :
         """
-        Doc-String in progress.
+        see residue_groups in respect to skelCN (index) groups.
+
+        Parameters
+        ----------
+        res : int
+           index
         """
         groupnames = ['NCA0', 'HA0', 'CO0',
                       'H+1', 'NCA+1', 'HA+1', 'CHB+1', 'CO+1', 
@@ -757,7 +783,12 @@ class VibToolsMolecule(AbstractMolecule):
 
     def ch3_groups (self, res) :
         """
-        Doc-String in progress.
+        see residue_groups in respect to ch3 (index) groups.
+
+        Parameters
+        ----------
+        res : int
+           index
         """
         groupnames = ['CO0', 'NH+1', 'CA+1', 'CB+1', 'CO+1', 'NH+2', 'R']
         groups     = []

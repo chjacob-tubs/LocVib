@@ -10,9 +10,11 @@ example/locmodes-amide1.out
 # Tests
 tests/rumprobier_Molecule.py
 
-#Doc
+# Doc
 *.html
 doc/_build/
+doc/Build/
+doc/build/
 
 # coverage
 .coverage
@@ -24,4 +26,4 @@ src/.coverage
 .DS_Store
 ._.DS_Store
 
-doc/DS_Store
+doc/.DS_Store
