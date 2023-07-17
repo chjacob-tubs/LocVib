@@ -7,7 +7,7 @@ variables:
 stages:
     - build
     - test
-#    - deploy # GitLabPages does not work on https://gitlab.pyadf.org/ May 2023
+    - deploy
 
 
 before_script:
@@ -118,3 +118,21 @@ test-sphinx-doc:
         - mkdir _build
         - sphinx-build . _build/
         - cd ../
+
+
+pages:
+     tags: 
+        - local
+     stage: deploy
+     script:
+        - conda activate VT_CI
+        - python setup.py install
+        - cd doc/
+        - sphinx-build -b html . ../public
+        - cd ../../
+     artifacts:
+        paths:
+            - public
+
+
+
