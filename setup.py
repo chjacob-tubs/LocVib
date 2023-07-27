@@ -9,7 +9,8 @@ setuptools.setup(
       url          = 'https://www.tu-braunschweig.de/pci/agjacob/software',
       license      = 'GPLv3',
       package_dir  = {'': 'src/'},
-      install_requires = ['numpy','matplotlib','pytest','openbabel-wheel'],
+      python_requires = '>=3.10.4',
+      install_requires = ['numpy==1.23.4','matplotlib==3.6.1','openbabel-wheel==3.1.1.16','pytest==7.2.0'],
       classifiers  = ["Programming Language :: Python :: 3",
                       "Operating System :: OS Independent"],
      )

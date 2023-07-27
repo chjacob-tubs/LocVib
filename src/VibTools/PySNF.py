@@ -258,7 +258,14 @@ class SNFOutputFile(object):
         self.intonly = False
 
     def read (self, mol) :
-        """in progress"""
+        """
+        reads molecule data.
+
+        Parameters
+        ----------
+        mol : VibTools.Molecule.
+           VibTools class - Molecule.
+        """
         f = open(self.filename, 'r', encoding='charmap')
         lines = f.readlines() # lines = all line of snf.out
         f.close()
@@ -358,8 +365,8 @@ class SNFOutputFile(object):
 
         Returns
         -------
-        matrix : ?
-           ?
+        matrix : numpy.ndarray
+           matrix
         """
 
         f = open(self.filename, 'r',encoding='charmap')
@@ -433,6 +440,14 @@ class SNFControlFile:
         self.modes = None 
 
     def read (self, mol) :
+        """"
+        reads molecule data.
+
+        Parameters
+        ----------
+        mol : VibTools.Molecule.
+           VibTools class - Molecule.
+        """
         f = open('snf_control', 'r',encoding='charmap')
         lines = f.readlines()
         f.close()
@@ -504,6 +519,7 @@ class SNFResults(Results) :
         self.intonly      = False
     
     def _get_modes (self) :
+        """internal SNF class get modes. """
         if self.snfoutput.intonly :
             return self.snfcontrol.modes
         else :
@@ -538,6 +554,21 @@ class SNFResults(Results) :
             self.aten_deriv_c    = self.snfoutput.aten
 
     def get_tensor_mean (self, tens, ncomp=None) :
+        """
+        gets tensor mean.
+
+        Parameters
+        ----------
+        tens : numpy.ndarray
+           tensor.
+        ncomp : int
+           index number for tensor.
+        
+        Returns
+        -------
+        mean : float
+        tensor mean.
+        """
         # ??? tens = restartfile.dipole_deriv_c ?????
         tensor = eval('self.restartfile' + '.' + tens)
 
@@ -556,7 +587,21 @@ class SNFResults(Results) :
         return mean
 
     def get_tensor_deriv_c (self, tens, ncomp=None) :
+        """
+        gets tensor of detivative (cartesian).
 
+        Parameters
+        ----------
+        tens : numpy.ndarray
+           tensor.
+        ncomp : int
+           index number for tensor.
+        
+        Returns
+        -------
+        deriv : numpy.ndarray
+        detivative.
+        """
         if hasattr(self, tens+'_deriv_c') :
             return eval('self.'+tens+'_deriv_c')
 
@@ -583,6 +628,23 @@ class SNFResults(Results) :
         return deriv
 
     def get_tensor_deriv_nm (self, tens, ncomp=None, modes=None) :
+        """
+        gets normal modes derivative tensor.
+
+        Parameters
+        ----------
+        tens : numpy.ndarray
+           tensor.
+        ncomp : int
+           index number for tensor.
+        modes : VibTools.Modes
+           VibTools Modes class.
+        
+        Returns
+        -------
+        deriv : numpy.ndarray
+        detivative nm.
+        """
         if modes==None :
             if hasattr(self, tens+'_deriv_nm') :
                 return eval('self.'+tens+'_deriv_nm')
@@ -613,12 +675,14 @@ class SNFResults(Results) :
         return deriv_nm
 
     def check_consistency (self) :
+        """checks consistency of SNF restart file."""
         print()
         print("Checking consistency of SNF restart file ")
         print("  Large numbers mean that the change of the polarizabilities deviates from linear behavior.")
         print()
 
         def check (ten) :
+            """internal check function for tensor ten (numpy.ndarray)."""
             if ten.startswith('pol') :
                 mean_pol = self.get_tensor_mean(ten, 6)
             else:
