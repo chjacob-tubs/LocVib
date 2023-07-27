@@ -1,138 +1,147 @@
 variables:
   SCHEDULER_PARAMETERS: "-n 1 -p nitrogen"
   USER: legit
-  LOCVIBHOME: $CI_BUILDS_DIR/$CI_PROJECT_PATH
 
 
 stages:
     - build
-    - test
+    - unittest
+    - autodoc
     - deploy
-
+    - cleanup
 
 before_script:
         - hostname
-        - module load module_include_dir
-        - . /usr/share/modules/init/bash
-        - . /usr/share/modules/init/setup
-        - export PYTHONPATH=$PYTHONPATH:$LOCVIBHOME/src
-        - module load python/anaconda3-2021.11
-        - source activate base
-        - conda init bash
-        - conda env list
-        - conda list
+
+#### IMAGE BUILDS ####
 
 
-build-requirements:
+build-docker-test-image:
     tags:
-        - nodes
+       - local
+       - shell
     stage: build
     script:
-        - cd requirements/
-        - conda env create -f environment_human_readable.yml --force # create conda env from human readable requirements
-        -  cd ../
-        - conda activate VThr #VT_CI: maschine readable VibTools conda CI-environment
-        - conda env list # Show some environment details for debugging
-        - conda list
-        - conda list -n VThr python
-        - conda list -n VThr matplotlib
-        - conda list -n VThr numpy     
-        - conda list -n VThr scipy
-        - conda list -n VThr openbabel
-        - conda list -n VThr pytest
-        - conda list -n VThr sphinx
-        - conda list -n VThr sphinx_rtd_theme
+       - docker build --no-cache -t lv_unittest -f Dockerfile.unittests .
+
+
+build-docker-autodoc-image:
+    tags:
+       - local
+       - shell
+    stage: build
+    script:
+       - docker build --no-cache -t lv_sphinxdoc -f Dockerfile.sphinx_doc . 
+
+
+#### UNITTESTS ####
 
 
 unittest-Molecule:
     tags:
-        - nodes
-    stage: test
+        - local
+        - shell
+    stage: unittest
+    needs: [build-docker-test-image]
     script:
-        - conda activate VThr
-        - cd tests/
-        - pytest -v test_Molecule.py
-        - cd ../
+        - docker run --workdir /app/tests lv_unittest pytest -v test_Molecule.py
 
 
 unittest-Modes:
     tags:
-        - nodes
-    stage: test
+        - local
+        - shell
+    stage: unittest
+    needs: [build-docker-test-image]
     script:
-        - conda activate VThr
-        - cd tests/
-        - pytest -v test_Modes.py
-        - cd ../
+        - docker run --workdir /app/tests lv_unittest pytest -v test_Modes.py
 
 
 unittest-PySNF:
     tags:
-        - nodes
-    stage: test
+        - local
+        - shell
+    stage: unittest
+    needs: [build-docker-test-image]
     script:
-        - conda activate VThr
-        - cd tests/
-        - pytest -v test_PySNF.py
-        - cd ../
+        - docker run --workdir /app/tests lv_unittest pytest -v test_PySNF.py
 
 
 unittest-LocVib:
     tags:
-        - nodes
-    stage: test
+        - local
+        - shell
+    stage: unittest
+    needs: [build-docker-test-image]
     script:
-        - conda activate VThr
-        - cd tests/
-        - pytest -v test_LocVib.py
-        - cd ../
+        - docker run --workdir /app/tests lv_unittest pytest -v test_LocVib.py
+
 
 unittest-HugAnalysis:
     tags:
-        - nodes
-    stage: test
+        - local
+        - shell
+    stage: unittest
+    needs: [build-docker-test-image]
     script:
-        - conda activate VThr
-        - cd tests/
-        - pytest -v test_HugAnalysis.py
-        - cd ../
+        - docker run --workdir /app/tests lv_unittest pytest -v test_HugAnalysis.py
+
 
 unittest-Spectrum:
     tags:
-        - nodes
-    stage: test
+        - local
+        - shell
+    stage: unittest
+    needs: [build-docker-test-image]
     script:
-        - conda activate VThr
-        - cd tests/
-        - pytest -v test_Spectrum.py
-        - cd ../
+        - docker run --workdir /app/tests lv_unittest pytest -v test_Spectrum.py
 
 
-test-sphinx-doc:
+#### DOCUMENTATION ####
+
+
+build-sphinx-doc:
     tags:
-        - nodes
-    stage: test
+        - local
+        - shell
+    stage: autodoc
+    needs: [build-docker-autodoc-image ]
     script:
-        - conda activate VT_CI # The VThr environment does not yet work for the Sphinx Doc
-        - cd doc/
-        - mkdir _build
-        - sphinx-build . _build/
-        - cd ../
+        - docker run --workdir /app/doc --name sphinxdoc_lv_container lv_sphinxdoc sphinx-build . build 
 
 
 pages:
-     tags: 
+    tags:
         - local
-     stage: deploy
-     script:
-        - conda activate VT_CI
-        - python setup.py install
-        - cd doc/
-        - sphinx-build -b html . ../public
-        - cd ../../
-     artifacts:
+        - shell
+    stage: deploy
+    needs: [build-sphinx-doc]
+    script:
+        - docker cp sphinxdoc_lv_container:/app/doc/build/. public/ 
+    artifacts:
         paths:
-            - public
+         - public
 
 
+#### CLEAN UP ####
 
+cleanup-docker:
+    stage: cleanup
+    tags: [local, shell]
+    needs:
+        - build-docker-test-image
+        - build-docker-autodoc-image
+        - unittest-Molecule
+        - unittest-Modes
+        - unittest-PySNF
+        - unittest-LocVib
+        - unittest-HugAnalysis
+        - unittest-Spectrum
+        - build-sphinx-doc
+        - pages
+    script:
+        - docker rmi -f lv_sphinxdoc:latest
+        - docker rmi -f lv_unittest:latest
+        - docker rm $(docker ps --filter status=exited -q)
+        - docker system df
+    when: always

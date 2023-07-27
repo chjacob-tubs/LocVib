@@ -1,0 +1,14 @@
+# load: basic Docker image
+FROM python:latest
+
+# Create a "work folder"
+WORKDIR /app
+
+# Copy project in this work folder
+COPY . /app
+
+# RUN: Installation of dependencies
+RUN  python -m pip install -r /app/requirements/requirements.txt
+
+#RUN: Installation of package itself
+RUN pip install /app/

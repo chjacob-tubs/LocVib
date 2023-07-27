@@ -24,7 +24,10 @@
 #   http://www.christophjacob.eu/software
 
 """
- Localizing normal modes
+Localizing normal modes
+
+LocVib-Paper = Ch. R. Jacob, J. Chem. Phys 130 (2009), 084106.
+Pipek/Boys-Paper = J. Pipek and P.G. Mezey, J. Chem. Phys., Vol. 90, No. 9, 1989
 """
 import math
 import numpy
@@ -50,9 +53,9 @@ class LocVib (object) :
     loctype : String
         Localization criterion: 
         PM (Pipek and Mezey); B (Boys)
-    coords : ndarray 
+    coords : numpy.ndarray 
         coordinates 
-    transmat : ndarray (nmodes x nmodes)
+    transmat : numpy.ndarray (nmodes x nmodes)
         (localization) transformation matrix.
     """
 
@@ -87,13 +90,13 @@ class LocVib (object) :
 
         Parameters
         ----------
-        modes : ndarray (3*natoms-6,3*natoms)
+        modes : numpy.ndarray (3*natoms-6,3*natoms)
             normal modes.
 
         Returns
         -------
-        p : tba ?
-        tba ?
+        p : float (Real>0)
+        localization measure.
         """
         squared_modes = modes**2
         # LocVib paper eq. 6
@@ -109,23 +112,25 @@ class LocVib (object) :
 
         return p
 
+
     def calc_ab (self, modes, i, j):
         """
-        TASK ??
+        Boys-Method --> Pipek/Mezey-Paper.
+        Internal function for the Locvib.rotate-Method.
         
         Parameters
         ----------
-        modes : ndarray (3*natoms-6,3*natoms)
+        modes : numpy.ndarray (3*natoms-6,3*natoms)
             normal modes.
         i,j : int, int
             index of modes array.
 
         Returns
         -------
-        a,b : tba ?
-        tba ?
+        a,b : float, Real
+        localization measure a,b.
         """
-        # Pipek Mezey Ref-Paper? Eq.14 or 29???
+        # Pipek Mezey Ref-Paper? Eq.14 or Eq. 29
         squared_modes = modes**2
 
         ci = squared_modes[i, 0::3] + squared_modes[i, 1::3] + squared_modes[i, 2::3]
@@ -157,20 +162,21 @@ class LocVib (object) :
     def rotate (self, modes, i, j) :
         """
         rotates normal modes.
+        Internal function for LocVib.try_localize().
 
         Parameters
         ----------
-        modes : ndarray (3*natoms-6,3*natoms)
+        modes : numpy.ndarray (3*natoms-6,3*natoms)
             normal modes.
         i,j : int
             index of modes array.
 
         Returns
         -------
-        rotated modes : tba ?
-        tba ?
-        alpha : tba ?
-        tba ?
+        rotated modes : numpy.ndarray
+        rotation matrix.
+        alpha : float
+        rotation parameter.
         """
         a, b = self.calc_ab(modes, i, j)
 
@@ -196,7 +202,7 @@ class LocVib (object) :
    
         Parameters
         ----------
-        subset : ndarray(? x ?)
+        subset : numpy.ndarray
             subset of normal modes. or list of indicies?
         thresh : float
             first optimization threshold.
@@ -208,10 +214,10 @@ class LocVib (object) :
 
         Returns
         -------
-        transmat : tba ?
-        tba ?
-        del_p : ?
-        tba ?
+        transmat : numpy.ndarray
+        localization transistion matrix.
+        del_p : float
+        deviation to initial localization measure.
         """
         if subset is None :
             ss = list(range(self.nmodes))
@@ -289,7 +295,7 @@ class LocVib (object) :
 
     def localize_subsets(self, subsets, printing=True):
         """
-        Task ?        
+        localize subsets.
 
         Parameters
         ----------
@@ -332,10 +338,10 @@ class LocVib (object) :
 
         Returns
         -------
-        vcis : tba
-        tba
-        del_p : tba
-        tba
+        vcis : float
+        vcis.
+        del_p : float
+        deviation to the initial localization measure.
         """
         if subset is None :
             ss = list(range(self.nmodes))
@@ -363,15 +369,15 @@ class LocVib (object) :
 
         Parameters
         ----------
-        tmat : tba
-            tba
+        tmat : numpy.ndarray
+            transition matrix.
         """
         self.transmat = tmat
         self.locmodes = self.startmodes.transform(tmat)
 
     def get_couplingmat (self, hessian=False) :
         """
-        TEXT.
+        gets coupling matrix.
 
         Parameters
         ----------
@@ -414,12 +420,12 @@ class LocVib (object) :
 
     def get_vcismat (self) :
         """
-        TEXT
+        gets vcis matrix.
 
         Returns
         -------
-        vcis_mat : tba
-        tba
+        vcis_mat : numpy.ndarray
+        vcis matrix.
         """
         diag = numpy.diag(self.startmodes.freqs**2)
         hmat = numpy.dot(numpy.dot(self.transmat, diag), self.transmat.transpose())
@@ -435,12 +441,12 @@ class LocVib (object) :
 
     def sort_by_residue (self, pdb_mol=None) :
         """
-        TEXT
+        sorts transition matrix by residues.
 
         Parameters
         ----------
-        pdb_mol : tba
-            tba
+        pdb_mol : pdb
+            pdb molecule file.
         """
         if pdb_mol:
             print('Using external molecule definition')
@@ -453,12 +459,12 @@ class LocVib (object) :
 
     def sort_by_groups (self, groups) :
         """
-        TEXT
+        sorts transition matrix by groups.
 
         Parameters
         ----------
-        groups : tba
-            tba
+        groups : list of strings.
+            example: ['N', 'H', 'C', 'O', 'CA', 'HA', 'CB', 'HB', 'OXT', 'HXT', 'H2O'].
         """
         sortmat = self.locmodes.sortmat_by_groups(groups)
         tmat = numpy.dot(sortmat, self.transmat)
@@ -467,7 +473,7 @@ class LocVib (object) :
 
     def sort_by_freqs (self) :
         """
-        TEXT
+        sorts transition matrix by frequencies.
         """
         sortmat = self.locmodes.sortmat_by_freqs()
         tmat = numpy.dot(sortmat, self.transmat)
@@ -475,7 +481,7 @@ class LocVib (object) :
 
     def adjust_signs (self) :
         """
-        TEXT
+        sorts transition matrix by signs.
         """
         for imode in range(1,self.nmodes) :
             cmat = self.get_couplingmat()
@@ -486,12 +492,12 @@ class LocVib (object) :
 
     def invert_signs (self, nums) :
         """
-        TEXT
+        inverts signs of transition matrix.
 
         Parameters
         ----------
-        nums : tba
-            tba
+        nums : int
+            index of transition matrix.
         """
         tmat = self.transmat
         tmat[nums,:] = -tmat[nums,:]
@@ -499,14 +505,15 @@ class LocVib (object) :
 
     def flip_modes (self, m1, m2) :
         """
-        TEXT
+        flips modes in respect to the index numbers m1,m2 and adjust the 
+        corresponding transition matrix.
 
         Parameters
         ----------
-        m1 : tba
-            tba
-        m2 : tba
-            tba
+        m1 : int
+            index number.
+        m2 : int
+            indext number.
         """
         sortmat = numpy.identity(self.nmodes)
         sortmat[m1,m1] = 0.0
@@ -518,7 +525,7 @@ class LocVib (object) :
         self.set_transmat(tmat)
 
 class AutomaticAssignment(object):
-    """ TEXT ... """
+    """ Automical Assignment within localization method."""
 
     def __init__(self, lv) :
         """
@@ -540,12 +547,12 @@ class AutomaticAssignment(object):
 
     def calc_ij(self, i, j):
         """
-        TEXT 
+        creates matrices for errors, localization measures and differences 
         
         Parameters
         ----------
         i,j : int
-            tba
+            indices from subsets lists.
         """
         s1 = self.subsets[i]
         s2 = self.subsets[j]
@@ -581,21 +588,21 @@ class AutomaticAssignment(object):
 
     def find_maxp(self, maxerr, maxdiff):
         """
-        TEXT
+        findes maximal localization measure.
 
         Parameters
         ----------
-        maxerr : tba
-            tba
-        maxdiff : tba
-            tba
+        maxerr : float
+            maximal error.
+        maxdiff : float
+            maximal difference.
 
         Returns
         -------
-        ind_maxp : tba
-        tba
-        maxp : tba
-        tba
+        ind_maxp : int
+        index of maximal localization (localization mesaure matrix)
+        maxp : float
+        maximal localization.
         """
         pmat_masked = numpy.where(self.errmat < maxerr, self.pmat, 0.0)
         pmat_masked = numpy.where(self.diffmat < maxdiff, pmat_masked, 0.0)
@@ -614,12 +621,12 @@ class AutomaticAssignment(object):
 
     def update_subset(self, i):
         """
-        TEXT
+        update subsets in respect to index i.
 
         Parameters
         ----------
         i : int
-            tba
+            index.
         """
         self.lv.localize(self.subsets[i], printing=False)
         for j in range(len(self.subsets)) :
@@ -628,17 +635,17 @@ class AutomaticAssignment(object):
 
     def automatic_subsets(self, maxerr) :
         """
-        TEXT
+        automatic arrangments subsets in respect to the maximal error.
 
         Parameters
         ----------
-        maxerr : tba
-            tba
+        maxerr : float
+            maximal error.
 
         Returns
         -------
-        subsets : tba
-        tba
+        subsets : list of lists.
+        subsets numbers.
         """
         # find minimal frequency difference
         mask = numpy.ones(self.diffmat.shape, dtype=bool)
