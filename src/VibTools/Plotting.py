@@ -43,6 +43,7 @@ class Plot:
         self.ax  = None
 
     def set_figsize(self, figsize) :
+        """sets figure size."""
         plt.close(self.fig)
         self.fig = plt.figure(figsize=figsize)
 

@@ -22,6 +22,16 @@
 # 
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
+"""
+HugAnalysis module.
+Features for analyzing calculated vibrational spectra.
+
+Further information:
+
+C. R. Jacob, S. Luber, M. Reiher, Chem. Eur. J. 2009, 15, 13491-13508.
+
+C. R. Jacob, S. Luber, M. Reiher, J. Phys. Chem. B, 2009, 113 (18), 6558-6573.
+"""
 
 import numpy
 
@@ -29,6 +39,20 @@ from . import Constants
 from . import Modes
 
 class HugAnalysis:
+    """
+    features for analyzing calculated vibrational spectra.
+
+    Attributes = Parameters
+
+    Parameters
+    ----------
+    res : VibTools.PySNFResults
+       Results of PYSNF.
+    tens : str
+       tensor name(ROA, Raman, IR, a2, g2, aG, bG, bA, id)
+    scale : float
+       scaling factor.
+    """
 
     def __init__ (self, res, tensor, scale=1.0) :
         """
@@ -51,18 +75,46 @@ class HugAnalysis:
         self.tensor_decomposed_c = scale * self.tensor_decomposed_c
 
     def get_irint_decomposed_c (self, res) :
+        """
+        gets IR intensities (decomposed/cartesian components).
+
+        Parameters
+        ----------
+        res : VibTools.PySNFResults
+           Results of PYSNF.
+        
+        Returns
+        -------
+        mu : numpy.ndarray
+          IR intensities.
+        """
         dip  = res.get_tensor_deriv_c('dipole')
         dip  = dip.reshape((self.natoms*3, 3))
 
         mu = (numpy.outer(dip[:,0],dip[:,0])  + 
               numpy.outer(dip[:,1],dip[:,1])  +
               numpy.outer(dip[:,2],dip[:,2]))
-
+        # TODO:  the input parameter "res" already exists as an class attribute.
         # FIXME: convert to absorption (in km/mol); scale factor stolen from SNF
         mu = mu * 863.865928384
         return mu
         
     def get_a2_decomposed_c (self, res, gauge='len') :
+        """
+        gets a2 polaribilities  (decomposed,cartesian components).
+
+        Parameters
+        ----------
+        res : VibTools.PySNFResults
+           Results of PYSNF.
+        gauge : str
+           To ensure gauge invariance, the velocity representation of the electric-dipole operator.
+
+        Results
+        -------
+        a2 : numpy.ndarray
+           a2 polarizability tensor.
+        """
         pol  = res.get_tensor_deriv_c('pol'+gauge, 6)
 
         temp = (1.0/3.0)*(pol[:,:,0] + pol[:,:,3] + pol[:,:,5])
@@ -74,6 +126,20 @@ class HugAnalysis:
         return a2
 
     def get_g2_decomposed_c (self, res) :
+        """
+        get g2 polarizibility tensor (decomposed, cartesian components).
+
+        Parameters
+        ----------
+        res : VibTools.PySNFResults
+           Results of PYSNF.
+         
+        Results
+        -------
+        g2 : numpy.ndarray
+        g2 polarizibility tensor.
+        """
+
         pol     = res.get_tensor_deriv_c('pollen', 6)
 
         pol  = pol.reshape((self.natoms*3,6))
@@ -94,9 +160,40 @@ class HugAnalysis:
         return g2
 
     def get_ramanint_decomposed_c (self, res) :
+        """
+        gets raman intensities (decomposed, cartesian components).
+ 
+        Parameters
+        ----------
+        res : VibTools.PySNFResults
+           Results of PYSNF.
+
+        Results
+        -------
+        ramanint : numpy.ndarray
+        raman intensities.
+        """
+
+
         return 45.0*self.get_a2_decomposed_c(res) + 7.0*self.get_g2_decomposed_c(res)
 
     def get_aG_decomposed_c (self, res, gauge='len') :
+        """
+        gets aG tensor (decomposed, cartesian components).
+
+        Parameters
+        ----------
+        res : VibTools.PySNFResults
+           Results of PYSNF.
+        gauge : str
+            ensure gauge invariance (length).
+
+        Returns
+        -------
+        aG : numpy.ndarray
+        aG polarizibility tensor.
+        """
+
         # for consistency with SNF alpha is always in length repr
         pol     = res.get_tensor_deriv_c('pollen', 6)
         gten    = res.get_tensor_deriv_c('gten'+gauge)
@@ -112,6 +209,23 @@ class HugAnalysis:
         return aG
 
     def get_bG_decomposed_c (self, res, gauge='len') :
+        """
+        gets bG tensor (decomposed, cartesian components).
+
+        Parameters
+        ----------
+        res : VibTools.PySNFResults
+           Results of PYSNF.
+        gauge : str
+            ensure gauge invariance (length).
+
+        Returns
+        -------
+        bG : numpy.ndarray
+        bG polarizibility tensor.
+        """
+
+
         pol     = res.get_tensor_deriv_c('pol'+gauge, 6)
         gten    = res.get_tensor_deriv_c('gten'+gauge)
 
@@ -134,6 +248,19 @@ class HugAnalysis:
         return bG
 
     def get_bA_decomposed_c (self, res) :
+        """
+        gets aA tensor (decomposed, cartesian components).
+
+        Parameters
+        ----------
+        res : VibTools.PySNFResults
+           Results of PYSNF.
+
+        Returns
+        -------
+        bA : numpy.ndarray
+        bA polarizibility tensor.
+        """
         pol     = res.get_tensor_deriv_c('pollen', 6)
         aten    = res.get_tensor_deriv_c('aten')
 
@@ -153,9 +280,37 @@ class HugAnalysis:
         return bA
 
     def get_backint_decomposed_c (self, res) :
-         return 1e-6*96.0*(self.get_bG_decomposed_c(res, gauge='vel')+(1.0/3.0)*self.get_bA_decomposed_c(res))
+        """
+        gets backbone intensities (decomposed, cartesian components).
+
+        Parameters
+        ----------
+        res : VibTools.PySNFResults
+           Results of PYSNF.
+        
+        Returns
+        -------
+        numpy.ndarray
+        backbone intensities.
+        """
+        return 1e-6*96.0*(self.get_bG_decomposed_c(res, gauge='vel')+(1.0/3.0)*self.get_bA_decomposed_c(res))
       
     def project_on_modes (self, modes, nummode=None) :
+        """ 
+        projects given tensor on modes.
+
+        Parameters
+        ----------
+        modes : VibTools.Modes
+           VibTools modes class.
+        nummode : None or list
+           numbering of modes.
+
+        Returns
+        -------
+        inv_decomposed_nm : numpy.ndarray
+        tensors projected on normal modes (inverted).
+        """
         inv_decomposed_nm = numpy.zeros((self.natoms, self.natoms))
 
         if nummode is None :
@@ -175,8 +330,26 @@ class HugAnalysis:
             inv_decomposed_nm += temp
 
         return inv_decomposed_nm
-    
+
+
+# TODO 
+# TODO siehe paper: Analysis of Secondary Structure Effects on the IR and Raman Spectra of Polypeptides in Terms of Localized Vibrations    
     def sum_groups (self, inv_decomposed_nm, groups) :
+        """
+        sums groups.
+
+        Parameters
+        ----------
+        inv_decomposed_nm : numpy.ndarray
+           invariant decomposed normal modes.
+        groups : list of lists.
+            example: [[], [], [], [], [], [], [], [], [], [], [0, 1, 2]]
+        
+        Returns
+        -------
+        inv_groups : list
+        invariant groups.
+        """ 
         ngroups = len(groups)
         inv_groups = numpy.zeros((ngroups,ngroups))
 
@@ -194,12 +367,41 @@ class HugAnalysis:
 
         return inv_groups
 
+
     def get_group_coupling_matrix(self, groups, modes, num_mode=None) :
+        """
+        gets group coupling matrix.
+
+        Parameters
+        ----------
+        groups : list of list
+            example: [[], [], [], [], [], [], [], [], [], [], [0, 1, 2]]
+        modes : VibTools.Modes
+           VibTools modes class.
+        num_mode : None or list
+           numbering of modes.
+        
+        Returns
+        -------
+        inv_groups : list
+        invariant groups.
+        """
         inv_decomposed_nm = self.project_on_modes(modes, num_mode)
         inv_groups = self.sum_groups(inv_decomposed_nm, groups)  
         return inv_groups
+
         
-    def print_gcm(self, inv_groups, groupnames) :
+    def print_gcm(self, inv_groups, groupnames):
+        """
+        prints gcm.
+
+        Parameters
+        ----------
+        inv_groups : list
+           invariant groups.
+        groupnames : str
+            example group names: 'ROA', 'Raman', 'IR', 'a2', 'g2', 'aG', 'bG', 'bA', 'id'.
+        """
         for n in groupnames :
             print(("%6s " % n), end=' ')
         print()
@@ -209,7 +411,22 @@ class HugAnalysis:
                 print("%6.1f " % inv_groups[i,j], end=' ')
             print()
 
+
     def print_group_coupling_matrix(self, groups, groupnames, modes, num_mode=None, scale=1.0) :
+        """
+        prints group coupling matrix.
+
+        Parameters
+        ----------
+        groups : list of list
+            example: [[], [], [], [], [], [], [], [], [], [], [0, 1, 2]]
+        groupnames : str
+            example group names: 'ROA', 'Raman', 'IR', 'a2', 'g2', 'aG', 'bG', 'bA', 'id'.
+        modes : VibTools.Modes
+           VibTools modes class.
+        num_mode : None or list
+           numbering of modes.
+        """
         inv_groups = self.get_group_coupling_matrix(groups, modes, num_mode)
         print()
         print("Total intensity: ", inv_groups.sum())
@@ -218,7 +435,11 @@ class HugAnalysis:
 
 
 class LocModeAnalysis (HugAnalysis) :
+    """
+    features for analyzing calculated vibrational spectra in terms of localized modes.
 
+    Attributes inherites from HugAnalysis class.
+    """
     def __init__ (self, res, tensor, locmodes, scale=1.0) :
         """
         LocModeAnalysis constructor.
@@ -230,6 +451,13 @@ class LocModeAnalysis (HugAnalysis) :
         self.tensor_decomposed_lm = self.get_tensor_decomposed_lm()
 
     def get_tensor_decomposed_lm (self) :
+        """
+        gets decomposed local modes tensor.
+
+        Returns
+        -------
+        tens_decomposed_lm : numpy.ndarray
+        """
         tens_decomposed_lm = numpy.zeros((self.nmodes, self.nmodes))
 
         for imode in range(self.nmodes) :
@@ -248,6 +476,13 @@ class LocModeAnalysis (HugAnalysis) :
         return tens_decomposed_lm
 
     def get_intensity_coupling_matrix (self, mode=None) :
+        """
+        gets intensity coupling matrix.
+
+        Returns
+        -------
+        tens_decomposed_lm : numpy.ndarray
+        """
         if mode is None :
             return self.tensor_decomposed_lm
         else:

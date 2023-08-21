@@ -203,7 +203,7 @@ class LocVib (object) :
         Parameters
         ----------
         subset : numpy.ndarray
-            subset of normal modes. or list of indicies?
+            subset of normal modes. or list of indicies
         thresh : float
             first optimization threshold.
         thresh2 : float
@@ -230,6 +230,7 @@ class LocVib (object) :
         transmat = numpy.identity(len(ss))
 
         def rotmat(i, j, alpha) :
+            """calculates rotation matrix."""
             rmat = numpy.identity(len(ss))
             rmat[i,i] =  math.cos(alpha)
             rmat[i,j] =  math.sin(alpha)
@@ -273,7 +274,7 @@ class LocVib (object) :
    
         Parameters
         ----------
-        subset : narray(? x ?)
+        subset : list or None
             subset of normal modes.
         thresh : float
             first optimization threshold.
@@ -314,8 +315,8 @@ class LocVib (object) :
 
         Parameters
         ----------
-        maxerr : tba?
-            tba ?
+        maxerr : float
+           maximal error.
         """
         auto_assignment = AutomaticAssignment(self)
         self.subsets = auto_assignment.automatic_subsets(maxerr)
@@ -329,12 +330,12 @@ class LocVib (object) :
 
         Parameters
         ----------
-        subset : tba?
-            tba?
-        thresh : tba?
-            tba?
-        thresh2 : tba?
-            tba?
+        subset : list
+            list of subsets.
+        thresh : float
+            first threshold.
+        thresh2 : float
+            second threshold.
 
         Returns
         -------
@@ -382,7 +383,7 @@ class LocVib (object) :
         Parameters
         ----------
         hessian : bool
-            tba
+            is hessian already given.
 
         Returns
         -------
@@ -513,7 +514,7 @@ class LocVib (object) :
         m1 : int
             index number.
         m2 : int
-            indext number.
+            index number.
         """
         sortmat = numpy.identity(self.nmodes)
         sortmat[m1,m1] = 0.0
@@ -525,7 +526,24 @@ class LocVib (object) :
         self.set_transmat(tmat)
 
 class AutomaticAssignment(object):
-    """ Automical Assignment within localization method."""
+    """ Automical Assignment within localization method.
+
+        Attributes
+        ----------
+        errmat : numpy.ndarray
+           error matrix.
+        pmat : numpy.ndarray
+           measure matrix.
+        diffmat : numpy.ndarray
+           difference matrix.
+        subsets : list
+           list of subsets.
+ 
+        Parameters
+        ----------
+        lv : VibTools.LocVib class
+           LocVib class of VibTools 
+        """
 
     def __init__(self, lv) :
         """

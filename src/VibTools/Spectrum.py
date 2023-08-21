@@ -22,6 +22,8 @@
 # 
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
+"""Spectrum is a module that makes plotting vibrational spectra more comfortable."""
+
 
 import math
 import numpy
@@ -31,6 +33,16 @@ from . import Modes
 
 
 class VibSpectrum:
+    """
+    Vibrational spectrum class.
+
+    Parameters
+    ----------
+    freqs : numpy.ndarray
+       Vibrational frequencies. See VibTools: Modes/PySNF.
+    ints : numpy.ndarray
+       intensities. 
+    """
 
     def __init__ (self, freqs, ints) :
         """
@@ -43,6 +55,25 @@ class VibSpectrum:
         self.ints  = ints
 
     def get_line_spectrum (self, minfreq, maxfreq, scale=1.0) :
+        """
+        gets line spectrum.
+
+        parameters
+        ----------
+        minfreq : float
+           smallest frequency for plot range.
+        maxfreq : float
+           highest frequency for plot range.
+        scale : float
+           intensities scaling.
+
+        returns
+        -------
+        x : numpy.ndarray
+           frequncy axis for plot.
+        y : numpy.ndarray
+           intensity axis for plot.
+        """
         indices = numpy.where((self.freqs > minfreq) & (self.freqs < maxfreq))
         freqs = self.freqs[indices]
         ints  = self.ints[indices]
@@ -61,6 +92,26 @@ class VibSpectrum:
         return x, y
 
     def get_lorentz_spectrum (self, minfreq, maxfreq, halfwidth=15.0) :
+        """
+        gets spectrum (lorentz peaks).
+
+        parameters
+        ----------
+        minfreq : float
+           smallest frequency for plot range.
+        maxfreq : float
+           highest frequency for plot range.
+        halfwidth : float
+           Full width at half maximum peak.
+
+        returns
+        -------
+        x : numpy.ndarray
+           frequncy axis for plot.
+        y : numpy.ndarray
+           intensity axis for plot.
+        """
+
         indices = numpy.where((self.freqs > minfreq) & (self.freqs < maxfreq))
         freqs = self.freqs[indices]
         ints  = self.ints[indices]
@@ -74,6 +125,26 @@ class VibSpectrum:
         return x, y
 
     def get_gaussian_spectrum (self, minfreq, maxfreq, halfwidth=5.0) :
+        """
+        gets spectrum (gaussian peak).
+
+        parameters
+        ----------
+        minfreq : float
+           smallest frequency for plot range.
+        maxfreq : float
+           highest frequency for plot range.
+        halfwidth : float
+           Full width at half maximum peak.
+
+        returns
+        -------
+        x : numpy.ndarray
+           frequncy axis for plot.
+        y : numpy.ndarray
+           intensity axis for plot.
+        """
+
         indices = numpy.where((self.freqs > minfreq) & (self.freqs < maxfreq))
         freqs = self.freqs[indices]
         ints  = self.ints[indices]
@@ -89,6 +160,27 @@ class VibSpectrum:
         return x, y
 
     def get_rect_spectrum (self, minfreq, maxfreq, bands) :
+        """
+        gets rect spectrum.
+
+        parameters
+        ----------
+        minfreq : float
+           smallest frequency for plot range.
+        maxfreq : float
+           highest frequency for plot range.
+        bands : list of lists
+           Spectrum bands. Example: [[0,1],[1,2]].
+
+        returns
+        -------
+        x : numpy.ndarray
+           frequncy axis for plot.
+        y : numpy.ndarray
+           intensity axis for plot.
+        """
+
+
         x = numpy.arange(minfreq, maxfreq, 0.1)
         y = numpy.zeros(x.shape)
 
@@ -105,11 +197,43 @@ class VibSpectrum:
     # FIXME: move the following to a VibSpectrumPlot class
     
     def scale_range (self, x, y, minfreq, maxfreq, scale) :
+        """
+        scales the spectrum range.
+
+        Parameters
+        ----------
+        x : numpy.ndarray
+           frequncy axis for plot.
+        y : numpy.ndarray
+           intensity axis for plot.
+
+        Returns
+        -------
+        x : numpy.ndarray
+           scaled frequncy axis for plot.
+        y : numpy.ndarray
+           sclaed intensity axis for plot.
+        """
         indices = numpy.where((x > minfreq) & (x < maxfreq))
         y[indices] = y[indices] * scale
         return x, y
         
     def get_band_maxima (self, x, y) :
+        """
+        gets band maxima from spectrum.
+        
+        Parameters
+        ----------
+        x : numpy.ndarray
+           frequncy axis for plot.
+        y : numpy.ndarray
+           intensity axis for plot.
+
+        Returns
+        -------
+        maxlist : list
+           band maxima.
+        """
         maxlist = []
         for n in range(1, len(x)-1) :
             if (y[n] > 0.0) and (y[n] > y[n-1]) and (y[n] > y[n+1]) :
@@ -117,6 +241,21 @@ class VibSpectrum:
         return maxlist
 
     def get_band_minima (self, x, y) :
+        """
+        gets band minima from spectrum.
+        
+        Parameters
+        ----------
+        x : numpy.ndarray
+           frequncy axis for plot.
+        y : numpy.ndarray
+           intensity axis for plot.
+
+        Returns
+        -------
+        minlist : list
+           band minima.
+        """
         minlist = self.get_band_maxima(x, -y)
         minlist = [(x,-y) for x,y in minlist]
         return minlist
@@ -124,7 +263,24 @@ class VibSpectrum:
     def get_plot (self, xmin, xmax, ymin=None, ymax=None, lineshape='Lorentz', hw=None,
                   include_linespec=True, scale_linespec=0.2, spectype='General',
                   label_maxima=True, label_minima=None, boxes=None) :
+        """
+        gets plot.
 
+        Parameters
+        ----------
+        xmin : float
+           frequncy minimum for plot.
+        xmax : float
+           frequency maximum for plot.
+        ymin : float
+           intensity minimum for plot.
+        ymax : float
+           intensity maximum for plot.
+        linshape : str
+           line shape - Lorentz or Gaussian.
+        hw : float
+           half width. 
+        """
         if label_minima is None:
             if spectype == 'ROA' :
                 label_min=True
@@ -200,7 +356,20 @@ class VibSpectrum:
                        bands=None, bandnames=None,
                        include_linespec=True, scale_linespec=0.2,
                        spectype='General') :
+        """
+        gets rect plot.
 
+        Parameters
+        ----------
+        xmin : float
+           frequncy minimum for plot.
+        xmax : float
+           frequency maximum for plot.
+        ymin : float
+           intensity minimum for plot.
+        ymax : float
+           intensity maximum for plot.
+        """
         xmi = min(xmin, xmax)
         xma = max(xmin, xmax)
 

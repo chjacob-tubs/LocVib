@@ -22,6 +22,7 @@
 # 
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
+""" Results module --> Abstract classes for interface modules."""
 
 import numpy
 
@@ -30,7 +31,18 @@ from .Molecule import VibToolsMolecule
 
 
 class Results:
+    """
+    Abstract class for module interfaces : PySNF, PyXYZ.
 
+    Attributes
+    ----------
+    mol : VibTools.Molecule
+       Molecule class of VibTools.
+    modes : VibTools.Modes
+       Modes class of VibTools
+    lwl : float
+       laser wave length.
+    """
     def __init__ (self) :
         """
         Results constructor.
@@ -43,15 +55,19 @@ class Results:
     freqs = property(lambda self: self.modes.freqs)
 
     def read (self) :
+        """Abstract method read"""
         raise Exception('Abstract method not implemented')
 
     def get_mw_normalmodes (self) :
+        """getter:  mass weighted normal modes."""
         return self.modes.modes_mw
 
     def get_c_normalmodes (self) :
+        """getter: cartesian normal modes."""
         return self.modes.modes_c
 
     def get_tensor_deriv_c (self, tens, ncomp=None) :
+        """Abstract method tensor derivative cartesian."""
         raise Exception('Abstract method not implemented')
 
     def get_tensor_deriv_nm (self, tens, ncomp=None, modes=None) :
