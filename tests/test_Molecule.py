@@ -1,5 +1,5 @@
 """
-Pytests (Unittests) for LocVib's Modul: Molecule.
+Pytests (Unittests) for LocVib/VibTools's Module: Molecule.
 """
 
 import VibTools as vt

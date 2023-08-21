@@ -1,3 +1,4 @@
+# TEST
 variables:
   SCHEDULER_PARAMETERS: "-n 1 -p nitrogen"
   USER: legit
@@ -96,6 +97,15 @@ unittest-Spectrum:
     script:
         - docker run --workdir /app/tests lv_unittest pytest -v test_Spectrum.py
 
+
+unittest-Results:
+    tags:
+        - local
+        - shell
+    stage: unittest
+    needs: [build-docker-test-image]
+    script:
+        - docker run --workdir /app/tests lv_unittest pytest -v test_Results.py
 
 #### DOCUMENTATION ####
 
