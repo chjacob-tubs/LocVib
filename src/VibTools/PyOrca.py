@@ -19,29 +19,29 @@
 #
 # In scientific publications using the LocVib tools, please cite:
 #   Ch. R. Jacob, J. Chem. Phys 130 (2009), 084106.
-# 
+#
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
 from .Molecule import VibToolsMolecule
-from .Modes    import VibModes
-from .Results  import Results
+from .Modes import VibModes
+from .Results import Results
 
-class OrcaResults (Results) :
 
-    def __init__ (self) :
-        self.mol    = VibToolsMolecule()
-        self.modes  = None
+class OrcaResults(Results):
+
+    def __init__(self):
+        self.mol = VibToolsMolecule()
+        self.modes = None
         self.nmodes = None
         self.natoms = None
 
-
     def get_freqs(self, output):
-        import numpy, re
+        # import numpy
+        import re
         f = open(output)
         lines = f.readlines()
         f.close()
-
 
         for i, l in enumerate(lines):
             if re.search('vibrational_freq', l):
@@ -49,16 +49,17 @@ class OrcaResults (Results) :
             if re.search('normal_modes', l):
                 end = i
 
-        freqs = list(map(lambda l: float(l.split()[1]),lines[start+2+6:end-1]))
+        freqs = list(map(lambda L: float(L.split()[1]),
+                     lines[start+2+6:end-1]))
         return freqs
-       
 
-    def read(self, coords, output) :
-        import numpy, re
+    def read(self, coords, output):
+        import numpy
+        import re
 
         self.mol.read(filename=coords)
         natoms = self.mol.natoms
-        #read akira iterations
+        # read akira iterations
         f = open(output)
         lines = f.readlines()
         f.close()
@@ -73,33 +74,34 @@ class OrcaResults (Results) :
         modes = VibModes(nmodes-6, self.mol)
         normalmodes = numpy.zeros((nmodes-6, 3*natoms))
 
-        freqs = list(map(lambda l: float(l.split()[1]),lines[start-nmodes-1+6:start-1]))
+        freqs = list(map(lambda L: float(L.split()[1]),
+                     lines[start-nmodes-1+6:start-1]))
 
         startnum = start+3
         j = 0
-        while startnum+natoms*3<end:
+        while startnum + natoms * 3 < end:
             for column in range(len(lines[startnum].split())-1):
-                if j <6:
+                if j < 6:
                     j += 1
                     continue
-                mode = []
+                # mode = []
                 column = column+1
                 for i in range(natoms):
-                    normalmodes[j-6][i*3 + 0] = lines[i*3+startnum + 0].split()[column]
-                    normalmodes[j-6][i*3 + 1] = lines[i*3+startnum + 1].split()[column]
-                    normalmodes[j-6][i*3 + 2] = lines[i*3+startnum + 2].split()[column]
+                    normalmodes[j-6][i*3 + 0] = lines[i*3+startnum
+                                                      + 0].split()[column]
+                    normalmodes[j-6][i*3 + 1] = lines[i*3+startnum
+                                                      + 1].split()[column]
+                    normalmodes[j-6][i*3 + 2] = lines[i*3+startnum
+                                                      + 2].split()[column]
                 j += 1
-            startnum = startnum + natoms*3 +1
+            startnum = startnum + natoms * 3 + 1
 
         freqs = numpy.asarray(freqs)
         normalmodes = numpy.asarray(normalmodes)
- 
+
         modes.set_modes_c(normalmodes)
         modes.set_freqs(freqs)
 
         self.natoms = natoms
         self.nmodes = nmodes
         self.modes = modes
-
-
-

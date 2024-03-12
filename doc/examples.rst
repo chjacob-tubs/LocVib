@@ -53,7 +53,7 @@ Here we see the script for the first part of the example `1_composition.py`:
 
 When we run the script we get:
 
-   >>> /LocVib/example/python3 1_composition.py
+   >>> /LocVib/example/python3% 1_composition.py
 
 .. code-block:: console
    
@@ -148,7 +148,7 @@ Here we see the script for the first part of the example `2_locmodes.py`:
 
 When we run the script we get:
 
-   >>> /LocVib/example/python3 2_locmodes.py
+   >>> /LocVib/example/python3% 2_locmodes.py
 
 .. code-block:: console
    
@@ -268,7 +268,7 @@ Here we see the script for the first part of the example `3_couplings.py`:
 
 When we run the script we get:
 
-   >>> /LocVib/example/python3 couplings.py
+   >>> /LocVib/example/python3% couplings.py
 
 .. code-block:: console
    

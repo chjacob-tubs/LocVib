@@ -19,7 +19,7 @@
 #
 # In scientific publications using the LocVib tools, please cite:
 #   Ch. R. Jacob, J. Chem. Phys 130 (2009), 084106.
-# 
+#
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 """LocVib package constructor."""

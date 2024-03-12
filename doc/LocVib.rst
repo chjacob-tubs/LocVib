@@ -10,11 +10,6 @@ LocVib
    :members:
 
 
-Examples
---------
-
-TEST
-
 Preparation and Initiate VibTools.Modes
 """""""""""""""""""""""""""""""""""""""
 

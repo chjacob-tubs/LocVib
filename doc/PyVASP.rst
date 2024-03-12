@@ -1,4 +1,4 @@
 PyVASP
 ======
 
-in progress
+This page is under construction.
