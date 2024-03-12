@@ -14,8 +14,9 @@ stages:
 before_script:
         - hostname
 
-#### IMAGE BUILDS ####
-
+######################
+#### IMAGE BUILDS #########################################################
+######################
 
 build-docker-test-image:
     tags:
@@ -23,7 +24,7 @@ build-docker-test-image:
        - shell
     stage: build
     script:
-       - docker build --no-cache -t lv_unittest -f Dockerfile.unittests .
+       - docker build --no-cache -t lv_unittest -f Dockerfile .
 
 
 build-docker-autodoc-image:
@@ -32,7 +33,7 @@ build-docker-autodoc-image:
        - shell
     stage: build
     script:
-       - docker build --no-cache -t lv_sphinxdoc -f Dockerfile.sphinx_doc . 
+       - docker build --no-cache -t lv_sphinxdoc -f doc/Dockerfile . 
 
 
 #### UNITTESTS ####
@@ -58,22 +59,12 @@ unittest-Modes:
         - docker run --workdir /app/tests lv_unittest pytest -v test_Modes.py
 
 
-unittest-PySNF:
-    tags:
-        - local
-        - shell
-    stage: unittest
-    needs: [build-docker-test-image]
-    script:
-        - docker run --workdir /app/tests lv_unittest pytest -v test_PySNF.py
-
-
 unittest-LocVib:
     tags:
         - local
         - shell
     stage: unittest
-    needs: [build-docker-test-image]
+    needs: [build-docker-test-image] #,unittest-Modes]
     script:
         - docker run --workdir /app/tests lv_unittest pytest -v test_LocVib.py
 
@@ -83,7 +74,7 @@ unittest-HugAnalysis:
         - local
         - shell
     stage: unittest
-    needs: [build-docker-test-image]
+    needs: [build-docker-test-image] #, unittest-Modes]
     script:
         - docker run --workdir /app/tests lv_unittest pytest -v test_HugAnalysis.py
 
@@ -93,7 +84,7 @@ unittest-Spectrum:
         - local
         - shell
     stage: unittest
-    needs: [build-docker-test-image]
+    needs: [build-docker-test-image,unittest-Modes]
     script:
         - docker run --workdir /app/tests lv_unittest pytest -v test_Spectrum.py
 
@@ -103,11 +94,45 @@ unittest-Results:
         - local
         - shell
     stage: unittest
-    needs: [build-docker-test-image]
+    needs: [build-docker-test-image,unittest-Molecule]
     script:
         - docker run --workdir /app/tests lv_unittest pytest -v test_Results.py
 
-#### DOCUMENTATION ####
+# Interfaces ---------
+
+unittest-PySNF:
+    tags:
+        - local
+        - shell
+    stage: unittest
+    needs:
+        - build-docker-test-image
+        - unittest-Modes
+        - unittest-Molecule
+        - unittest-Results
+    script:
+        - docker run --workdir /app/tests lv_unittest pytest -v test_PySNF.py
+
+#######################
+#### DOCUMENTATION #############################################################
+#######################
+
+unittest-Coverage:
+    tags:
+        - local
+        - shell
+    stage: autodoc
+    needs:
+        - build-docker-test-image
+    script:
+        - docker run --workdir /app/tests --name lv_test_coverage lv_unittest pytest --cov=VibTools --cov-report term --cov-report xml:coverage.xml
+        - docker cp lv_test_coverage:/app/tests/coverage.xml coverage.xml
+    coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+    artifacts:
+      reports:
+        coverage_report:
+          coverage_format: cobertura
+          path: coverage.xml
 
 
 build-sphinx-doc:
@@ -115,10 +140,9 @@ build-sphinx-doc:
         - local
         - shell
     stage: autodoc
-    needs: [build-docker-autodoc-image ]
+    needs: [build-docker-autodoc-image, unittest-Coverage]
     script:
         - docker run --workdir /app/doc --name sphinxdoc_lv_container lv_sphinxdoc sphinx-build . build 
-
 
 pages:
     tags:
@@ -132,8 +156,32 @@ pages:
         paths:
          - public
 
+################################################
+#alternative installation/environment via Conda#
+################################################
 
-#### CLEAN UP ####
+build-docker-conda-test-image:
+    tags:
+       - local
+       - shell
+    stage: build
+    script:
+       - docker build --no-cache -t lv_condock -f tests/Dockerfile .
+
+
+unittest-Conda-Env-all_tests:
+    tags:
+        - local
+        - shell
+    stage: unittest
+    needs: 
+        - build-docker-conda-test-image
+    script:
+        - docker run --workdir /app/tests lv_condock conda run -n VibToolsCondaENV pytest -v
+
+##################
+#### CLEAN UP ##################################################################
+##################
 
 cleanup-docker:
     stage: cleanup
@@ -141,15 +189,19 @@ cleanup-docker:
     needs:
         - build-docker-test-image
         - build-docker-autodoc-image
+        - build-docker-conda-test-image
         - unittest-Molecule
         - unittest-Modes
         - unittest-PySNF
         - unittest-LocVib
         - unittest-HugAnalysis
         - unittest-Spectrum
+        - unittest-Results
+        - unittest-Conda-Env-all_tests
         - build-sphinx-doc
-        - pages
+        - unittest-Coverage 
     script:
+        - docker rmi -f lv_condock:latest
         - docker rmi -f lv_sphinxdoc:latest
         - docker rmi -f lv_unittest:latest
         - docker rm $(docker ps --filter status=exited -q)

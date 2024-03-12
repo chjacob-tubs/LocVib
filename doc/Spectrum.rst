@@ -1,4 +1,6 @@
 Spectrum
 ========
 
-in progress
+.. autoclass:: VibTools.VibSpectrum
+   :members:
+   :show-inheritance:

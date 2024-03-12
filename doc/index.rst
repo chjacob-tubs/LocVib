@@ -3,15 +3,17 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to LocVib's documentation!
-==================================
+========
+Overview
+========
 
-The LocVib tools provide a number of features for analyzing calculated vibrational spectra in terms
-of localized modes. For details on the theoretical background, see
+.. mdinclude:: ../README.md
 
-Ch. Jacob, M. Reiher, J. Chem. Phys. 130 (2009), 084106 (https://doi.org/10.1063/1.3077690).
+==================
+User Documentation
+==================
 
-Please also cite this reference in publications using the LocVib tools.
+Here we find installation instructions and examples of use.
 
 .. toctree::
    :maxdepth: 2
@@ -19,17 +21,27 @@ Please also cite this reference in publications using the LocVib tools.
 
    installation
    examples
-   Tutorial
 
+==================
+Code Documentation
+==================
+
+Here we find the code documentation.
 
 .. toctree::
    :maxdepth: 1
-   :caption: VibTools Modules
+   :caption: VibTools Main Modules
 
    Molecule
    Modes
    LocVib
    Constants
+
+
+.. toctree::
+   :maxdepth: 1
+   :caption: VibTools Submodules
+
    Results
    Spectrum
    Plotting

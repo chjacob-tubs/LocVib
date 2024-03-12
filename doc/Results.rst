@@ -1,4 +1,7 @@
 Results
 =======
 
-in progress
+
+.. autoclass:: VibTools.Results
+   :members:
+   :show-inheritance:

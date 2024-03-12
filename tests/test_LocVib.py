@@ -1,11 +1,6 @@
 """
 Pytests (Unittests) for LocVib's Modul: LocVib.
 """
-
-import sys
-sys.path.append('/home/michael/LocVib/src/')
-
-
 import VibTools as vt
 import numpy as np
 import os

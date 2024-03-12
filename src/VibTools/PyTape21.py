@@ -19,32 +19,32 @@
 #
 # In scientific publications using the LocVib tools, please cite:
 #   Ch. R. Jacob, J. Chem. Phys 130 (2009), 084106.
-# 
+#
 # The most recent version of LocVib is available at
 #   http://www.christophjacob.eu/software
 
 import kf
 import numpy
-import math
+# import math
 
-from .Constants import *
+# from .Constants import *
 
 from .Molecule import VibToolsMolecule
-from .Modes    import VibModes
-from .Results  import Results
+from .Modes import VibModes
+from .Results import Results
 
 
-class ADFResults (Results) :
+class ADFResults(Results):
 
-    def __init__ (self, t21file='TAPE21', xyzfile='mol.xyz') :
+    def __init__(self, t21file='TAPE21', xyzfile='mol.xyz'):
         """
         ADFResults constructor.
         """
-        self.mol          = VibToolsMolecule()
-        self.xyzfilename  = xyzfile
-        self.t21filename  = t21file
+        self.mol = VibToolsMolecule()
+        self.xyzfilename = xyzfile
+        self.t21filename = t21file
 
-    def read (self) :
+    def read(self):
         self.mol.read(filename=self.xyzfilename, filetype='xyz')
 
         f = kf.kffile(self.t21filename)
@@ -53,23 +53,25 @@ class ADFResults (Results) :
         if not (self.mol.natoms == natoms):
             raise Exception('Inconsistent number of atoms')
 
-        inpatm = f.read('Geometry', 'atom order index').reshape((natoms,2), order='Fortran')[:,0]
+        inpatm = f.read('Geometry',
+                        'atom order index').reshape((natoms, 2),
+                                                    order='Fortran')[:, 0]
 
         nmodes = natoms*3
         modes = VibModes(nmodes, self.mol)
 
         freqs = f.read('Freq', 'Frequencies')
         normalmodes = f.read('Freq', 'Normalmodes')
-        normalmodes = normalmodes.reshape((nmodes,nmodes))
+        normalmodes = normalmodes.reshape((nmodes, nmodes))
 
         # the normal modes in T21 are in internal order,
         # convert to input order
         normalmodes_inputorder = numpy.zeros_like(normalmodes)
-        for iinp in range(natoms) :
+        for iinp in range(natoms):
             ia = inpatm[iinp] - 1
-            normalmodes_inputorder[:,3*iinp] = normalmodes[:,3*ia]
-            normalmodes_inputorder[:,3*iinp+1] = normalmodes[:,3*ia+1]
-            normalmodes_inputorder[:,3*iinp+2] = normalmodes[:,3*ia+2]
+            normalmodes_inputorder[:, 3*iinp] = normalmodes[:, 3*ia]
+            normalmodes_inputorder[:, 3*iinp+1] = normalmodes[:, 3*ia+1]
+            normalmodes_inputorder[:, 3*iinp+2] = normalmodes[:, 3*ia+2]
 
         modes.set_modes_c(normalmodes_inputorder)
         modes.set_freqs(freqs)
@@ -79,4 +81,3 @@ class ADFResults (Results) :
         self.modes = modes
 
         f.close()
-
