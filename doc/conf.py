@@ -31,11 +31,11 @@ release = '1.4'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-'sphinx_mdinclude',
 'sphinx.ext.autodoc',
 'sphinx.ext.napoleon',
 'sphinx_rtd_theme',
-'sphinx_mdinclude'
+'sphinx_mdinclude',
+'sphinx_design'
 ]
 source_suffix = ['.rst', '.md']
 autodoc_member_order = 'bysource'

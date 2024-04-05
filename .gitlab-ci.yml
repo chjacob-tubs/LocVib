@@ -7,6 +7,7 @@ variables:
 stages:
     - build
     - unittest
+    - examples
     - autodoc
     - deploy
     - cleanup
@@ -34,6 +35,15 @@ build-docker-autodoc-image:
     stage: build
     script:
        - docker build --no-cache -t lv_sphinxdoc -f doc/Dockerfile . 
+
+build-docker-example-image:
+    tags:
+       - local
+       - shell
+    stage: build
+    script:
+       - docker build --no-cache -t lv_example -f example/Dockerfile . 
+
 
 
 #### UNITTESTS ####
@@ -113,6 +123,41 @@ unittest-PySNF:
     script:
         - docker run --workdir /app/tests lv_unittest pytest -v test_PySNF.py
 
+
+#######################
+#### EXAMPLES #############################################################
+#######################
+
+examples-composition:
+    tags:
+        - local
+        - shell
+    stage: examples
+    needs:
+        - build-docker-test-image
+    script:
+        - docker run --workdir /app/example --name lv_exp1 lv_example python 1_composition.py 
+
+examples-locmodes:
+    tags:
+        - local
+        - shell
+    stage: examples
+    needs:
+        - build-docker-test-image
+    script:
+        - docker run --workdir /app/example --name lv_exp2 lv_example python 2_locmodes.py 
+
+examples-couplings:
+    tags:
+        - local
+        - shell
+    stage: examples
+    needs:
+        - build-docker-test-image
+    script:
+        - docker run --workdir /app/example --name lv_exp3 lv_example python 3_couplings.py 
+
 #######################
 #### DOCUMENTATION #############################################################
 #######################
@@ -140,7 +185,12 @@ build-sphinx-doc:
         - local
         - shell
     stage: autodoc
-    needs: [build-docker-autodoc-image, unittest-Coverage]
+    needs:
+        - build-docker-autodoc-image
+        - unittest-Coverage
+        - examples-composition
+        - examples-locmodes
+        - examples-couplings
     script:
         - docker run --workdir /app/doc --name sphinxdoc_lv_container lv_sphinxdoc sphinx-build . build 
 
@@ -190,6 +240,7 @@ cleanup-docker:
         - build-docker-test-image
         - build-docker-autodoc-image
         - build-docker-conda-test-image
+        - build-docker-example-image
         - unittest-Molecule
         - unittest-Modes
         - unittest-PySNF
@@ -198,12 +249,16 @@ cleanup-docker:
         - unittest-Spectrum
         - unittest-Results
         - unittest-Conda-Env-all_tests
+        - examples-composition
+        - examples-locmodes
+        - examples-couplings
         - build-sphinx-doc
-        - unittest-Coverage 
+        - unittest-Coverage
     script:
         - docker rmi -f lv_condock:latest
         - docker rmi -f lv_sphinxdoc:latest
         - docker rmi -f lv_unittest:latest
+        - docker rmi -f lv_example:latest
         - docker rm $(docker ps --filter status=exited -q)
         - docker system df
     when: always
