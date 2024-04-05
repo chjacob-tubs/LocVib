@@ -1,3 +1,4 @@
+# load: basic Docker image
 FROM python:3.11.4
 
 # Create a "work folder"
@@ -9,6 +10,13 @@ COPY . /app
 # RUN: Installation of dependencies and package itself
 RUN python -m pip install -r /app/requirements/requirements_documentation.txt \
     && pip install /app/
+
+# Create example output files
+WORKDIR /app/example/
+
+RUN python 1_composition.py > /app/doc/examples_output/1_output.txt \
+    && python 2_locmodes.py > /app/doc/examples_output/2_output.txt \
+    && python 3_couplings.py > /app/doc/examples_output/3_output.txt
 
 WORKDIR /app/doc/
 
