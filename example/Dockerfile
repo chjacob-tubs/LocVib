@@ -1,5 +1,5 @@
 # load: basic Docker image
-FROM continuumio/miniconda3
+FROM python:3.11.4
  
 # Create a "work folder"
 WORKDIR /app

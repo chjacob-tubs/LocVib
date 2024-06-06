@@ -8,6 +8,7 @@ stages:
     - build
     - unittest
     - examples
+    - quality
     - autodoc
     - deploy
     - cleanup
@@ -27,7 +28,6 @@ build-docker-test-image:
     script:
        - docker build --no-cache -t lv_unittest -f Dockerfile .
 
-
 build-docker-autodoc-image:
     tags:
        - local
@@ -44,10 +44,9 @@ build-docker-example-image:
     script:
        - docker build --no-cache -t lv_example -f example/Dockerfile . 
 
-
-
-#### UNITTESTS ####
-
+###################
+#### UNITTESTS ###############################################################
+###################
 
 unittest-Molecule:
     tags:
@@ -123,7 +122,6 @@ unittest-PySNF:
     script:
         - docker run --workdir /app/tests lv_unittest pytest -v test_PySNF.py
 
-
 #######################
 #### EXAMPLES #############################################################
 #######################
@@ -159,14 +157,48 @@ examples-couplings:
         - docker run --workdir /app/example --name lv_exp3 lv_example python 3_couplings.py 
 
 #######################
-#### DOCUMENTATION #############################################################
+#### EXAMPLES #############################################################
 #######################
+
+examples-composition:
+    tags:
+        - local
+        - shell
+    stage: examples
+    needs:
+        - build-docker-test-image
+    script:
+        - docker run --workdir /app/example --name lv_exp1 lv_example python 1_composition.py 
+
+examples-locmodes:
+    tags:
+        - local
+        - shell
+    stage: examples
+    needs:
+        - build-docker-test-image
+    script:
+        - docker run --workdir /app/example --name lv_exp2 lv_example python 2_locmodes.py 
+
+examples-couplings:
+    tags:
+        - local
+        - shell
+    stage: examples
+    needs:
+        - build-docker-test-image
+    script:
+        - docker run --workdir /app/example --name lv_exp3 lv_example python 3_couplings.py 
+
+##########################
+#### Code Quality ##########################################################
+##########################
 
 unittest-Coverage:
     tags:
         - local
         - shell
-    stage: autodoc
+    stage: quality
     needs:
         - build-docker-test-image
     script:
@@ -178,6 +210,59 @@ unittest-Coverage:
         coverage_report:
           coverage_format: cobertura
           path: coverage.xml
+
+
+unittest-Min-Coverage:
+    tags:
+        - local
+        - shell
+    stage: quality
+    needs: [build-docker-test-image]
+    script:
+        - docker run --workdir /app/tests lv_unittest pytest --cov=VibTools --cov-fail-under=67
+
+Style-Check-Min:
+    tags:
+        - local
+        - shell
+    stage: quality
+    needs: [build-docker-test-image]
+    script:
+        - docker run --workdir /app/src lv_unittest pylint --fail-under=7.8 VibTools
+
+unittest-Report:
+    tags:
+        - local
+        - shell
+    stage: quality
+    needs:
+        - build-docker-test-image
+    script:
+        - docker run --workdir /app/tests --name lv_test_report lv_unittest pytest --junitxml=report.xml
+        - docker cp lv_test_report:/app/tests/report.xml report.xml
+    artifacts:
+      when: always
+      reports:
+        junit: report.xml
+
+
+docstr-Min-Coverage:
+    tags:
+        - local
+        - shell
+    stage: quality
+    needs:
+        - build-docker-test-image
+    script:
+        - docker run --workdir /app/src --name lv_docstr lv_unittest docstr-coverage --fail-under=74 -b . VibTools
+        - docker cp lv_docstr:/app/src/docstr_coverage_badge.svg docstr_coverage_badge.svg
+    artifacts:
+      paths:
+        - docstr_coverage_badge.svg
+
+#######################
+#### DOCUMENTATION #############################################################
+#######################
 
 
 build-sphinx-doc:

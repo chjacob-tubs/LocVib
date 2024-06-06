@@ -26,6 +26,9 @@ Here we find installation instructions and examples of use.
 Code Documentation
 ==================
 
+.. image:: Vibtools_archi.png
+   :alt: Code architecture of VibTools/LocVib
+
 Here we find the code documentation.
 
 .. toctree::

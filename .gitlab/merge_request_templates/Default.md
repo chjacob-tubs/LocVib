@@ -1,10 +1,20 @@
-Reason for the merge request (new feature/bugfix/refactoring)?
+## Merge Request Summary
+(to be completed by merge request author)
 
+- Reason for the merge request (new feature/bugfix/refactoring)?
 
-Briefly explain why the new code or changes are necessary and how it is implemented?
+- Briefly explain why the new code or changes are necessary and how it is implemented?
 
+- [ ] Assign a reviewer for this merge request!
 
-## Code-Review Checklist:
+## Code-Review Checklist
+(for assigned code reviewer)
+
+The assigned reviewer should look at each item in this checklist. For anything that 
+needs to be addressed or that can be improved, add comment (if necessary including 
+a ToDo-Checklist).
+
+Once the checklist is completed, add an "Assignee" who can merge the code.
 
 - [ ] Functionality
     - Does the code implement the intended functionality?
@@ -47,3 +57,11 @@ Briefly explain why the new code or changes are necessary and how it is implemen
  
 - [ ] Performance and Efficiency (optional)
     - Are there any potential performance bottlenecks or inefficiencies?
+
+## Merge Checklist
+
+(for assignee who is finally merging this)
+
+- [ ] Do all CI pipelines pass?
+- [ ] Has the code review been completed?
+- [ ] Are all authors included in the PyADF author list?
