@@ -5,6 +5,8 @@ import numpy as np
 import os
 import pytest
 
+tools_install_path = os.path.dirname(vt.__file__)
+data_path = os.path.join(tools_install_path,"tests/test_data")
 
 def test_Results_init():
     # Arrange
@@ -21,13 +23,13 @@ def test_Results_init():
 @pytest.fixture
 def H2O_VibToolsMolecule():
     vtmole = vt.VibToolsMolecule()
-    vtmole.read_from_coord('test_data/H2O/coord')
+    vtmole.read_from_coord(os.path.join(data_path,'H2O/coord'))
     return vtmole
 
 @pytest.fixture
 def H2O_VibToolsMode(H2O_VibToolsMolecule):
     vtmole = H2O_VibToolsMolecule
-    H2O_Mode_data = np.load('test_data/H2O/modes_H2O_test_data.npz')
+    H2O_Mode_data = np.load(os.path.join(data_path,'H2O/modes_H2O_test_data.npz'))
     modes_mw = H2O_Mode_data['modes_mw']
     natoms = H2O_Mode_data['natoms']
     vtmodes = vt.VibModes(3*natoms-6,vtmole)

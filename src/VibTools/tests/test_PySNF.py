@@ -9,11 +9,15 @@ import numpy as np
 import os
 import pytest
 
+tools_install_path = os.path.dirname(vt.__file__)
+data_path = os.path.join(tools_install_path,"tests/test_data")
+
+
 # H2O-Test-Molecule-Setup
 @pytest.fixture
 def H2O_setup():
     vtmole = vt.VibToolsMolecule()
-    vtmole.read_from_coord('test_data/H2O/coord')
+    vtmole.read_from_coord(os.path.join(data_path,'H2O/coord'))
     return vtmole
 
 # SNFRestartFile Class Tests: =============================================
@@ -21,7 +25,7 @@ def H2O_setup():
 
 def test_SNFRestartFile_read_H2O():
     #SNFRestartFile.read(filename)
-    filename = 'test_data/H2O/restart'
+    filename = os.path.join(data_path,'H2O/restart')
     SNFrest = vt.SNFRestartFile()
     SNFrest.read(filename)
     assert SNFrest.nvar == 9
@@ -32,7 +36,7 @@ def test_SNFRestartFile_read_H2O():
     assert SNFrest.intonly == False
     assert SNFrest.ncalcsets == 3
     # Load reference data
-    filename = 'test_data/H2O/H2O_SNFRestartFile_H2O.npz'
+    filename = os.path.join(data_path,'H2O/H2O_SNFRestartFile_H2O.npz')
     ref_dat = np.load(filename)
 
     # Numpy Assert test
@@ -49,7 +53,7 @@ def test_SNFRestartFile_read_H2O():
 
 
 def test_SNFRestartFile_del_int_for_atoms_H2O():
-    filename = 'test_data/H2O/restart'
+    filename = os.path.join(data_path,'H2O/restart')
     SNFrest = vt.SNFRestartFile()
     SNFrest.read(filename)
     atoms = [0,2]
@@ -66,23 +70,23 @@ def test_SNFRestartFile_del_int_for_atoms_H2O():
 
 
 def test_SNFOutputFile_init_H2O():
-    outfilename = 'test_data/H2O/snf.out' 
+    outfilename = os.path.join(data_path,'H2O/snf.out')
     SNFoutput = vt.SNFOutputFile(outfilename)
     assert SNFoutput.modes ==  None
     assert SNFoutput.lwl ==  None
-    assert SNFoutput.filename == 'test_data/H2O/snf.out'
+    assert SNFoutput.filename == os.path.join(data_path,'H2O/snf.out')
     assert SNFoutput.intonly == False
 
 def test_SNFOutputFile_read_H2O(H2O_setup):
-    path = 'test_data/H2O/'
-    outfilename = path+'snf.out'
+    path = os.path.join(data_path,'H2O/')
+    outfilename = os.path.join(path,'snf.out')
     SNFoutput = vt.SNFOutputFile(outfilename)
     SNFoutput.read(H2O_setup)
     assert SNFoutput != None  
-    assert SNFoutput.filename == path+'snf.out'
+    assert SNFoutput.filename == os.path.join(path,'snf.out')
     assert SNFoutput.intonly == False
     # Load reference data
-    ref_dat_name = path+'H2O_PySNF_modes_freq.npz'
+    ref_dat_name = os.path.join(path,'H2O_PySNF_modes_freq.npz')
     ref_dat = np.load(ref_dat_name)
     # Test: modes_mw and freqs
     np.testing.assert_equal(SNFoutput.modes.modes_mw, ref_dat['modes_mw'])
@@ -110,13 +114,13 @@ def test_SNFOutputFile_read_H2O(H2O_setup):
 
 
 def test_SNFResults_init_read_H2O(H2O_setup):
-    path = 'test_data/H2O/'
+    path = os.path.join(data_path,'H2O/')
     snfout_name = 'snf.out'
     restart_name = 'restart'
     coord_name = 'coord'
-    res = vt.SNFResults(outname = path+snfout_name, 
-                        restartname = path+restart_name,
-                        coordfile = path+coord_name)
+    res = vt.SNFResults(outname = os.path.join(path,snfout_name), 
+                        restartname = os.path.join(path,restart_name),
+                        coordfile = os.path.join(path,coord_name))
     res.read()
 
 
@@ -124,7 +128,7 @@ def test_SNFResults_init_read_H2O(H2O_setup):
 
     SNFmol = res.mol
     # Load reference data
-    filename = 'test_data/H2O/H2O_read_from_coords.npz'
+    filename = os.path.join(data_path,'H2O/H2O_read_from_coords.npz')
     ref_dat = np.load(filename)
 
     # Numpy Assert test
@@ -138,10 +142,10 @@ def test_SNFResults_init_read_H2O(H2O_setup):
 
     SNFoutput = res.snfoutput
     assert SNFoutput != None
-    assert SNFoutput.filename == path+'snf.out'
+    assert SNFoutput.filename == os.path.join(path,'snf.out')
     assert SNFoutput.intonly == False
     # Load reference data
-    ref_dat_name = path+'H2O_PySNF_modes_freq.npz'
+    ref_dat_name = os.path.join(path,'H2O_PySNF_modes_freq.npz')
     ref_dat = np.load(ref_dat_name)
     # Test: modes_mw and freqs
     np.testing.assert_equal(SNFoutput.modes.modes_mw, ref_dat['modes_mw'])
@@ -155,7 +159,7 @@ def test_SNFResults_init_read_H2O(H2O_setup):
 
     # ---- snfrestart test ------
     SNFrest = res.restartfile
-    filename = 'test_data/H2O/restart'
+    filename = os.path.join(data_path,'H2O/restart')
     SNFrest = vt.SNFRestartFile()
     SNFrest.read(filename)
     atoms = [0,2]
@@ -168,18 +172,18 @@ def test_SNFResults_init_read_H2O(H2O_setup):
     np.testing.assert_equal(dip_atom1 , zeromat)
 
     # --- input names / intonly---
-    assert res.restartname == path + restart_name
-    assert res.coordfile == path+coord_name
+    assert res.restartname == os.path.join(path,restart_name)
+    assert res.coordfile == os.path.join(path,coord_name)
     assert res.intonly == False
 
 
 ## H2O-Test-Setup
 @pytest.fixture
 def H2O_SNFsetup():
-    path = 'test_data/H2O/'
-    resPySNF = vt.SNFResults(outname = path+'snf.out',
-                             restartname = path+'restart', 
-                             coordfile = path+'coord')
+    path = os.path.join(data_path,'H2O/')
+    resPySNF = vt.SNFResults(outname = os.path.join(path,'snf.out'),
+                             restartname = os.path.join(path,'restart'), 
+                             coordfile = os.path.join(path,'coord'))
     resPySNF.read()    
     a = range(0,len(resPySNF.modes.freqs))
     modes = resPySNF.modes.get_subset(a)
@@ -188,10 +192,10 @@ def H2O_SNFsetup():
 ## Ala10-Test-Setup
 @pytest.fixture
 def Ala10_SNFsetup():
-    path = 'test_data/Ala10/'
-    resPySNF = vt.SNFResults(outname = path+'snf2.out',
-                             restartname = path+'restart2', 
-                             coordfile = path+'coord2')
+    path = os.path.join(data_path,'Ala10/')
+    resPySNF = vt.SNFResults(outname = os.path.join(path,'snf2.out'),
+                             restartname = os.path.join(path,'restart2'), 
+                             coordfile = os.path.join(path,'coord2'))
     resPySNF.read()    
     a = range(0,len(resPySNF.modes.freqs))
     modes = resPySNF.modes.get_subset(a)

@@ -1,17 +1,18 @@
 import numpy as np
 import VibTools as vt
 import pytest
+import os
 
 
-
-
+tools_install_path = os.path.dirname(vt.__file__)
+data_path = os.path.join(tools_install_path,"tests/test_data")
 
 @pytest.fixture
 def HugAna_Ala10_SNFsetup():
-    path = 'test_data/Ala10/'
-    res = vt.SNFResults(outname = path+'snf2.out', 
-                        restartname = path+'restart2', 
-                        coordfile = path+'coord2')
+    path = os.path.join(data_path,'Ala10/')
+    res = vt.SNFResults(outname = os.path.join(path,'snf2.out'), 
+                        restartname = os.path.join(path,'restart2'), 
+                        coordfile = os.path.join(path,'coord2'))
     res.read()
     a = range(0,len(res.modes.freqs))
     modes = res.modes.get_subset(a)
@@ -206,7 +207,7 @@ def test_LocModeAnalysis_init(HugAna_Ala10_SNFsetup):
     res, modes, HA = HugAna_Ala10_SNFsetup
     a = range(0,len(res.modes.freqs))
     modes = res.modes.get_subset(a)
-    ref = np.load('test_data/Ala10/HugAna_LocModeAnalysis_class.npz')
+    ref = np.load(os.path.join(data_path,'Ala10/HugAna_LocModeAnalysis_class.npz'))
     natoms = ref['natoms']
     tensor_decomposed_c = ref['tensor_decomposed_c']
     tensor_decomposed_lm = ref['tensor_decomposed_lm']
@@ -234,7 +235,7 @@ def test_LocModeAna_get_tensor_decomposed_lm(LocModeAna_HugAna_Ala10_SNFsetup):
     LMA,res =LocModeAna_HugAna_Ala10_SNFsetup
     a = range(0,len(res.modes.freqs))
     modes = res.modes.get_subset(a)
-    ref = np.load('test_data/Ala10/HugAna_LocModeAnalysis_class.npz')
+    ref = np.load(os.path.join(data_path,'Ala10/HugAna_LocModeAnalysis_class.npz'))
     tensor_decomposed_lm_ref = ref['tensor_decomposed_lm']
     # Act
     tensor_decomposed_lm = LMA.get_tensor_decomposed_lm()
@@ -250,7 +251,7 @@ def test_LocModeAna_get_intensity_coupling_matrix(LocModeAna_HugAna_Ala10_SNFset
     LMA,res =LocModeAna_HugAna_Ala10_SNFsetup
     a = range(0,len(res.modes.freqs))
     modes = res.modes.get_subset(a)
-    ref = np.load('test_data/Ala10/HugAna_LocModeAnalysis_class.npz')
+    ref = np.load(os.path.join(data_path,'Ala10/HugAna_LocModeAnalysis_class.npz'))
     tensor_decomposed_lm_ref = ref['tensor_decomposed_lm']
     # Act
     tensor_decomposed_lm = LMA.get_intensity_coupling_matrix()

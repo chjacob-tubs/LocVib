@@ -10,16 +10,20 @@ import pytest
 #TODO: Provide all saved test data(npz) in one file
 
 
+tools_install_path = os.path.dirname(vt.__file__)
+data_path = os.path.join(tools_install_path,"tests/test_data")
+
+
 # Test of basic method
 def test_read_from_coord():
     ## Arrange
     vtmole = vt.VibToolsMolecule()
     # Load reference data
-    filename = 'test_data/H2O/H2O_read_from_coords.npz'
+    filename = os.path.join(data_path,'H2O/H2O_read_from_coords.npz')
     ref_dat = np.load(filename)
     ## Act
     # Create module data
-    molefilename = 'test_data/H2O/coord'
+    molefilename = os.path.join(data_path,'H2O/coord')
     vtmole.read_from_coord(molefilename)
     ### Assert 
     np.testing.assert_equal(vtmole.natoms, ref_dat['natoms'])
@@ -32,14 +36,14 @@ def test_read_from_coord():
 @pytest.fixture
 def H2O_setup():
     vtmole = vt.VibToolsMolecule()
-    vtmole.read_from_coord('test_data/H2O/coord')
+    vtmole.read_from_coord(os.path.join(data_path,'H2O/coord'))
     return vtmole
 
 # Ala-Test-Setup
 @pytest.fixture
 def Ala10_setup(): # For Bergmann-Tests
     vtmole = vt.VibToolsMolecule()
-    vtmole.read_from_coord('test_data/Ala10/coord')
+    vtmole.read_from_coord(os.path.join(data_path,'Ala10/coord'))
     return vtmole
 
 
@@ -71,7 +75,7 @@ def test_reset_molcache(H2O_setup):
 def test_write_and_read(H2O_setup):
     # Test write functionality
     H2O_setup = vt.VibToolsMolecule()
-    H2O_setup.read_from_coord('test_data/H2O/coord')
+    H2O_setup.read_from_coord(os.path.join(data_path,'H2O/coord'))
     filename = 'write_test_temp'
     H2O_setup.write(filename)
     # check existance of file
@@ -109,7 +113,7 @@ def test_get_coordinates(H2O_setup):
 
 def test_add_atoms(H2O_setup):
     # Load reference data
-    filename = 'test_data/H2O/H2O_add_atom1_111.npz'
+    filename = os.path.join(data_path,'H2O/H2O_add_atom1_111.npz')
     ref_dat111 = np.load(filename) 
     H2O_setup.add_atoms([1],[[-1, 1, 1]])
     np.testing.assert_equal(H2O_setup.atnums, ref_dat111['atnums'])

@@ -1,15 +1,19 @@
 import numpy as np
 import pytest
 import VibTools as vt
+import os
+
+tools_install_path = os.path.dirname(vt.__file__)
+data_path = os.path.join(tools_install_path,"tests/test_data")
 
 
 ## H2O-Test-Setup
 @pytest.fixture
 def H2O_SNFsetup():
-    path = 'test_data/H2O/'
-    resPySNF = vt.SNFResults(outname = path+'snf.out',
-                             restartname = path+'restart',
-                             coordfile = path+'coord')
+    path = os.path.join(data_path,'H2O/')
+    resPySNF = vt.SNFResults(outname = os.path.join(path,'snf.out'),
+                             restartname = os.path.join(path,'restart'),
+                             coordfile = os.path.join(path,'coord'))
     resPySNF.read()
     a = range(0,len(resPySNF.modes.freqs))
     modes = resPySNF.modes.get_subset(a)

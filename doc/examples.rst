@@ -7,7 +7,7 @@ See `/LocVib/example/` directory for some examples of typical runs.
 
 .. code-block:: console
 
-   /LocVib/example/
+   /LocVib/src/VibTools/example/
    ├── 1_composition.py
    ├── 2_locmodes.py
    ├── 3_couplings.py
@@ -25,7 +25,7 @@ Here we see the script for the first part of the example `1_composition.py`:
 
 .. dropdown:: Open Python Script - 1_composition.py
 
-   .. literalinclude:: ../example/1_composition.py
+   .. literalinclude:: ../src/VibTools/example/1_composition.py
        :language: python
 
 When we run the script we get:
@@ -44,7 +44,7 @@ Here we see the script for the first part of the example `2_locmodes.py`:
 
 .. dropdown:: Open Python Script - 2_locmodes.py
 
-   .. literalinclude:: ../example/2_locmodes.py
+   .. literalinclude:: ../src/VibTools/example/2_locmodes.py
        :language: python
 
 When we run the script we get:
@@ -64,7 +64,7 @@ Here we see the script for the first part of the example `3_couplings.py`:
 
 .. dropdown:: Open Python Script - 3_couplings.py
 
-   .. literalinclude:: ../example/3_couplings.py
+   .. literalinclude:: ../src/VibTools/example/3_couplings.py
        :language: python
 
 When we run the script we get:
