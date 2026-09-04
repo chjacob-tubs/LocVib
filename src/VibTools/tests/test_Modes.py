@@ -10,17 +10,19 @@ import sys
 import pytest
 
 
+tools_install_path = os.path.dirname(vt.__file__)
+data_path = os.path.join(tools_install_path,"tests/test_data")
 
 
 @pytest.fixture
 def H2O_VibToolsMolecule():
     vtmole = vt.VibToolsMolecule()
-    vtmole.read_from_coord('test_data/H2O/coord')
+    vtmole.read_from_coord(os.path.join(data_path,'H2O/coord'))
     return vtmole
 
 @pytest.fixture
 def H2O_Mode_data():
-    Mode_data = np.load('test_data/H2O/modes_H2O_test_data.npz')
+    Mode_data = np.load(os.path.join(data_path,'H2O/modes_H2O_test_data.npz'))
     return Mode_data
 
 
@@ -224,7 +226,7 @@ def test_write_g98out(H2O_VibToolsMolecule,H2O_Mode_data):
 
     import filecmp
     f1 = 'g98.out'
-    f2 = 'test_data/H2O/g98_ref.out'
+    f2 =os.path.join(data_path, 'H2O/g98_ref.out')
 
     result = filecmp.cmp(f1, f2, shallow=True)
 
@@ -516,13 +518,13 @@ def test_get_tdc_couplingmat():
     # Created according to Bergmanns-Test scheme
     # ! PySNF dependent test !
     # Arrange
-    path = 'test_data/H2O/'
+    path = os.path.join(data_path,'H2O/')
     snfout_name = 'snf.out'
     restart_name = 'restart'
     coord_name = 'coord'
-    res = vt.SNFResults(outname = path+snfout_name,
-                    restartname = path+restart_name,
-                    coordfile = path+coord_name)
+    res = vt.SNFResults(outname = os.path.join(path,snfout_name),
+                    restartname = os.path.join(path,restart_name),
+                    coordfile = os.path.join(path,coord_name))
     res.read()
 
     a = range(0,len(res.modes.freqs))
@@ -543,13 +545,13 @@ def test_get_modes_asgn():
     # Created according to Bergmanns-Test scheme
     # ! PySNF dependent test !
     # Arrange
-    path = 'test_data/H2O/'
+    path = os.path.join(data_path,'H2O/')
     snfout_name = 'snf.out'
     restart_name = 'restart'
     coord_name = 'coord'
-    res = vt.SNFResults(outname = path+snfout_name,
-                    restartname = path+restart_name,
-                    coordfile = path+coord_name)
+    res = vt.SNFResults(outname = os.path.join(path,snfout_name),
+                    restartname = os.path.join(path,restart_name),
+                    coordfile = os.path.join(path,coord_name))
     res.read()
 
     a = range(0,len(res.modes.freqs))

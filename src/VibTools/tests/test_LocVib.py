@@ -7,15 +7,21 @@ import os
 import pytest
 import copy # Bergmann Test
 
+
+tools_install_path = os.path.dirname(vt.__file__)
+data_path = os.path.join(tools_install_path,"tests/test_data")
+
+
+
 @pytest.fixture
 def H2O_VibToolsMolecule():
     vtmole = vt.VibToolsMolecule()
-    vtmole.read_from_coord('test_data/H2O/coord')
+    vtmole.read_from_coord(os.path.join(data_path,'H2O/coord'))
     return vtmole
 
 @pytest.fixture
 def H2O_Mode_data():
-    Mode_data = np.load('test_data/H2O/modes_H2O_test_data.npz')
+    Mode_data = np.load(os.path.join(data_path,'H2O/modes_H2O_test_data.npz'))
     return Mode_data
 
 
@@ -34,7 +40,7 @@ def H2O_VibToolsMode(H2O_VibToolsMolecule,H2O_Mode_data):
 
 @pytest.fixture
 def H2O_LocVib_data():
-    name = 'test_data/H2O/locvib_test_data.npz'
+    name = os.path.join(data_path,'H2O/locvib_test_data.npz')
     locvib_data = np.load(name)
     return locvib_data
 
@@ -309,7 +315,7 @@ def test_AutoAssign_init(H2O_VibToolsMode):
 
 def test_AutoAssign_calc_ij(H2O_VibToolsMode):
     # Arrange
-    AutoAssgn_ref = np.load('test_data/H2O/AutoAssign_calc_ij_ref.npz')
+    AutoAssgn_ref = np.load(os.path.join(data_path,'H2O/AutoAssign_calc_ij_ref.npz'))
     errmat_ref = AutoAssgn_ref['errmat_s']   
     pmat_ref = AutoAssgn_ref['pmat_s']
     diffmat_ref = AutoAssgn_ref['diffmat_s']

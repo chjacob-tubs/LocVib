@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vibtools"
+version = "1.4"
+description = "LocVib/VibTools: Python tools for localizing normal modes"
+authors = [
+  { name="Christoph Jacob, Julia Brueggemann, Mario Wolter, Michael Welzel and others" }
+]
+readme = "README.md"
+#license = { file="LICENSE" }   # Or "MIT" etc.
+requires-python = ">=3.8"
+#dependencies = [
+#  "numpy",
+#  "matplotlib",
+#  "openbabel"
+#]
+
+#[project.urls]
+#"Homepage" = "https://git.rz.tu-bs.de/m.chekmeneva/hinderedrotor"
+#"Bug Tracker" = "https://github.com/yourusername/your_package/issues"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+
+[tool.setuptools.package-data]
+"VibTools" = [
+    "tests/test_data/**/*",
+    "example/**/*"
+]
+

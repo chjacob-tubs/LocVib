@@ -1,13 +1,17 @@
 #!/usr/bin/env python
 
 import VibTools
+import os
 
 from numpy import *
 
 def main ():
-    res = VibTools.SNFResults(outname='Ala10/snf.out', 
-                              restartname='Ala10/restart', 
-                              coordfile='Ala10/coord')
+    install_path = os.path.dirname(VibTools.__file__)
+    data_path = os.path.join(install_path,"example/")
+
+    res = VibTools.SNFResults(outname=os.path.join(data_path,'Ala10/snf.out'), 
+                              restartname=os.path.join(data_path,'Ala10/restart'), 
+                              coordfile=os.path.join(data_path,'Ala10/coord'))
     res.read()
 
     # change here to range of modes which are possibly of interest
