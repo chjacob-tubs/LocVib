@@ -9,19 +9,19 @@ import copy # Bergmann Test
 
 
 tools_install_path = os.path.dirname(vt.__file__)
-data_path = os.path.join(tools_install_path,"tests/test_data")
-
+data_path = os.path.join(tools_install_path, "tests/test_data")
 
 
 @pytest.fixture
 def H2O_VibToolsMolecule():
     vtmole = vt.VibToolsMolecule()
-    vtmole.read_from_coord(os.path.join(data_path,'H2O/coord'))
+    vtmole.read_from_coord(os.path.join(data_path, 'H2O/coord'))
     return vtmole
+
 
 @pytest.fixture
 def H2O_Mode_data():
-    Mode_data = np.load(os.path.join(data_path,'H2O/modes_H2O_test_data.npz'))
+    Mode_data = np.load(os.path.join(data_path, 'H2O/modes_H2O_test_data.npz'))
     return Mode_data
 
 
@@ -40,8 +40,7 @@ def H2O_VibToolsMode(H2O_VibToolsMolecule,H2O_Mode_data):
 
 @pytest.fixture
 def H2O_LocVib_data():
-    name = os.path.join(data_path,'H2O/locvib_test_data.npz')
-    locvib_data = np.load(name)
+    locvib_data = np.load(os.path.join(data_path, 'H2O/locvib_test_data.npz'))
     return locvib_data
 
 
@@ -155,29 +154,28 @@ def test_localize(H2O_VibToolsMode,H2O_LocVib_data):
     np.testing.assert_almost_equal(lv.transmat, transmat_ref)
 
 
-def test_localize_subsets(H2O_VibToolsMode,H2O_LocVib_data):
+def test_localize_subsets(H2O_VibToolsMode, H2O_LocVib_data):
     # Arrange
-    subtransmat = H2O_LocVib_data['subtransmat']
+    submodes = H2O_LocVib_data['submodes']
+    subcmat = H2O_LocVib_data['subcmat']
     vimo = H2O_VibToolsMode
-    ml = [[0],[0,1],[0,1,2]] 
+    ml = [[0], [1, 2]] 
     # Act
-    lv = vt.LocVib(vimo)
-    lv.localize_subsets(ml)
-    subsets= lv.subsets
+    localmodes, cmat = vt.LocVib.localize_subsets(ml, vimo)
     # Assert
-    np.testing.assert_almost_equal(lv.transmat, subtransmat)
-    np.testing.assert_equal(subsets, ml)
+    np.testing.assert_almost_equal(localmodes.modes_mw, submodes)
+    np.testing.assert_almost_equal(cmat, subcmat)
 
 
-def test_localize_automatic_subsets(H2O_VibToolsMode):
+def test_localize_automatic_subsets(H2O_VibToolsMode, H2O_LocVib_data):
     # T. Bergmann test
     # Arrange + Act
     lv = vt.LocVib(H2O_VibToolsMode)
     lv.localize_automatic_subsets(maxerr = 1)
     dif = lv.startmodes.modes_mw - lv.locmodes.modes_mw
-    np.testing.assert_almost_equal( dif.sum(),-1.0454343057730062, decimal=9)
-    refs = np.asarray([[ 0.41227257,  0.        ,  0.54138338,  0.        ,  0.        ,-0.2717917 , -0.41227257,  0.        ,  0.54138338], [-0.02652679,  0.        , -0.0213593 , -0.19061371,  0.        ,       -0.13792155,  0.7859128 ,  0.        ,  0.57081103],[-0.7859128 ,  0.        ,  0.57081103,  0.19061371,  0.        ,       -0.13792155,  0.02652679,  0.        , -0.0213593 ]])
-    np.testing.assert_almost_equal( lv.locmodes.modes_mw, refs, decimal=5)
+    # Assert
+    np.testing.assert_almost_equal( dif.sum(), -1.0454343057730062, decimal=9)
+    np.testing.assert_almost_equal(lv.locmodes.modes_mw, H2O_LocVib_data['autosubmodes'], decimal=5)
 
 
 # See VCIS: *See: Panek, Hoeske, Jacob, J. Chem. Phys. 150, 054107 (2019)
