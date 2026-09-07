@@ -307,7 +307,7 @@ class VibToolsMolecule(AbstractMolecule):
             groups.append(resgroup)
 
         z = list(zip(groupnames, groups))
-        z.sort(key=(lambda x: x[0]))
+        z.sort(key=(lambda x: int(x[0])))
         groupnames = [x[0] for x in z]
         groups = [x[1] for x in z]
 
