@@ -35,7 +35,7 @@ import math
 import numpy
 import copy
 
-# from .Modes import VibModes
+from .Modes import VibModes
 from . import Constants
 
 
@@ -313,20 +313,82 @@ class LocVib(object):
         full_transmat[numpy.ix_(ss, ss)] = transmat
         self.set_transmat(numpy.dot(full_transmat, self.transmat))
 
-    def localize_subsets(self, subsets, printing=True):
-        """
-        localize subsets.
+#    def localize_subsets(self, subsets, printing=True):
+#        """
+#        localize subsets.
+#
+#        Parameters
+#        ----------
+#        subsets : list of integer lists
+#            subsets = [[0,1],[2],[0,1,2]]
+#        """
+#        for subset in subsets:
+#            self.localize(subset, printing=printing)
+#
+#        self.sort_by_freqs()
+#        self.subsets = subsets
 
+ 
+    @staticmethod
+    def localize_subsets(subsets, modes, loctype="PM", thresh=1e-6, thresh2=1e-4, printing=True, hessian=True):
+        """
+        Localize modes in subsets and return combined localized modes.
+    
         Parameters
         ----------
-        subsets : list of integer lists
-            subsets = [[0,1],[2],[0,1,2]]
+        subsets : list of lists
+            List of mode index subsets to localize separately.
+        modes : VibModes
+            Normal modes object.
+        loctype : str
+            Localization type ('PM' or 'B').
+        thresh, thresh2 : float
+            Localization convergence thresholds.
+        printing : bool
+            Print localization progress.
+        hessian: bool
+            True returns the cmat in a.u., False in reciprocal cm #maybe we should change that...
+        
+        Returns
+        -------
+        localmodes : VibModes
+            Combined localized modes.
+        cmat : ndarray
+            Block-diagonal coupling matrix.
         """
-        for subset in subsets:
-            self.localize(subset, printing=printing)
+        total = 0
+        modes_mw = numpy.zeros((0, 3*modes.natoms))
+        freqs = numpy.zeros((0,))
 
-        self.sort_by_freqs()
-        self.subsets = subsets
+        for subset in subsets:
+            n = len(subset)
+            total += n
+
+
+        print('Modes localized: %i, modes in total: %i' %(total, modes.nmodes))
+
+        if total > modes.nmodes:
+            raise ValueError('Number of modes in the subsets is larger than the total number of modes')
+        else:
+            cmat = numpy.zeros((total, total))
+            actpos = 0 #actual position in the cmat matrix
+            for subset in subsets:
+               tmpmodes = modes.get_subset(subset)
+               tmploc = LocVib(tmpmodes, loctype) 
+               tmploc.localize(thresh = thresh, thresh2=thresh2, printing=printing)
+               tmploc.sort_by_residue()
+               tmploc.adjust_signs()
+               tmpcmat = tmploc.get_couplingmat(hessian=hessian)  
+               tmp = tmploc.locmodes.modes_mw, tmploc.locmodes.freqs, tmpcmat
+               modes_mw = numpy.concatenate((modes_mw, tmp[0]), axis = 0)
+               freqs = numpy.concatenate((freqs, tmp[1]), axis = 0)
+               cmat[actpos:actpos + tmp[2].shape[0],actpos:actpos + tmp[2].shape[0]] = tmp[2]
+               actpos = actpos + tmp[2].shape[0]
+            localmodes = VibModes(total, modes.mol)
+            localmodes.set_modes_mw(modes_mw)
+            localmodes.set_freqs(freqs)
+
+        return localmodes, cmat
 
     def localize_automatic_subsets(self, maxerr):
         """
@@ -719,3 +781,5 @@ class AutomaticAssignment(object):
                 ind_maxp, maxp = self.find_maxp(maxerr, maxdiff)
 
         return self.subsets
+
+
