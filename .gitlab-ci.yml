@@ -68,7 +68,7 @@ install_locvib:
             fi
         #packages from environment.yml
         - conda env create -n $CONDA_ENV -f $CI_PROJECT_DIR/requirements/environment.yml -y
-        - conda env update -n $CONDA_ENV -f $CI_PROJECT_DIR/requirements/environment_documentation.yml -f $CI_PROJECT_DIR/requirements/environment_unittests.yml --prune -y #only needed for running tests and building documentation
+        - conda env update -n $CONDA_ENV -f $CI_PROJECT_DIR/requirements/environment_documentation.yml -f $CI_PROJECT_DIR/requirements/environment_unittests.yml #only needed for running tests and building documentation
         - conda activate $CONDA_ENV
         #from requirements.txt:
         #- pip install openbabel-wheel #not needed, when conda is used
