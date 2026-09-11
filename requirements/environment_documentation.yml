@@ -1,0 +1,9 @@
+name: VibToolsCondaENV
+channels:
+  - conda-forge
+dependencies:
+  - sphinx
+  - sphinx_rtd_theme
+  - sphinx_mdinclude
+  - sphinx_design
+

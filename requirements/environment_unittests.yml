@@ -1,0 +1,9 @@
+name: VibToolsCondaENV
+channels:
+  - conda-forge
+dependencies:
+  - pytest
+  - pytest-cov
+  - docstr-coverage
+  - pylint
+

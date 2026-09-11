@@ -67,18 +67,18 @@ install_locvib:
                 conda env remove --name $CONDA_ENV --yes
             fi
         #packages from environment.yml
-        - conda create --name $CONDA_ENV numpy matplotlib openbabel
+        - conda create --name $CONDA_ENV -f $CI_PROJECT_DIR/requirements/environment.yml -f $CI_PROJECT_DIR/requirements/environment_documentation.yml -f $CI_PROJECT_DIR/requirements/environment_unittests.yml -y
         - conda activate $CONDA_ENV
         #from requirements.txt:
-        - pip install openbabel-wheel
+        #- pip install openbabel-wheel #not needed, when conda is used
         #from requirements_unittests.txt:
-        - conda install -c conda-forge pytest
+        #- conda install -c conda-forge pytest
         #from requirements_documentation.txt:
-        - conda install -c conda-forge sphinx 
-        - pip install sphinx_rtd_theme sphinx_mdinclude sphinx_design
+        #- conda install -c conda-forge sphinx 
+        #- pip install sphinx_rtd_theme sphinx_mdinclude sphinx_design
         #from Dockerfile
-        - conda install -c conda-forge pytest pylint pytest-cov
-        - pip install docstr-coverage
+        #- conda install -c conda-forge pytest pylint pytest-cov
+        #- pip install docstr-coverage
     script:
         - cd $CI_PROJECT_DIR
         - pip install -e .
