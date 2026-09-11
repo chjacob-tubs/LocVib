@@ -1,6 +1,5 @@
 # load: basic Docker image
-FROM continuumio/miniconda3
-#python:3.11.4
+FROM condaforge/miniforge3
 
 # Create a "work folder"
 WORKDIR /app
@@ -21,6 +20,7 @@ SHELL ["conda", "run", "-n", "VibToolsCondaENV", "/bin/bash", "-c"]
 # Activate corresponding Conda environment in container
 
 RUN conda install -c conda-forge conda-build \
-    && conda install -c conda-forge pytest=7.2.0 \
-    && conda develop src/ \
+    && conda install -c conda-forge pytest \
+     && pip install --no-build-isolation --no-deps -e . \
     && echo "source activate VibToolsCondaENV" > ~/.bashrc
+   

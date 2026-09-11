@@ -1,5 +1,5 @@
 # load: basic Docker image
-FROM python:3.11.4
+FROM python
 
 # Create a "work folder"
 WORKDIR /app
