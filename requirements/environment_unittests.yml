@@ -4,6 +4,6 @@ channels:
 dependencies:
   - pytest
   - pytest-cov
-  - docstr-coverage
+  - docstring-coverage
   - pylint
 
