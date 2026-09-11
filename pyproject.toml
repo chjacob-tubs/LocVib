@@ -12,15 +12,15 @@ authors = [
 readme = "README.md"
 #license = { file="LICENSE" }   # Or "MIT" etc.
 requires-python = ">=3.8"
-#dependencies = [
-#  "numpy",
-#  "matplotlib",
-#  "openbabel"
-#]
+dependencies = [
+  "numpy",
+  "matplotlib",
+  "openbabel-wheel"
+]
 
-#[project.urls]
-#"Homepage" = "https://git.rz.tu-bs.de/m.chekmeneva/hinderedrotor"
-#"Bug Tracker" = "https://github.com/yourusername/your_package/issues"
+[project.urls]
+"Homepage" = "https://github.com/chjacob-tubs/LocVib"
+
 
 [tool.setuptools]
 include-package-data = true

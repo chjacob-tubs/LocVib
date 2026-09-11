@@ -1,11 +1,9 @@
 name: VibToolsCondaENV
 channels:
-  - defaults
   - conda-forge
 dependencies:
-  - python~=3.11.0
-  - numpy~=1.23.4
-  - matplotlib~=3.6.1
-  - openbabel~=3.1.1
-
+  - python
+  - numpy
+  - matplotlib
+  - openbabel #in conda openbabel-wheel is not available
 

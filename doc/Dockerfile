@@ -1,5 +1,5 @@
 # load: basic Docker image
-FROM python:3.11.4
+FROM python
 
 # Create a "work folder"
 WORKDIR /app
@@ -12,7 +12,7 @@ RUN python -m pip install -r /app/requirements/requirements_documentation.txt \
     && pip install /app/
 
 # Create example output files
-WORKDIR /app/example/
+WORKDIR /app/src/VibTools/example/
 
 RUN python 1_composition.py > /app/doc/examples_output/1_output.txt \
     && python 2_locmodes.py > /app/doc/examples_output/2_output.txt \

@@ -2,6 +2,7 @@
 
 *.egg-info/
 .idea
+.vscode
 
 # __pycache__
 tests/__pycache__
@@ -30,3 +31,4 @@ src/.coverage
 ._.DS_Store
 
 doc/.DS_Store
+
