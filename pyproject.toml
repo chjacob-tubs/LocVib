@@ -14,7 +14,8 @@ readme = "README.md"
 requires-python = ">=3.8"
 dynamic = ["dependencies"]
 
-[tool.setuptools.dynamic.dependencies]
+[tool.setuptools.dynamic]
+# Load main dependencies from requirements/requirements.txt
 dependencies = { file = ["requirements/requirements.txt"] }
 
 [project.urls]
