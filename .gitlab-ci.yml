@@ -67,8 +67,7 @@ install_locvib:
                 conda env remove --name $CONDA_ENV --yes
             fi
         #packages from environment.yml files
-        - conda env create -n $CONDA_ENV -f $CI_PROJECT_DIR/requirements/environment.yml -y
-        - conda env update -n $CONDA_ENV -f $CI_PROJECT_DIR/requirements/environment_documentation.yml -f $CI_PROJECT_DIR/requirements/environment_unittests.yml #only needed for running tests and building documentation
+        - conda env create -n $CONDA_ENV -f $CI_PROJECT_DIR/requirements/environment_tests_doc.yml -y
         - conda activate $CONDA_ENV
         - pip list
         - conda list
