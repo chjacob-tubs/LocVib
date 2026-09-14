@@ -12,6 +12,9 @@ authors = [
 readme = "README.md"
 #license = { file="LICENSE" }   # Or "MIT" etc.
 requires-python = ">=3.8"
+dynamic = ["dependencies"]
+
+[tool.setuptools.dynamic.dependencies]
 dependencies = { file = ["requirements/requirements.txt"] }
 
 [project.urls]
