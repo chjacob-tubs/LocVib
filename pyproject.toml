@@ -18,6 +18,20 @@ dynamic = ["dependencies"]
 # Load main dependencies from requirements/requirements.txt
 dependencies = { file = ["requirements/requirements.txt"] }
 
+[project.optional-dependencies]
+# Choose one of these depending on how you want openbabel provided:
+openbabel = [
+    "openbabel",
+]
+openbabel-wheel = [
+    "openbabel-wheel",
+]
+
+# Optional convenience extra that picks a default for most users:
+default = [
+    "vibtools[openbabel-wheel]",
+]
+
 [project.urls]
 "Homepage" = "https://github.com/chjacob-tubs/LocVib"
 
