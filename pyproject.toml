@@ -2,6 +2,9 @@
 requires = ["setuptools>=62.6", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[project.urls]
+"Homepage" = "https://github.com/chjacob-tubs/LocVib"
+
 [project]
 name = "vibtools"
 version = "1.5"
@@ -12,9 +15,6 @@ authors = [
 readme = "README.md"
 #license = { file="LICENSE" }   # Or "MIT" etc.
 requires-python = ">=3.8"
-
-[project.urls]
-"Homepage" = "https://github.com/chjacob-tubs/LocVib"
 
 # Base runtime dependencies (no openbabel)
 dependencies = [
@@ -53,8 +53,18 @@ testing-openbabel-wheel = [
     "docstr-coverage",
 ]
 
-# Documentation building dependencies (no openbabel needed here)
-docs = [
+# Documentation building dependencies with openbabel
+docs-openbabel = [
+    "vibtools[openbabel]",
+    "sphinx",
+    "sphinx-rtd-theme",
+    "sphinx-design",
+    "sphinx-mdinclude",
+]
+
+# Documentation building dependencies with openbabel-wheel
+docs-openbabel-wheel = [
+    "vibtools[openbabel-wheel]",
     "sphinx",
     "sphinx-rtd-theme",
     "sphinx-design",
