@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vibtools"
-version = "1.4"
+version = "1.5"
 description = "LocVib/VibTools: Python tools for localizing normal modes"
 authors = [
   { name="Christoph Jacob, Julia Brueggemann, Mario Wolter, Michael Welzel and others" }
@@ -12,36 +12,71 @@ authors = [
 readme = "README.md"
 #license = { file="LICENSE" }   # Or "MIT" etc.
 requires-python = ">=3.8"
-dynamic = ["dependencies"]
-
-[tool.setuptools.dynamic]
-# Load main dependencies from requirements/requirements.txt
-dependencies = { file = ["requirements/requirements.txt"] }
-
-[project.optional-dependencies]
-# Choose one of these depending on how you want openbabel provided:
-openbabel = [
-    "openbabel",
-]
-openbabel-wheel = [
-    "openbabel-wheel",
-]
-
-# Optional convenience extra that picks a default for most users:
-default = [
-    "vibtools[openbabel-wheel]",
-]
 
 [project.urls]
 "Homepage" = "https://github.com/chjacob-tubs/LocVib"
 
+# Base runtime dependencies (no openbabel)
+dependencies = [
+    "numpy",
+    "matplotlib",
+]
 
+# Choose one of these depending on how you want openbabel provided:
+
+[project.optional-dependencies]
+# Usage with openbabel
+openbabel = [
+    "openbabel",
+]
+
+# Usage with openbabel-wheel
+openbabel-wheel = [
+    "openbabel-wheel",
+]
+
+# Testing with openbabel
+testing-openbabel = [
+    "vibtools[openbabel]",
+    "pytest",
+    "pytest-cov",
+    "pylint",
+    "docstr-coverage",
+]
+
+# Testing with openbabel-wheel
+testing-openbabel-wheel = [
+    "vibtools[openbabel-wheel]",
+    "pytest",
+    "pytest-cov",
+    "pylint",
+    "docstr-coverage",
+]
+
+# Documentation building dependencies (no openbabel needed here)
+docs = [
+    "sphinx",
+    "sphinx-rtd-theme",
+    "sphinx-design",
+    "sphinx-mdinclude",
+]
+
+# Full install with openbabel
+full-openbabel = [
+    "vibtools[testing-openbabel]",
+    "vibtools[docs]",
+]
+
+# Full install with openbabel-wheel
+full-openbabel-wheel = [
+    "vibtools[testing-openbabel-wheel]",
+    "vibtools[docs]",
+]
 [tool.setuptools]
 include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["src"]
-
 
 [tool.setuptools.package-data]
 "VibTools" = [
