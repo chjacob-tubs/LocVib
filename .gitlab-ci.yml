@@ -83,6 +83,9 @@ install_locvib:
         
     script:
         - cd $CI_PROJECT_DIR
+        - python -m pip show openbabel
+        - python -m pip show numpy
+        - python -m pip show matplotlib
         - pip install -e .
 
 
