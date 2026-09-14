@@ -79,7 +79,7 @@ install_locvib:
         #- pip install sphinx_rtd_theme sphinx_mdinclude sphinx_design
         #from Dockerfile
         #- conda install -c conda-forge pytest pylint pytest-cov
-        - pip install docstr-coverage # not available on conda-forge
+        - pip install docstr-coverage sphinx-mdinclude # not available on conda-forge
         
     script:
         - cd $CI_PROJECT_DIR

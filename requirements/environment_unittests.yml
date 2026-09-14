@@ -5,4 +5,6 @@ dependencies:
   - pytest
   - pytest-cov
   - pylint
+# not available on conda forge, please install via pip
+#  - docstr-coverage
 

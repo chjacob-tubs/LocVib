@@ -4,6 +4,7 @@ channels:
 dependencies:
   - sphinx
   - sphinx_rtd_theme
-  - sphinx_mdinclude
   - sphinx_design
+# not available on conda forge, please install via pip
+#  - sphinx_mdinclude
 
