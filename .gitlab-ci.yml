@@ -70,6 +70,8 @@ install_locvib:
         - conda env create -n $CONDA_ENV -f $CI_PROJECT_DIR/requirements/environment.yml -y
         - conda env update -n $CONDA_ENV -f $CI_PROJECT_DIR/requirements/environment_documentation.yml -f $CI_PROJECT_DIR/requirements/environment_unittests.yml #only needed for running tests and building documentation
         - conda activate $CONDA_ENV
+        - pip list
+        - conda list
         - pip install docstr-coverage sphinx-mdinclude # not available on conda-forge
         
     script:
