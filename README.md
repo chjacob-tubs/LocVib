@@ -1,20 +1,8 @@
-[![pipeline status](https://gitlab.pyadf.org/vib/LocVib/badges/master/pipeline.svg)](https://gitlab.pyadf.org/vib/LocVib/-/commits/master)
-[![Custom Badge](https://gitlab.pyadf.org/vib/LocVib/badges/master/coverage.svg?min_medium=30&min_acceptable=50&min_good=75&key_text=Unittest+Coverage&key_width=130)](https://gitlab.pyadf.org/vib/LocVib/-/commits/master)
-
-[![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3110/)
-[![Numpy 1.23.4](https://img.shields.io/badge/numpy-1.23.4-blue.svg)](https://numpy.org/devdocs/release/1.23.4-notes.html)
-[![Matplotlib 3.6.1](https://img.shields.io/badge/matplotlib-3.6.1-blue.svg)](https://matplotlib.org/stable/users/installing/index.html)
-[![pip - Openbabel 3.1.1](https://img.shields.io/badge/openbabel-3.1.1-cornflowerblue.svg)](https://bioweb.pasteur.fr/packages/pack@openbabel@3.1.1)
-[![conda - Openbabel 3.1.1.16](https://img.shields.io/badge/openbabel--wheel-3.1.1.16-blueviolet.svg)](https://pypi.org/project/openbabel-wheel/3.1.1.16/)
-
-
-
-
 # LocVib/VibTools
 
 Python tools for localizing normal modes.
 
-Copyright (C) 2009-2023 by Christoph R. Jacob and others.
+Copyright (C) 2009-2026 by Christoph R. Jacob and others.
 
 In scientific publications using the LocVib tools, please cite:
   Ch. R. Jacob, J. Chem. Phys 130 (2009), 084106 (https://doi.org/10.1063/1.3077690).
@@ -36,35 +24,59 @@ More details are in the documentation.
 ## Installation
 
 Just clone this repository and update `$PYTHONPATH` environment variable accordingly.
-Or install it using pip and run 
+Or install it using pip install in the folder where pyproject.toml is located.
 
-`LocVib/ % pip install . ` 
+There are different predefined setup variants depending on your use case and prefered openbabel package:
 
-in the folder where setup.py is located.
+If you want to use openbabel package install with
+```bash
+pip install ".[openbabel]"
+```
+
+If you want to use openbabel-wheel package install with
+```bash
+pip install ".[openbabel-wheel]"
+```
+
+If you want to run the tests and/or build the documentation it is recommended to do a full installation
+```bash
+pip install ".[full-openbabel]"
+```
+or
+```bash
+pip install ".[full-openbabel-wheel]"
+```
+
 More details are in the documentation.
 
-Verify the installation with running pytest (must be installed before):
+Verify the installation with running pytest (works in testing and full installations only):
 
-`/LocVib/tests % pytest - v`
+```bash
+src/VibTools/tests % pytest - v
+```
 
 Other installation options can be found in the further documentation.
 
 ## Documentation
 
-We can find the documentation, as mentioned above,
+You can find the documentation, as mentioned above,
 on the Homepage (https://vib.gitlab-pages.pyadf.org/LocVib/) 
-or we can generate the HTML documentation  ourselves with Sphinx.
+or you can generate the HTML documentation yourself with Sphinx.
 
-Build documentation via Sphinx and extension packages (must be installed before)
+Build documentation via Sphinx and extension packages (works in docs installations only):
 
-`Locvib/doc/ % sphinx-build . Build`.
+```bash
+doc/ % sphinx-build . build
+```
 
 Opening the index.html file takes you to the home directory of the code documentation:
 
-`Locvib/doc/Build/ % open index.html`
+```bash
+doc/build/ % open index.html
+```
 
 ## Usage
 
-See `example/` directory for some examples of typical runs.
+See `src/VibTools/example/` directory for some examples of typical runs.
 
 ### Any suggestions and improvements are welcome.
