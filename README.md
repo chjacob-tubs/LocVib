@@ -49,7 +49,7 @@ pip install ".[full-openbabel-wheel]"
 
 More details are in the documentation.
 
-Verify the installation with running pytest (must be installed before):
+Verify the installation with running pytest (works in testing and full installations only):
 
 ```bash
 src/VibTools/tests % pytest - v
@@ -63,7 +63,7 @@ You can find the documentation, as mentioned above,
 on the Homepage (https://vib.gitlab-pages.pyadf.org/LocVib/) 
 or you can generate the HTML documentation yourself with Sphinx.
 
-Build documentation via Sphinx and extension packages (must be installed before)
+Build documentation via Sphinx and extension packages (works in docs installations only):
 
 ```bash
 doc/ % sphinx-build . Build
