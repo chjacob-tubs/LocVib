@@ -66,13 +66,13 @@ or you can generate the HTML documentation yourself with Sphinx.
 Build documentation via Sphinx and extension packages (works in docs installations only):
 
 ```bash
-doc/ % sphinx-build . Build
+doc/ % sphinx-build . build
 ```
 
 Opening the index.html file takes you to the home directory of the code documentation:
 
 ```bash
-doc/Build/ % open index.html
+doc/build/ % open index.html
 ```
 
 ## Usage
