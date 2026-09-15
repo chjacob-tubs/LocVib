@@ -73,7 +73,7 @@ Opening the index.html file takes you to the home directory of the code document
 
 ```bash
 doc/Build/ % open index.html
-```bash
+```
 
 ## Usage
 
