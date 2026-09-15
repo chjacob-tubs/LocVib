@@ -8,6 +8,9 @@ authors:
     email: c.jacob@tu-braunschweig.de
     affiliation: Technische Universität Braunschweig
     orcid: 'https://orcid.org/0000-0002-6227-8476'
+  - given-names: Tobias
+    family-names: Bergmann
+    affiliation: Technische Universität Braunschweig
   - given-names: Julia
     family-names: Brüggemann
     affiliation: Technische Universität Braunschweig
@@ -26,7 +29,7 @@ authors:
     orcid: 'https://orcid.org/0000-0001-6948-6801'
 identifiers:
   - type: doi
-    value: tba
+    value: https://doi.org/10.5281/zenodo.8115103
 repository-code: 'https://github.com/chjacob-tubs/LocVib'
 url: 'http://www.pyadf.org'
 repository: 'https://gitlab.pyadf.org/vib/LocVib/'
