@@ -9,7 +9,7 @@ documentation = "https://locvibvibtools.readthedocs.io/en/latest/"
 
 [project]
 name = "vibtools"
-version = "1.5"
+version = "1.4"
 description = "LocVib/VibTools: Python tools for localizing normal modes"
 readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.11.4"
