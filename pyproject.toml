@@ -3,13 +3,9 @@ requires = ["setuptools>=62.6", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project.urls]
-<<<<<<< HEAD
-"Homepage" = "https://github.com/chjacob-tubs/LocVib"
-=======
 homepage = "https://www.tu-braunschweig.de/pci/agjacob/software"
 source = "https://github.com/chjacob-tubs/LocVib"
 documentation = "https://locvibvibtools.readthedocs.io/en/latest/"
->>>>>>> releases
 
 [project]
 name = "vibtools"
